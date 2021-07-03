@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.codefx.libfx.listener.handle.ListenerHandle;
 import org.codefx.libfx.listener.handle.ListenerHandles;
+import org.javatuples.Pair;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -28,6 +29,12 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
+import unsw.loopmania.Cards.*;
+import unsw.loopmania.Enemies.BasicEnemy;
+import unsw.loopmania.Items.Sword;
+import unsw.loopmania.Buildings.*;
+
+
 import java.util.EnumMap;
 
 import java.io.File;
@@ -40,8 +47,21 @@ import java.io.IOException;
  * This is so we can see what type is being dragged.
  */
 enum DRAGGABLE_TYPE{
-    CARD,
-    ITEM
+
+    VAMPIRECASTLE_CARD,
+    ZOMBIEPIT_CARD,
+    TOWER_CARD,
+    VILLAGE_CARD,
+    BARRACKS_CARD,
+    TRAP_CARD,
+    CAMPFIRE_CARD,
+
+    SWORD,
+    STAKE,
+    STAFF,
+    ARMOUR,
+    SHIELD,
+    HELMET
 }
 
 /**
@@ -114,16 +134,37 @@ public class LoopManiaWorldController {
      */
     private Timeline timeline;
 
+    /**
+     * Image of the cards
+     */
     private Image vampireCastleCardImage;
+    private Image zombiePitCardImage;
+    private Image towerCardImage;
+    private Image villageCardImage;
+    private Image barracksCardImage;
+    private Image trapCardImage;
+    private Image campfireCardImage;
+
+    /**
+     * Image of the buildings
+     */
+    private Image vampireCastleBuildingImage;
+    private Image zombiePitBuildingImage;
+    private Image towerBuildingImage;
+    private Image villageBuildingImage;
+    private Image barracksBuildingImage;
+    private Image trapBuildingImage;
+    private Image campfireBuildingImage;
+
+
+
     private Image basicEnemyImage;
     private Image swordImage;
-    private Image basicBuildingImage;
 
     /**
      * the image currently being dragged, if there is one, otherwise null.
      * Holding the ImageView being dragged allows us to spawn it again in the drop location if appropriate.
      */
-    // TODO = it would be a good idea for you to instead replace this with the building/item which should be dropped
     private ImageView currentlyDraggedImage;
     
     /**
@@ -164,10 +205,31 @@ public class LoopManiaWorldController {
     public LoopManiaWorldController(LoopManiaWorld world, List<ImageView> initialEntities) {
         this.world = world;
         entityImages = new ArrayList<>(initialEntities);
+
+        /* Initialize all card images */
         vampireCastleCardImage = new Image((new File("src/images/vampire_castle_card.png")).toURI().toString());
+        zombiePitCardImage = new Image((new File("src/images/zombie_pit_card.png")).toURI().toString());
+        towerCardImage = new Image((new File("src/images/tower_card.png")).toURI().toString());
+        villageCardImage = new Image((new File("src/images/village_card.png")).toURI().toString());
+        barracksCardImage = new Image((new File("src/images/barracks_card.png")).toURI().toString());
+        trapCardImage = new Image((new File("src/images/trap_card.png")).toURI().toString());
+        campfireCardImage = new Image((new File("src/images/campfire_card.png")).toURI().toString());
+
+        /* Initialize all building images */
+        vampireCastleBuildingImage = new Image((new File("src/images/vampire_castle_building_purple_background.png")).toURI().toString());
+        zombiePitBuildingImage = new Image((new File("src/images/zombie_pit.png")).toURI().toString());
+        towerBuildingImage = new Image((new File("src/images/tower.png")).toURI().toString());
+        villageBuildingImage = new Image((new File("src/images/village.png")).toURI().toString());
+        barracksBuildingImage = new Image((new File("src/images/barracks.png")).toURI().toString());
+        trapBuildingImage = new Image((new File("src/images/trap.png")).toURI().toString());
+        campfireBuildingImage = new Image((new File("src/images/campfire.png")).toURI().toString());
+
+        /* Initialize all enemy images */
         basicEnemyImage = new Image((new File("src/images/slug.png")).toURI().toString());
+
+        /* Initialize all item images */
         swordImage = new Image((new File("src/images/basic_sword.png")).toURI().toString());
-        basicBuildingImage = new Image((new File("src/images/vampire_castle_building_purple_background.png")).toURI().toString());
+        
         currentlyDraggedImage = null;
         currentlyDraggedType = null;
 
@@ -273,12 +335,10 @@ public class LoopManiaWorldController {
     }
 
     /**
-     * load a vampire card from the world, and pair it with an image in the GUI
+     * load a random card from the world, and pair it with an image in the GUI
      */
-    private void loadVampireCard() {
-        // TODO = load more types of card
-        VampireCastleCard vampireCastleCard = world.loadVampireCard();
-        onLoad(vampireCastleCard);
+    private void loadRandomCard(){
+        onLoad(world.loadRandomCard());
     }
 
     /**
@@ -300,23 +360,51 @@ public class LoopManiaWorldController {
         // in starter code, spawning extra card/weapon...
         // TODO = provide different benefits to defeating the enemy based on the type of enemy
         loadSword();
-        loadVampireCard();
+        loadRandomCard();
     }
 
     /**
-     * load a vampire castle card into the GUI.
+     * Load a card regarding its type into the GUI.
      * Particularly, we must connect to the drag detection event handler,
      * and load the image into the cards GridPane.
-     * @param vampireCastleCard
+     * @param card
      */
-    private void onLoad(VampireCastleCard vampireCastleCard) {
-        ImageView view = new ImageView(vampireCastleCardImage);
-
+    private void onLoad(Card card){
+        ImageView view = null;
+        card.getCardType();
+        /* TODO: Enum conversion ??? POssible maintainence problem */
+        DRAGGABLE_TYPE draggableType = DRAGGABLE_TYPE.valueOf(card.getCardType().toString());
+        switch(card.getCardType()){
+            case VAMPIRECASTLE_CARD:
+                view = new ImageView(vampireCastleCardImage);
+                break;
+            case ZOMBIEPIT_CARD:
+                view = new ImageView(zombiePitCardImage);
+                break;
+            case TOWER_CARD:
+                view = new ImageView(towerCardImage);
+                break;
+            case VILLAGE_CARD:
+                view = new ImageView(villageCardImage);
+                break;
+            case BARRACKS_CARD:
+                view = new ImageView(barracksCardImage);
+                break;
+            case TRAP_CARD:
+                view = new ImageView(trapCardImage);
+                break;
+            case CAMPFIRE_CARD:
+                view = new ImageView(campfireCardImage);
+                break;
+            default:
+                /* Should never happen */
+                return;
+        }
         // FROM https://stackoverflow.com/questions/41088095/javafx-drag-and-drop-to-gridpane
         // note target setOnDragOver and setOnDragEntered defined in initialize method
-        addDragEventHandlers(view, DRAGGABLE_TYPE.CARD, cards, squares);
+        addDragEventHandlers(view, draggableType, cards, squares);
 
-        addEntity(vampireCastleCard, view);
+        addEntity(card, view);
         cards.getChildren().add(view);
     }
 
@@ -328,7 +416,7 @@ public class LoopManiaWorldController {
      */
     private void onLoad(Sword sword) {
         ImageView view = new ImageView(swordImage);
-        addDragEventHandlers(view, DRAGGABLE_TYPE.ITEM, unequippedInventory, equippedItems);
+        addDragEventHandlers(view, DRAGGABLE_TYPE.SWORD, unequippedInventory, equippedItems);
         addEntity(sword, view);
         unequippedInventory.getChildren().add(view);
     }
@@ -347,8 +435,34 @@ public class LoopManiaWorldController {
      * load a building into the GUI
      * @param building
      */
-    private void onLoad(VampireCastleBuilding building){
-        ImageView view = new ImageView(basicBuildingImage);
+    private void onLoad(Building building){
+        ImageView view = null;
+        switch(building.getBuildingType()){
+            case VAMPIRECASTLE_BUILDING:
+                view = new ImageView(vampireCastleBuildingImage);
+                break;
+            case ZOMBIEPIT_BUILDING:
+                view = new ImageView(zombiePitBuildingImage);
+                break;
+            case TOWER_BUILDING:
+                view = new ImageView(towerBuildingImage);
+                break;
+            case VILLAGE_BUILDING:
+                view = new ImageView(villageBuildingImage);
+                break;
+            case BARRACKS_BUILDING:
+                view = new ImageView(barracksBuildingImage);
+                break;
+            case TRAP_BUILDING:
+                view = new ImageView(trapBuildingImage);
+                break;
+            case CAMPFIRE_BUILDING:
+                view = new ImageView(campfireBuildingImage);
+                break;
+            default:
+                /* This should never happen */
+                break;
+        }
         addEntity(building, view);
         squares.getChildren().add(view);
     }
@@ -362,6 +476,7 @@ public class LoopManiaWorldController {
      */
     private void buildNonEntityDragHandlers(DRAGGABLE_TYPE draggableType, GridPane sourceGridPane, GridPane targetGridPane){
         // TODO = be more selective about where something can be dropped
+        // TODO = OVERLAPPED IMAGE
         // for example, in the specification, villages can only be dropped on path, whilst vampire castles cannot go on the path
 
         gridPaneSetOnDragDropped.put(draggableType, new EventHandler<DragEvent>() {
@@ -381,39 +496,49 @@ public class LoopManiaWorldController {
                     Dragboard db = event.getDragboard();
                     Node node = event.getPickResult().getIntersectedNode();
                     if(node != targetGridPane && db.hasImage()){
+                        if(!isPlacable(currentlyDraggedType, GridPane.getColumnIndex(node), GridPane.getRowIndex(node))){
+                            currentlyDraggedImage.setVisible(true);
+                            printThreadingNotes("DRAG DROPPED ON GRIDPANE CANCELLED");
+                        }else{
+                            Integer cIndex = GridPane.getColumnIndex(node);
+                            Integer rIndex = GridPane.getRowIndex(node);
+                            int x = cIndex == null ? 0 : cIndex;
+                            int y = rIndex == null ? 0 : rIndex;
+                            //Places at 0,0 - will need to take coordinates once that is implemented
+                            ImageView image = new ImageView(db.getImage());
 
-                        Integer cIndex = GridPane.getColumnIndex(node);
-                        Integer rIndex = GridPane.getRowIndex(node);
-                        int x = cIndex == null ? 0 : cIndex;
-                        int y = rIndex == null ? 0 : rIndex;
-                        //Places at 0,0 - will need to take coordinates once that is implemented
-                        ImageView image = new ImageView(db.getImage());
-
-                        int nodeX = GridPane.getColumnIndex(currentlyDraggedImage);
-                        int nodeY = GridPane.getRowIndex(currentlyDraggedImage);
-                        switch (draggableType){
-                            case CARD:
-                                removeDraggableDragEventHandlers(draggableType, targetGridPane);
-                                // TODO = spawn a building here of different types
-                                VampireCastleBuilding newBuilding = convertCardToBuildingByCoordinates(nodeX, nodeY, x, y);
-                                onLoad(newBuilding);
-                                break;
-                            case ITEM:
-                                removeDraggableDragEventHandlers(draggableType, targetGridPane);
-                                // TODO = spawn an item in the new location. The above code for spawning a building will help, it is very similar
-                                removeItemByCoordinates(nodeX, nodeY);
-                                targetGridPane.add(image, x, y, 1, 1);
-                                break;
-                            default:
-                                break;
+                            int nodeX = GridPane.getColumnIndex(currentlyDraggedImage);
+                            int nodeY = GridPane.getRowIndex(currentlyDraggedImage);
+                            switch (draggableType){
+                                case VAMPIRECASTLE_CARD:
+                                case ZOMBIEPIT_CARD:
+                                case TOWER_CARD:
+                                case VILLAGE_CARD:
+                                case BARRACKS_CARD:
+                                case TRAP_CARD:
+                                case CAMPFIRE_CARD:
+                                    Building newBuilding = convertCardToBuildingByCoordinates(nodeX, nodeY, x, y);
+                                    if(newBuilding instanceof Spawner){
+                                        ((Spawner)newBuilding).addSpawningTile(getAdjacentPathTiles(x, y));
+                                    }
+                                    onLoad(newBuilding);
+                                    break;
+                                case SWORD:
+                                    // TODO = spawn an item in the new location. The above code for spawning a building will help, it is very similar
+                                    removeItemByCoordinates(nodeX, nodeY);
+                                    targetGridPane.add(image, x, y, 1, 1);
+                                    break;
+                                default:
+                                    break;
+                            }    
+                            printThreadingNotes("DRAG DROPPED ON GRIDPANE HANDLED");
                         }
-                        
                         draggedEntity.setVisible(false);
                         draggedEntity.setMouseTransparent(false);
                         // remove drag event handlers before setting currently dragged image to null
+                        removeDraggableDragEventHandlers(draggableType, targetGridPane);
                         currentlyDraggedImage = null;
                         currentlyDraggedType = null;
-                        printThreadingNotes("DRAG DROPPED ON GRIDPANE HANDLED");
                     }
                 }
                 event.setDropCompleted(true);
@@ -476,7 +601,7 @@ public class LoopManiaWorldController {
      * @param buildingNodeY the y coordinate of the drop location for the card, where the building will spawn, from 0 to height-1
      * @return building entity returned from the world
      */
-    private VampireCastleBuilding convertCardToBuildingByCoordinates(int cardNodeX, int cardNodeY, int buildingNodeX, int buildingNodeY) {
+    private Building convertCardToBuildingByCoordinates(int cardNodeX, int cardNodeY, int buildingNodeX, int buildingNodeY) {
         return world.convertCardToBuildingByCoordinates(cardNodeX, cardNodeY, buildingNodeX, buildingNodeY);
     }
 
@@ -513,12 +638,13 @@ public class LoopManiaWorldController {
 
                 buildNonEntityDragHandlers(draggableType, sourceGridPane, targetGridPane);
 
+                //TODO
                 draggedEntity.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
                 switch (draggableType){
-                    case CARD:
+                    case VAMPIRECASTLE_CARD:
                         draggedEntity.setImage(vampireCastleCardImage);
                         break;
-                    case ITEM:
+                    case SWORD:
                         draggedEntity.setImage(swordImage);
                         break;
                     default:
@@ -546,7 +672,8 @@ public class LoopManiaWorldController {
                             if (currentlyDraggedType == draggableType){
                             //The drag-and-drop gesture entered the target
                             //show the user that it is an actual gesture target
-                                if(event.getGestureSource() != n && event.getDragboard().hasImage()){
+                                if(event.getGestureSource() != n && event.getDragboard().hasImage()
+                                    && isPlacable(currentlyDraggedType, GridPane.getColumnIndex(n), GridPane.getRowIndex(n))){
                                     n.setOpacity(0.7);
                                 }
                             }
@@ -554,7 +681,6 @@ public class LoopManiaWorldController {
                         }
                     });
                     gridPaneNodeSetOnDragExited.put(draggableType, new EventHandler<DragEvent>() {
-                        // TODO = since being more selective about whether highlighting changes, you could program the game so if the new highlight location is invalid the highlighting doesn't change, or leave this as-is
                         public void handle(DragEvent event) {
                             if (currentlyDraggedType == draggableType){
                                 n.setOpacity(1);
@@ -713,5 +839,93 @@ public class LoopManiaWorldController {
         System.out.println("current method = "+currentMethodLabel);
         System.out.println("In application thread? = "+Platform.isFxApplicationThread());
         System.out.println("Current system time = "+java.time.LocalDateTime.now().toString().replace('T', ' '));
+    }
+
+    
+    /**
+     * Check if the the dragged entity can be placed on the node
+     * @param draggableType Entity type
+     * @param column column of the node
+     * @param row row of the node
+     * @return
+     */
+    private boolean isPlacable(DRAGGABLE_TYPE draggableType, int column, int row){
+        switch(draggableType){
+            case VAMPIRECASTLE_CARD:
+            case ZOMBIEPIT_CARD:
+            case TOWER_CARD:
+                return isAdjacentToPath(column, row);
+            case VILLAGE_CARD:
+            case BARRACKS_CARD:
+            case TRAP_CARD:
+                return isOnPath(column, row);
+            case CAMPFIRE_CARD:
+                return !isOnPath(column, row);
+            default:
+                return false;
+        }
+
+    }
+
+    /**
+     * Determine if the target node is adjacent to the path
+     * @param column column of the node
+     * @param row row of the node
+     * @return
+     */
+    private boolean isAdjacentToPath(int column, int row){
+        /* If target is on path then it cannot be placed */
+        if(isOnPath(column, row)) return false;
+        /* Check if the target surroundings has a path nearby */
+        Pair<Integer, Integer> up = new Pair<>(column, row - 1);
+        Pair<Integer, Integer> right = new Pair<>(column + 1, row);
+        Pair<Integer, Integer> down = new Pair<>(column, row + 1);
+        Pair<Integer, Integer> left = new Pair<>(column - 1, row);
+        if(world.getOrderedPath().contains(up) || world.getOrderedPath().contains(right)
+            || world.getOrderedPath().contains(down) || world.getOrderedPath().contains(left)){
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Determine if the target node is on the path
+     * @param column column of the node
+     * @param row row of the node
+     * @return
+     */
+    private boolean isOnPath(int column, int row){
+        /* If target is on path then return true */
+        Pair<Integer, Integer> target = new Pair<>(column, row);
+        if(world.getOrderedPath().contains(target)) return true;
+        return false;
+    }
+
+    /**
+     * Get all adjacent path tiles around the node
+     * @param column column of the node
+     * @param row row of the node
+     * @return
+     */
+    private List<Pair<Integer, Integer>> getAdjacentPathTiles(int column, int row){
+        List<Pair<Integer, Integer>> result = new ArrayList<Pair<Integer, Integer>>();
+        /* Check if the target surroundings has a path nearby */
+        Pair<Integer, Integer> up = new Pair<>(column, row - 1);
+        Pair<Integer, Integer> right = new Pair<>(column + 1, row);
+        Pair<Integer, Integer> down = new Pair<>(column, row + 1);
+        Pair<Integer, Integer> left = new Pair<>(column - 1, row);
+        if(world.getOrderedPath().contains(up)){
+            result.add(up);
+        }
+        if(world.getOrderedPath().contains(right)){
+            result.add(right);
+        }
+        if(world.getOrderedPath().contains(down)){
+            result.add(down);
+        }
+        if(world.getOrderedPath().contains(left)){
+            result.add(left);
+        }
+        return result;
     }
 }
