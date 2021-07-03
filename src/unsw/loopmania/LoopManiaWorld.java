@@ -7,6 +7,12 @@ import java.util.Random;
 import org.javatuples.Pair;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import unsw.loopmania.Buildings.Building;
+import unsw.loopmania.Cards.Card;
+import unsw.loopmania.Enemies.BasicEnemy;
+import unsw.loopmania.Items.Sword;
+import unsw.loopmania.Loaders.BuildingLoader;
+import unsw.loopmania.Loaders.CardLoader;
 
 /**
  * A backend world.
@@ -49,7 +55,7 @@ public class LoopManiaWorld {
     private List<Entity> unequippedInventoryItems;
 
     // TODO = expand the range of buildings
-    private List<VampireCastleBuilding> buildingEntities;
+    private List<Building> buildingEntities;
 
     /**
      * list of x,y coordinate pairs in the order by which moving entities traverse them
@@ -81,6 +87,10 @@ public class LoopManiaWorld {
 
     public int getHeight() {
         return height;
+    }
+
+    public List<Pair<Integer, Integer>> getOrderedPath(){
+        return orderedPath;
     }
 
     /**
@@ -155,15 +165,15 @@ public class LoopManiaWorld {
      * spawn a card in the world and return the card entity
      * @return a card to be spawned in the controller as a JavaFX node
      */
-    public VampireCastleCard loadVampireCard(){
+    public Card loadRandomCard(){
         // if adding more cards than have, remove the first card...
         if (cardEntities.size() >= getWidth()){
             // TODO = give some cash/experience/item rewards for the discarding of the oldest card
             removeCard(0);
         }
-        VampireCastleCard vampireCastleCard = new VampireCastleCard(new SimpleIntegerProperty(cardEntities.size()), new SimpleIntegerProperty(0));
-        cardEntities.add(vampireCastleCard);
-        return vampireCastleCard;
+        Card card = CardLoader.loadRandomCard(cardEntities.size());
+        cardEntities.add(card);
+        return card;
     }
 
     /**
@@ -374,7 +384,7 @@ public class LoopManiaWorld {
      * @param buildingNodeX x index from 0 to width-1 of building to be added
      * @param buildingNodeY y index from 0 to height-1 of building to be added
      */
-    public VampireCastleBuilding convertCardToBuildingByCoordinates(int cardNodeX, int cardNodeY, int buildingNodeX, int buildingNodeY) {
+    public Building convertCardToBuildingByCoordinates(int cardNodeX, int cardNodeY, int buildingNodeX, int buildingNodeY) {
         // start by getting card
         Card card = null;
         for (Card c: cardEntities){
@@ -385,7 +395,7 @@ public class LoopManiaWorld {
         }
         
         // now spawn building
-        VampireCastleBuilding newBuilding = new VampireCastleBuilding(new SimpleIntegerProperty(buildingNodeX), new SimpleIntegerProperty(buildingNodeY));
+        Building newBuilding = BuildingLoader.loadBuilding(card.getCardType(), buildingNodeX, buildingNodeY);
         buildingEntities.add(newBuilding);
 
         // destroy the card
