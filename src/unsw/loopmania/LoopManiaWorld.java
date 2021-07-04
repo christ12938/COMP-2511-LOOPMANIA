@@ -10,15 +10,10 @@ import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Buildings.Building;
 import unsw.loopmania.Cards.Card;
 import unsw.loopmania.Enemies.BasicEnemy;
-import unsw.loopmania.Items.Armour;
-import unsw.loopmania.Items.Consumables;
-import unsw.loopmania.Items.Helmet;
-import unsw.loopmania.Items.Shield;
-import unsw.loopmania.Items.Staff;
-import unsw.loopmania.Items.Stake;
-import unsw.loopmania.Items.Sword;
+import unsw.loopmania.Items.*;
 import unsw.loopmania.Loaders.BuildingLoader;
 import unsw.loopmania.Loaders.CardLoader;
+import unsw.loopmania.Loaders.ItemLoader;
 
 /**
  * A backend world.
@@ -29,8 +24,10 @@ import unsw.loopmania.Loaders.CardLoader;
 public class LoopManiaWorld {
     // TODO = add additional backend functionality
 
-    public static final int unequippedInventoryWidth = 4;
+    public static final int unequippedInventoryWidth = 3;
     public static final int unequippedInventoryHeight = 4;
+
+    public static final int alliedSoldierNumber = 3;
 
     /**
      * width of the world in GridPane cells
@@ -212,7 +209,8 @@ public class LoopManiaWorld {
      * spawn a sword in the world and return the sword entity
      * @return a sword to be spawned in the controller as a JavaFX node
      */
-    public Sword addUnequippedSword(){
+    public Item loadRandomUnenquippedInventoryItem(){
+        // TODO = expand this - we would like to be able to add multiple types of items, apart from swords
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
             // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
@@ -222,11 +220,12 @@ public class LoopManiaWorld {
         }
         
         // now we insert the new sword, as we know we have at least made a slot available...
-        Sword sword = new Sword(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
-        unequippedInventoryItems.add(sword);
-        return sword;
+        Item item = ItemLoader.loadRandomItem(firstAvailableSlot);
+        unequippedInventoryItems.add(item);
+        return item;
     }
 
+    
     public Stake addUnequippedStake(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -302,6 +301,9 @@ public class LoopManiaWorld {
         return armour;
     }
 
+    // Consumable should be an abstract class, cannot instatiate
+    // Maybe add some functions to item loader
+    /*
     public Consumables addUnequippedConsumables(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -315,7 +317,7 @@ public class LoopManiaWorld {
         Consumables consumable = new Consumables(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(consumable);
         return consumable;
-    }
+    }*/
 
 
 
