@@ -1,13 +1,14 @@
-package unsw.loopmania;
+package unsw.loopmania.Items;
 
 import javafx.beans.property.SimpleIntegerProperty;
+
 
 /**
  * represents an equipped or unequipped Helmet in the backend world
  */
-public class Helmet extends StaticEntity {
+public class Consumables extends Item {
     // TODO = add more weapon/item types
-    public Helmet(SimpleIntegerProperty x, SimpleIntegerProperty y) {
+    public Consumables(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
 
     }
