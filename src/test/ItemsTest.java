@@ -100,4 +100,33 @@ public class ItemsTest {
         assertEquals(false, d.addGold(1231));
         
     }
+
+    @Test
+    public void TestTakeAwayTooMuchGold() {
+        
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(true,d.addGold(50));
+        assertEquals(d.getGold(), 50);
+        assertSame(true,d.minusGold(48));
+        assertEquals(d.getGold(), 2);
+        assertEquals(false, d.minusGold(6));
+    }
+
+    @Test
+    public void TestAddItemToFullInvetory() {
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(0, d.getGold());
+        assertSame(0, d.getExperience());
+        // full inventory
+        for (int x = 0; x < 16; x++) {
+            d.addUnequippedHelmet();
+        }
+        d.addUnequippedHelmet();
+        assertSame(5, d.getGold());
+        assertSame(10, d.getExperience());
+    }
+
+
+
+    
 }
