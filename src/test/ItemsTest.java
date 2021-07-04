@@ -1,5 +1,6 @@
 package test;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -8,8 +9,7 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 
 import unsw.loopmania.LoopManiaWorld;
-import unsw.loopmania.MovingEntity;
-import unsw.loopmania.StaticEntity;
+
 
 public class ItemsTest {
 
@@ -72,20 +72,32 @@ public class ItemsTest {
     public void TestRemoveAndAddConsumables(){
         LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
         d.addUnequippedConsumables();
-        d.addUnequippedConumsables();
+        d.addUnequippedConsumables();
         d.removeUnequippedInventoryItemByCoordinates(0, 0);
         d.removeUnequippedInventoryItemByCoordinates(1, 0);
     }
 
     @Test
     public void TestAddAndRemoveGold() {
-        // shift gold into a class
+        
         LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
-        d.addGold(100);
-        assertEquals(d.getGold, 100);
-        d.removeGold(45)
-        assertEquals(d.getGold, 55);
-        d.removeGold(100)
-        assertEquals(d.getGold, 55);
+        assertSame(true,d.addGold(100));
+        assertEquals(d.getGold(), 100);
+        assertSame(true,d.minusGold(45));
+        assertEquals(d.getGold(), 55);
+        assertSame(false,d.minusGold(100));
+        assertEquals(d.getGold(), 55);
+    }
+
+    @Test
+    public void TestAddTooMuchGold() {
+        
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(true,d.addGold(Integer.MAX_VALUE - 5));
+        assertEquals(d.getGold(), Integer.MAX_VALUE - 5);
+        assertSame(true,d.addGold(6));
+        assertEquals(d.getGold(), Integer.MAX_VALUE);
+        assertEquals(false, d.addGold(1231));
+        
     }
 }
