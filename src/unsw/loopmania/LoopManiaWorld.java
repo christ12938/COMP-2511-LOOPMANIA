@@ -225,6 +225,7 @@ public class LoopManiaWorld {
         return item;
     }
 
+    
     public Stake addUnequippedStake(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -300,6 +301,9 @@ public class LoopManiaWorld {
         return armour;
     }
 
+    // Consumable should be an abstract class, cannot instatiate
+    // Maybe add some functions to item loader
+    /*
     public Consumables addUnequippedConsumables(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -313,7 +317,7 @@ public class LoopManiaWorld {
         Consumables consumable = new Consumables(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(consumable);
         return consumable;
-    }
+    }*/
 
 
 
