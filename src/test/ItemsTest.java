@@ -2,13 +2,12 @@ package test;
 
 import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
 
 
@@ -29,7 +28,6 @@ public class ItemsTest {
         
         World.removeUnequippedInventoryItemByCoordinates(0, 0);
         World.removeUnequippedInventoryItemByCoordinates(1, 0);
-        
     }
 
     @Test
@@ -113,12 +111,14 @@ public class ItemsTest {
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
 
-        assertSame(true,testCharacter.addGold(100));
+        
+        assertTrue(testCharacter.addGold(100));
         assertEquals(testCharacter.getGold(), 100);
-        assertSame(true,testCharacter.minusGold(45));
+        assertTrue(testCharacter.minusGold(45));
         assertEquals(testCharacter.getGold(), 55);
-        assertSame(false,testCharacter.minusGold(100));
+        assertFalse(testCharacter.minusGold(100));
         assertEquals(testCharacter.getGold(), 55);
+
     }
 
     @Test
@@ -131,11 +131,11 @@ public class ItemsTest {
         orderedPath.add(pair2);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
-        assertSame(true, testCharacter.addGold(Integer.MAX_VALUE - 5));
+        assertTrue(testCharacter.addGold(Integer.MAX_VALUE - 5));
         assertEquals(testCharacter.getGold(), Integer.MAX_VALUE - 5);
-        assertSame(true, testCharacter.addGold(6));
+        assertTrue(testCharacter.addGold(6));
         assertEquals(testCharacter.getGold(), Integer.MAX_VALUE);
-        assertEquals(false, testCharacter.addGold(1231));
+        assertFalse(testCharacter.addGold(1231));
         
     }
 
@@ -151,11 +151,23 @@ public class ItemsTest {
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
 
-        assertSame(true, testCharacter.addGold(50));
+        assertTrue(testCharacter.addGold(50));
         assertEquals(testCharacter.getGold(), 50);
-        assertSame(true, testCharacter.minusGold(48));
+        assertTrue(testCharacter.minusGold(48));
         assertEquals(testCharacter.getGold(), 2);
-        assertEquals(false, testCharacter.minusGold(6));
+        assertFalse(testCharacter.minusGold(6));
+    }
+
+    @Test
+    public void TestAddRandomItems() {
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+
+        World.loadRandomUnenquippedInventoryItem();
+        World.loadRandomUnenquippedInventoryItem();
+        World.loadRandomUnenquippedInventoryItem();
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
+        World.removeUnequippedInventoryItemByCoordinates(2, 0);
     }
     
     @Test
@@ -180,11 +192,5 @@ public class ItemsTest {
         assertSame(5, World.getGold());
         assertSame(10, World.getExperience());
     }
-
-    @Test
-
-    public void TestAddRandomItems() {}
-
-
     
 }

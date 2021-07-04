@@ -194,18 +194,14 @@ public class LoopManiaWorld {
     }
 
     public Item loadRandomUnenquippedInventoryItem(){
-        // TODO = expand this - we would like to be able to add multiple types of items, apart from swords
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
             this.character.addExperience(10);
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
-        // now we insert the new sword, as we know we have at least made a slot available...
         Item item = ItemLoader.loadRandomItem(firstAvailableSlot);
         unequippedInventoryItems.add(item);
         return item;
@@ -218,15 +214,12 @@ public class LoopManiaWorld {
     public Sword addUnequippedSword(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
             this.character.addExperience(10);
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
-        // now we insert the new sword, as we know we have at least made a slot available...
         Sword sword = new Sword(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(sword);
         return sword;
@@ -236,15 +229,12 @@ public class LoopManiaWorld {
     public Stake addUnequippedStake(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
             this.character.addExperience(10);
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
-        // now we insert the new sword, as we know we have at least made a slot available...
         Stake stake = new Stake(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(stake);
         return stake;
@@ -253,15 +243,12 @@ public class LoopManiaWorld {
     public Staff addUnequippedStaff(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
             this.character.addExperience(10);
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
-        // now we insert the new sword, as we know we have at least made a slot available...
         Staff staff = new Staff(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(staff);
         return staff;
@@ -270,14 +257,11 @@ public class LoopManiaWorld {
     public Helmet addUnequippedHelmet(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
             this.character.addExperience(10);
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        // now we insert the new sword, as we know we have at least made a slot available...
         Helmet Helmet = new Helmet(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(Helmet);
         return Helmet;
@@ -286,15 +270,12 @@ public class LoopManiaWorld {
     public Shield addUnequippedShield(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
             this.character.addExperience(10);
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
-        // now we insert the new sword, as we know we have at least made a slot available...
         Shield shield = new Shield(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(shield);
         return shield;
@@ -303,15 +284,12 @@ public class LoopManiaWorld {
     public Armour addUnequippedArmour(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
             this.character.addExperience(10);
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }   
         
-        // now we insert the new sword, as we know we have at least made a slot available...
         Armour armour = new Armour(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(armour);
         return armour;
@@ -321,15 +299,12 @@ public class LoopManiaWorld {
     public Consumables addUnequippedHealthPotion(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
             this.character.addExperience(10);
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }   
         
-        // now we insert the new sword, as we know we have at least made a slot available...
         HealthPotion healthpotion = new HealthPotion(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(healthpotion);
         return healthpotion;
@@ -338,15 +313,12 @@ public class LoopManiaWorld {
     public TheOneRing addUnequippedTheOneRing(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
             this.character.addExperience(100);
             this.character.addGold(50);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }   
         
-        // now we insert the new sword, as we know we have at least made a slot available...
         TheOneRing theonering = new TheOneRing(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(theonering);
         return theonering;
