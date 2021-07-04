@@ -31,6 +31,7 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import unsw.loopmania.Cards.*;
 import unsw.loopmania.Enemies.BasicEnemy;
+import unsw.loopmania.Items.Item;
 import unsw.loopmania.Items.Sword;
 import unsw.loopmania.Buildings.*;
 
@@ -118,6 +119,27 @@ public class LoopManiaWorldController {
     @FXML
     private GridPane unequippedInventory;
 
+    /**
+     * Imageview of equippable item cells
+     */
+    @FXML
+    private ImageView helmetCell;
+    
+    @FXML
+    private ImageView weaponCell;
+
+    @FXML
+    private ImageView armourCell;
+
+    @FXML
+    private ImageView shieldCell;
+
+    /**
+     * Gridpane for allied soldiers
+     */
+    @FXML
+    private GridPane alliedSoldierSlot;
+
     // all image views including tiles, character, enemies, cards... even though cards in separate gridpane...
     private List<ImageView> entityImages;
 
@@ -157,9 +179,20 @@ public class LoopManiaWorldController {
     private Image campfireBuildingImage;
 
 
+    /**
+     * Image of Items
+     */
+    private Image swordImage;
+    private Image stakeImage;
+    private Image staffImage;
+    private Image armourImage;
+    private Image shieldImage;
+    private Image helmetImage;
+    private Image goldImage;
+    private Image healthPotionImage;
+
 
     private Image basicEnemyImage;
-    private Image swordImage;
 
     /**
      * the image currently being dragged, if there is one, otherwise null.
@@ -228,8 +261,16 @@ public class LoopManiaWorldController {
         basicEnemyImage = new Image((new File("src/images/slug.png")).toURI().toString());
 
         /* Initialize all item images */
+        //TODO: ADD Rare items
         swordImage = new Image((new File("src/images/basic_sword.png")).toURI().toString());
-        
+        stakeImage = new Image((new File("src/images/stake.png")).toURI().toString());
+        staffImage = new Image((new File("src/images/staff.png")).toURI().toString());
+        armourImage = new Image((new File("src/images/armour.png")).toURI().toString());
+        shieldImage = new Image((new File("src/images/shield.png")).toURI().toString());
+        helmetImage = new Image((new File("src/images/helmet.png")).toURI().toString());
+        goldImage = new Image((new File("src/images/gold_pile.png")).toURI().toString());
+        healthPotionImage = new Image((new File("src/images/brilliant_blue_new.png")).toURI().toString());
+
         currentlyDraggedImage = null;
         currentlyDraggedType = null;
 
@@ -248,6 +289,7 @@ public class LoopManiaWorldController {
         Image pathTilesImage = new Image((new File("src/images/32x32GrassAndDirtPath.png")).toURI().toString());
         Image inventorySlotImage = new Image((new File("src/images/empty_slot.png")).toURI().toString());
         Rectangle2D imagePart = new Rectangle2D(0, 0, 32, 32);
+        Image cardSlotImage = new Image((new File("src/images/card_slot.png")).toURI().toString());
 
         // Add the ground first so it is below all other entities (inculding all the twists and turns)
         for (int x = 0; x < world.getWidth(); x++) {
@@ -265,9 +307,8 @@ public class LoopManiaWorldController {
         
         // add the ground underneath the cards
         for (int x=0; x<world.getWidth(); x++){
-            ImageView groundView = new ImageView(pathTilesImage);
-            groundView.setViewport(imagePart);
-            cards.add(groundView, x, 0);
+            ImageView cardSlotView = new ImageView(cardSlotImage);
+            cards.add(cardSlotView, x, 0);
         }
 
         // add the empty slot images for the unequipped inventory
@@ -276,6 +317,12 @@ public class LoopManiaWorldController {
                 ImageView emptySlotView = new ImageView(inventorySlotImage);
                 unequippedInventory.add(emptySlotView, x, y);
             }
+        }
+
+        // add the empty slot images for the allied soldier slot
+        for (int x=0; x<LoopManiaWorld.alliedSoldierNumber; x++){
+            ImageView emptySlotView = new ImageView(inventorySlotImage);
+            alliedSoldierSlot.add(emptySlotView, x, 0);
         }
 
         // create the draggable icon
@@ -342,13 +389,11 @@ public class LoopManiaWorldController {
     }
 
     /**
-     * load a sword from the world, and pair it with an image in the GUI
+     * load a random item from the world, and pair it with an image in the GUI
      */
-    private void loadSword(){
-        // TODO = load more types of weapon
+    private void loadRandomItem(){
         // start by getting first available coordinates
-        Sword sword = world.addUnequippedSword();
-        onLoad(sword);
+        onLoad(world.loadRandomUnenquippedInventoryItem());
     }
 
     /**
@@ -359,7 +404,7 @@ public class LoopManiaWorldController {
         // react to character defeating an enemy
         // in starter code, spawning extra card/weapon...
         // TODO = provide different benefits to defeating the enemy based on the type of enemy
-        loadSword();
+        loadRandomItem();
         loadRandomCard();
     }
 
@@ -371,30 +416,36 @@ public class LoopManiaWorldController {
      */
     private void onLoad(Card card){
         ImageView view = null;
-        card.getCardType();
-        /* TODO: Enum conversion ??? POssible maintainence problem */
-        DRAGGABLE_TYPE draggableType = DRAGGABLE_TYPE.valueOf(card.getCardType().toString());
+        /* TODO: Enum conversion ??? Possible maintainence problem */
+        DRAGGABLE_TYPE draggableType = null;
         switch(card.getCardType()){
             case VAMPIRECASTLE_CARD:
                 view = new ImageView(vampireCastleCardImage);
+                draggableType = DRAGGABLE_TYPE.VAMPIRECASTLE_CARD;
                 break;
             case ZOMBIEPIT_CARD:
                 view = new ImageView(zombiePitCardImage);
+                draggableType = DRAGGABLE_TYPE.ZOMBIEPIT_CARD;
                 break;
             case TOWER_CARD:
                 view = new ImageView(towerCardImage);
+                draggableType = DRAGGABLE_TYPE.TOWER_CARD;
                 break;
             case VILLAGE_CARD:
                 view = new ImageView(villageCardImage);
+                draggableType = DRAGGABLE_TYPE.VILLAGE_CARD;
                 break;
             case BARRACKS_CARD:
                 view = new ImageView(barracksCardImage);
+                draggableType = DRAGGABLE_TYPE.BARRACKS_CARD;
                 break;
             case TRAP_CARD:
                 view = new ImageView(trapCardImage);
+                draggableType = DRAGGABLE_TYPE.TRAP_CARD;
                 break;
             case CAMPFIRE_CARD:
                 view = new ImageView(campfireCardImage);
+                draggableType = DRAGGABLE_TYPE.CAMPFIRE_CARD;
                 break;
             default:
                 /* Should never happen */
@@ -414,10 +465,45 @@ public class LoopManiaWorldController {
      * and load the image into the unequippedInventory GridPane.
      * @param sword
      */
-    private void onLoad(Sword sword) {
-        ImageView view = new ImageView(swordImage);
-        addDragEventHandlers(view, DRAGGABLE_TYPE.SWORD, unequippedInventory, equippedItems);
-        addEntity(sword, view);
+    private void onLoad(Item item) {
+        ImageView view = null;
+        DRAGGABLE_TYPE draggableType = null;
+        switch(item.getItemType()){
+            case SWORD:
+                view = new ImageView(swordImage);
+                draggableType = DRAGGABLE_TYPE.SWORD;
+                break;
+            case STAKE:
+                view = new ImageView(stakeImage);
+                draggableType = DRAGGABLE_TYPE.STAKE;
+                break;
+            case STAFF:
+                view = new ImageView(staffImage);
+                draggableType = DRAGGABLE_TYPE.STAFF;
+                break;
+            case ARMOUR:
+                view = new ImageView(armourImage);
+                draggableType = DRAGGABLE_TYPE.ARMOUR;
+                break;
+            case SHIELD:
+                view = new ImageView(shieldImage);
+                draggableType = DRAGGABLE_TYPE.SHIELD;
+                break;
+            case HELMET:
+                view = new ImageView(helmetImage);
+                draggableType = DRAGGABLE_TYPE.HELMET;
+                break;
+            case GOLD:
+                view = new ImageView(goldImage);
+                break;
+            case HEALTH_POTION:
+                view = new ImageView(healthPotionImage);
+                break;
+        }
+        if(!(draggableType == null)){
+            addDragEventHandlers(view, draggableType, unequippedInventory, equippedItems);
+        }
+        addEntity(item, view);
         unequippedInventory.getChildren().add(view);
     }
 
@@ -524,6 +610,11 @@ public class LoopManiaWorldController {
                                     onLoad(newBuilding);
                                     break;
                                 case SWORD:
+                                case STAKE:
+                                case STAFF:
+                                case ARMOUR:
+                                case SHIELD:
+                                case HELMET:
                                     // TODO = spawn an item in the new location. The above code for spawning a building will help, it is very similar
                                     removeItemByCoordinates(nodeX, nodeY);
                                     targetGridPane.add(image, x, y, 1, 1);
@@ -789,7 +880,7 @@ public class LoopManiaWorldController {
                 GridPane.setRowIndex(node, newValue.intValue());
             }
         };
-
+        
         // if need to remove items from the equipped inventory, add code to remove from equipped inventory gridpane in the .onDetach part
         ListenerHandle handleX = ListenerHandles.createFor(entity.x(), node)
                                                .onAttach((o, l) -> o.addListener(xListener))
@@ -821,6 +912,7 @@ public class LoopManiaWorldController {
         entity.shouldExist().addListener(new ChangeListener<Boolean>(){
             @Override
             public void changed(ObservableValue<? extends Boolean> obervable, Boolean oldValue, Boolean newValue) {
+                System.out.println("DETACHED");
                 handleX.detach();
                 handleY.detach();
             }
@@ -861,6 +953,13 @@ public class LoopManiaWorldController {
                 return isOnPath(column, row);
             case CAMPFIRE_CARD:
                 return !isOnPath(column, row);
+            case SWORD:
+            case STAKE:
+            case STAFF:
+            case ARMOUR:
+            case SHIELD:
+            case HELMET:
+                return isOnCorrectEquippableSlot(draggableType, column, row);
             default:
                 return false;
         }
@@ -927,5 +1026,40 @@ public class LoopManiaWorldController {
             result.add(left);
         }
         return result;
+    }
+
+    /**
+     * Check if the node is on correct equippable slot
+     * @param draggableType type of dragged node
+     * @param column column of the node
+     * @param row row of the node
+     * @return
+     */
+    private boolean isOnCorrectEquippableSlot(DRAGGABLE_TYPE draggableType, int column, int row){
+        ImageView targetCell = null;
+        switch(draggableType){
+            case SWORD:
+            case STAKE:
+            case STAFF:
+                targetCell = weaponCell;
+                break;
+            case ARMOUR:
+                targetCell = armourCell;
+                break;
+            case SHIELD:
+                targetCell = shieldCell;
+                break;
+            case HELMET:
+                targetCell = helmetCell;
+                break;
+            default:
+                return false;
+        }
+
+        if(column == GridPane.getColumnIndex(targetCell) && row == GridPane.getRowIndex(targetCell)){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

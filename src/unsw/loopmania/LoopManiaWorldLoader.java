@@ -66,11 +66,11 @@ public abstract class LoopManiaWorldLoader {
         assert indexInPath != -1;
 
         Entity entity = null;
-        // TODO = load more entity types from the file
+        // TODO = load more entity types from the file for save file
         switch (type) {
         case "hero_castle":
-            Character character = new Character(new PathPosition(indexInPath, orderedPath));
             HerosCastle herosCastle = new HerosCastle(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
+            Character character = new Character(new PathPosition(indexInPath, orderedPath));
             world.setCharacter(character);
             onLoad(character, herosCastle);
             entity = character;
