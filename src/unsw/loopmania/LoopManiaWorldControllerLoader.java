@@ -29,6 +29,7 @@ public class LoopManiaWorldControllerLoader extends LoopManiaWorldLoader {
     //Images
     private Image characterImage;
     private Image pathTilesImage;
+    private Image herosCastleImage;
 
     public LoopManiaWorldControllerLoader(String filename)
             throws FileNotFoundException {
@@ -36,13 +37,15 @@ public class LoopManiaWorldControllerLoader extends LoopManiaWorldLoader {
         entities = new ArrayList<>();
         characterImage = new Image((new File("src/images/human_new.png")).toURI().toString());
         pathTilesImage = new Image((new File("src/images/32x32GrassAndDirtPath.png")).toURI().toString());
-        
+        herosCastleImage = new Image((new File("src/images/heros_castle.png")).toURI().toString());
     }
 
     // TODO = load more entity types from the file
     @Override
-    public void onLoad(Character character) {
-        ImageView view = new ImageView(characterImage);
+    public void onLoad(Character character, HerosCastle herosCastle) {
+        ImageView view = new ImageView(herosCastleImage);
+        addEntity(herosCastle, view);
+        view= new ImageView(characterImage);
         addEntity(character, view);
     }
 
