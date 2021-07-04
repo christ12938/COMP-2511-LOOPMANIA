@@ -200,6 +200,8 @@ public class LoopManiaWorld {
             // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
             // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
@@ -219,6 +221,8 @@ public class LoopManiaWorld {
             // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
             // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
@@ -235,6 +239,8 @@ public class LoopManiaWorld {
             // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
             // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
@@ -250,6 +256,8 @@ public class LoopManiaWorld {
             // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
             // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
@@ -281,7 +289,8 @@ public class LoopManiaWorld {
             // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
             // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
-
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
@@ -297,6 +306,8 @@ public class LoopManiaWorld {
             // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
             // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }   
         
@@ -313,6 +324,8 @@ public class LoopManiaWorld {
             // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
             // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }   
         
@@ -320,6 +333,23 @@ public class LoopManiaWorld {
         HealthPotion healthpotion = new HealthPotion(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(healthpotion);
         return healthpotion;
+    }
+
+    public TheOneRing addUnequippedTheOneRing(){
+        Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
+        if (firstAvailableSlot == null){
+            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
+            // TODO = give some cash/experience rewards for the discarding of the oldest sword
+            removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(100);
+            this.character.addGold(50);
+            firstAvailableSlot = getFirstAvailableSlotForItem();
+        }   
+        
+        // now we insert the new sword, as we know we have at least made a slot available...
+        TheOneRing theonering = new TheOneRing(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
+        unequippedInventoryItems.add(theonering);
+        return theonering;
     }
 
     public int getGold() {

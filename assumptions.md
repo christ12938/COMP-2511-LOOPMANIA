@@ -10,3 +10,6 @@ The player can hold a maximum of 8 cards before the cards are destroyed.
 The player can hold a maximum of 16 items before the items are destroyed.  
 The player can have a maximum of 5 allied soldiers.  
 The maximum amount of gold and experience is Integer.MAX_VALUE from java.math.
+If player is given an amount of gold that makes them exceed the gold limit, their gold is set to gold limit
+If a common item is obtained with a full inventory player is given 5 gold and 10 exp
+If a rare item is obtained with a full inventory player is given 50 gold and 100 exp

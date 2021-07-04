@@ -93,6 +93,16 @@ public class ItemsTest {
     }
 
     @Test
+    public void TestRemoveAndAddTheOneRing() {
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(World.addUnequippedTheOneRing().getItemType(), ItemType.THE_ONE_RING);
+        assertSame(World.addUnequippedTheOneRing().getItemType(), ItemType.THE_ONE_RING);
+
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
+    }
+
+    @Test
     public void TestAddAndRemoveGold() {
         Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
         Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
@@ -171,6 +181,9 @@ public class ItemsTest {
         assertSame(10, World.getExperience());
     }
 
+    @Test
+
+    public void TestAddRandomItems() {}
 
 
     
