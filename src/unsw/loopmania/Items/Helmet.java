@@ -3,7 +3,7 @@ package unsw.loopmania.Items;
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Types.ItemType;
 
-public class Helmet extends Item{
+public class Helmet extends DefensiveItems{
 
     public Helmet(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
