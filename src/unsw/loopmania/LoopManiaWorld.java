@@ -55,8 +55,11 @@ public class LoopManiaWorld {
     // TODO = expand the range of cards
     private List<Card> cardEntities;
 
+    // List of equipped items
+    private List<Equipable> equippedItems;
+
     // TODO = expand the range of items
-    private List<Entity> unequippedInventoryItems;
+    private List<Item> unequippedInventoryItems;
 
     // TODO = expand the range of buildings
     private List<Building> buildingEntities;
@@ -80,6 +83,7 @@ public class LoopManiaWorld {
         character = null;
         enemies = new ArrayList<>();
         cardEntities = new ArrayList<>();
+        equippedItems = new ArrayList<>();
         unequippedInventoryItems = new ArrayList<>();
         this.orderedPath = orderedPath;
         buildingEntities = new ArrayList<>();
@@ -328,7 +332,7 @@ public class LoopManiaWorld {
      * @param y y coordinate from 0 to height-1
      */
     public void removeUnequippedInventoryItemByCoordinates(int x, int y){
-        Entity item = getUnequippedInventoryItemEntityByCoordinates(x, y);
+        Item item = getUnequippedInventoryItemEntityByCoordinates(x, y);
         removeUnequippedInventoryItem(item);
     }
 
@@ -344,11 +348,38 @@ public class LoopManiaWorld {
      * remove an item from the unequipped inventory
      * @param item item to be removed
      */
-    private void removeUnequippedInventoryItem(Entity item){
+    private void removeUnequippedInventoryItem(Item item){
+        int x = item.getX();
+        int y = item.getY();
         item.destroy();
         unequippedInventoryItems.remove(item);
+        shiftUnequippedInventoryItemsFromXYCoordinate(x, y);
     }
 
+    /**
+     * Add equipped item to list
+     * @param item equipped item
+     */
+    public void addEquippedItem(Equipable item){
+        equippedItems.add(item);
+    }
+
+    /**
+     * remove an item from the equipped item slot
+     * @param item item to be removed
+     */
+    public void removeEquippedItem(Item item){
+        item.destroy();
+        equippedItems.remove(item);
+    }
+
+    /**
+     * Add unequipped item to list
+     * @param item unequipped item
+     */
+    public void addUnequippedItem(Equipable item){
+        unequippedInventoryItems.add(item);
+    }
     /**
      * return an unequipped inventory item by x and y coordinates
      * assumes that no 2 unequipped inventory items share x and y coordinates
@@ -356,8 +387,35 @@ public class LoopManiaWorld {
      * @param y y index from 0 to height-1
      * @return unequipped inventory item at the input position
      */
-    private Entity getUnequippedInventoryItemEntityByCoordinates(int x, int y){
-        for (Entity e: unequippedInventoryItems){
+    private Item getUnequippedInventoryItemEntityByCoordinates(int x, int y){
+        for (Item e: unequippedInventoryItems){
+            if ((e.getX() == x) && (e.getY() == y)){
+                return e;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Get the equipable item by corrdinates
+     * @param x x index from 0 to width-1
+     * @param y y index from 0 to height-1
+     * @return equipable item
+     */
+    public Equipable getEquipableItemByCoordinates(int x, int y){
+        for (Item e: unequippedInventoryItems){
+            if ((e.getX() == x) && (e.getY() == y)){
+                //Redundant
+                if(e instanceof Equipable){
+                    return (Equipable)e;
+                }else{
+                    return null;
+                }
+            }
+        }
+
+        for (Equipable e: equippedItems){
             if ((e.getX() == x) && (e.getY() == y)){
                 return e;
             }
@@ -370,7 +428,7 @@ public class LoopManiaWorld {
      * @param index index from 0 to length-1
      */
     private void removeItemByPositionInUnequippedInventoryItems(int index){
-        Entity item = unequippedInventoryItems.get(index);
+        Item item = unequippedInventoryItems.get(index);
         item.destroy();
         unequippedInventoryItems.remove(index);
     }
@@ -401,6 +459,26 @@ public class LoopManiaWorld {
             if (c.getX() >= x){
                 c.x().set(c.getX()-1);
             }
+        }
+    }
+
+    //TODO: DEBUG
+    /**
+     * shift inventory items down starting from x and y coordinates
+     * @param x
+     * @param y
+     */
+    private void shiftUnequippedInventoryItemsFromXYCoordinate(int x, int y){
+        boolean flag = false;
+        for(Item i : unequippedInventoryItems){
+            if(!flag && i.getY() >= y && i.getX() >= x){
+                flag = true;
+            }
+            if(!flag) continue;
+            int newX = (i.getX() == 0) ? (unequippedInventoryWidth - 1) : i.getX() - 1;
+            int newY = (i.getX() == 0) ? i.getY() - 1 : i.getY();
+            i.x().set(newX);
+            i.y().set(newY);
         }
     }
 

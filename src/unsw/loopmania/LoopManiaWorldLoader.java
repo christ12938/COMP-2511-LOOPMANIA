@@ -72,7 +72,7 @@ public abstract class LoopManiaWorldLoader {
             HerosCastle herosCastle = new HerosCastle(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
             Character character = new Character(new PathPosition(indexInPath, orderedPath));
             world.setCharacter(character);
-            onLoad(character, herosCastle);
+            onLoad(herosCastle, character);
             entity = character;
             break;
         case "path_tile":
@@ -145,7 +145,7 @@ public abstract class LoopManiaWorldLoader {
         return orderedPath;
     }
 
-    public abstract void onLoad(Character character, HerosCastle herosCastle);
+    public abstract void onLoad(HerosCastle herosCastle, Character character);
     public abstract void onLoad(PathTile pathTile, PathTile.Direction into, PathTile.Direction out);
 
     // TODO Create additional abstract methods for the other entities
