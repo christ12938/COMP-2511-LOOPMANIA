@@ -7,7 +7,6 @@ public class HealthPotion extends Consumables {
 
     public HealthPotion(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
-        //TODO Auto-generated constructor stub
     }
     
     public ItemType getItemType(){

@@ -98,6 +98,14 @@ public class LoopManiaWorld {
         return orderedPath;
     }
 
+    public int getGold() {
+        return character.getGold();
+    }
+
+    public int getExperience() {
+        return character.getExperience();
+    }
+
     /**
      * set the character. This is necessary because it is loaded as a special entity out of the file
      * @param character the character
@@ -323,16 +331,6 @@ public class LoopManiaWorld {
         unequippedInventoryItems.add(theonering);
         return theonering;
     }
-
-    public int getGold() {
-        return character.getGold();
-    }
-
-    public int getExperience() {
-        return character.getExperience();
-    }
-
-
 
     /**
      * remove an item by x,y coordinates

@@ -1,5 +1,6 @@
 package test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -110,7 +111,6 @@ public class ItemsTest {
         orderedPath.add(pair2);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
-
         
         assertTrue(testCharacter.addGold(100));
         assertEquals(testCharacter.getGold(), 100);
@@ -189,8 +189,37 @@ public class ItemsTest {
         }
 
         World.addUnequippedHelmet();
-        assertSame(5, World.getGold());
-        assertSame(10, World.getExperience());
+        assertEquals(5, World.getGold());
+        assertEquals(10, World.getExperience());
+
+        World.addUnequippedArmour();
+        assertEquals(10, World.getGold());
+        assertEquals(20, World.getExperience());
+
+        World.addUnequippedHealthPotion();
+        assertEquals(15, World.getGold());
+        assertEquals(30, World.getExperience());
+
+        World.addUnequippedShield();
+        assertEquals(20, World.getGold());
+        assertEquals(40, World.getExperience());
+
+        World.addUnequippedStaff();
+        assertEquals(25, World.getGold());
+        assertEquals(50, World.getExperience());
+
+        World.addUnequippedStake();
+        assertEquals(30, World.getGold());
+        assertEquals(60, World.getExperience());
+
+        World.addUnequippedSword();
+        assertEquals(35, World.getGold());
+        assertEquals(70, World.getExperience());
+
+        World.addUnequippedTheOneRing();
+        assertEquals(85, World.getGold());
+        assertEquals(170, World.getExperience());
+        
     }
     
 }
