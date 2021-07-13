@@ -2,7 +2,6 @@ package unsw.loopmania.Buildings;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Types.BuildingType;
-import unsw.loopmania.Types.EnemyType;
 
 /**
  * a basic form of building in the world

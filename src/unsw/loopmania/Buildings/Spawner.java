@@ -6,7 +6,6 @@ import java.util.List;
 import org.javatuples.Pair;
 
 import javafx.beans.property.SimpleIntegerProperty;
-import unsw.loopmania.Types.EnemyType;
 
 public abstract class Spawner extends Building{
 
