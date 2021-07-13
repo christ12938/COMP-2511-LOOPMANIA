@@ -139,7 +139,10 @@ public class LoopManiaWorldController {
     private ImageView shieldCell;
 
     @FXML
-    private Label moneyValue;
+    private Label goldValue;
+
+    @FXML
+    private Label expValue;
 
     /**
      * Gridpane for allied soldiers
@@ -243,6 +246,9 @@ public class LoopManiaWorldController {
      */
     private MenuSwitcher mainMenuSwitcher;
 
+    /**
+     * Stage of application
+     */
     private Stage primaryStage;
 
     /**
@@ -1262,10 +1268,18 @@ public class LoopManiaWorldController {
     }
 
     /**
-     * Signal from observable about updating money (Observer pattern)
+     * Signal from observable about updating gold (Observer pattern)
      */
-    public void updateMoney(){
-        moneyValue.setText(Integer.toString(world.getCharacter().getMoney()));
+    public void updateGold(){
+        goldValue.setText(Integer.toString(world.getCharacter().getGold()));
+        primaryStage.sizeToScene();
+    }
+
+    /**
+     * Signal from observable about updating experience (Observer pattern)
+     */
+    public void updateExperience(){
+        expValue.setText(Integer.toString(world.getCharacter().getExperience()));
         primaryStage.sizeToScene();
     }
 

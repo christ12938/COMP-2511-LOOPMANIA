@@ -95,9 +95,9 @@
                       </image>
                   </ImageView>
                   <Region prefWidth="10.0" HBox.hgrow="ALWAYS" />
-                  <Label fx:id="moneyValue" text="0">
+                  <Label fx:id="goldValue" text="0">
                         <font>
-                           <Font name="System Bold" size="30" />
+                           <Font name="System Bold" size="25" />
                         </font>
                   </Label>
                </children>
@@ -110,6 +110,12 @@
                         <Image url="@../../images/experience.png"/>
                       </image>
                   </ImageView>
+                  <Region prefWidth="10.0" HBox.hgrow="ALWAYS" />
+                  <Label fx:id="expValue" text="0">
+                        <font>
+                           <Font name="System Bold" size="25" />
+                        </font>
+                  </Label>
                </children>
             </HBox>
             <VBox spacing="10">

@@ -1,103 +1,225 @@
 package test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+
+import org.javatuples.Pair;
 import unsw.loopmania.LoopManiaWorld;
+import unsw.loopmania.PathPosition;
+import unsw.loopmania.Types.ItemType;
+import unsw.loopmania.Character;
 
 
 public class ItemsTest {
 
     @Test
     public void TestRemoveAndAddSword(){
-        LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
-        d.addUnequippedSword();
-        d.addUnequippedSword();
-        d.removeUnequippedInventoryItemByCoordinates(0, 0);
-        d.removeUnequippedInventoryItemByCoordinates(1, 0);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(World.addUnequippedSword().getItemType(), ItemType.SWORD);
+        assertSame(World.addUnequippedSword().getItemType(), ItemType.SWORD);
         
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
     }
 
     @Test
     public void TestRemoveAndAddStake(){
-        LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
-        d.addUnequippedStake();
-        d.addUnequippedStake();
-        d.removeUnequippedInventoryItemByCoordinates(0, 0);
-        d.removeUnequippedInventoryItemByCoordinates(1, 0);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(World.addUnequippedStake().getItemType(), ItemType.STAKE);
+        assertSame(World.addUnequippedStake().getItemType(), ItemType.STAKE);
+
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
     }
 
     @Test
     public void TestRemoveAndAddStaff(){
-        LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
-        d.addUnequippedStaff();
-        d.addUnequippedStaff();
-        d.removeUnequippedInventoryItemByCoordinates(0, 0);
-        d.removeUnequippedInventoryItemByCoordinates(1, 0);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(World.addUnequippedStaff().getItemType(), ItemType.STAFF);
+        assertSame(World.addUnequippedStaff().getItemType(), ItemType.STAFF);
+
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
     }
 
     @Test
     public void TestRemoveAndAddHelmet(){
-        LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
-        d.addUnequippedHelmet();
-        d.addUnequippedHelmet();
-        d.removeUnequippedInventoryItemByCoordinates(0, 0);
-        d.removeUnequippedInventoryItemByCoordinates(1, 0);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(World.addUnequippedHelmet().getItemType(), ItemType.HELMET);
+        assertSame(World.addUnequippedHelmet().getItemType(), ItemType.HELMET);
+
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
     }
 
     @Test
     public void TestRemoveAndAddShield(){
-        LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
-        d.addUnequippedShield();
-        d.addUnequippedShield();
-        d.removeUnequippedInventoryItemByCoordinates(0, 0);
-        d.removeUnequippedInventoryItemByCoordinates(1, 0);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(World.addUnequippedShield().getItemType(), ItemType.SHIELD);
+        assertSame(World.addUnequippedShield().getItemType(), ItemType.SHIELD);
+
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
     }
 
     @Test
     public void TestRemoveAndAddArmour(){
-        LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
-        d.addUnequippedArmour();
-        d.addUnequippedArmour();
-        d.removeUnequippedInventoryItemByCoordinates(0, 0);
-        d.removeUnequippedInventoryItemByCoordinates(1, 0);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(World.addUnequippedArmour().getItemType(), ItemType.ARMOUR);
+        assertSame(World.addUnequippedArmour().getItemType(), ItemType.ARMOUR);
+
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
     }
 
     @Test
-    public void TestRemoveAndAddConsumables(){
-        LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
-        d.addUnequippedConsumables();
-        d.addUnequippedConsumables();
-        d.removeUnequippedInventoryItemByCoordinates(0, 0);
-        d.removeUnequippedInventoryItemByCoordinates(1, 0);
+    public void TestRemoveAndAddHealthPotion(){
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(World.addUnequippedHealthPotion().getItemType(), ItemType.HEALTH_POTION);
+        assertSame(World.addUnequippedHealthPotion().getItemType(), ItemType.HEALTH_POTION);
+
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
+    }
+
+    @Test
+    public void TestRemoveAndAddTheOneRing() {
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(World.addUnequippedTheOneRing().getItemType(), ItemType.THE_ONE_RING);
+        assertSame(World.addUnequippedTheOneRing().getItemType(), ItemType.THE_ONE_RING);
+
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
     }
 
     @Test
     public void TestAddAndRemoveGold() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
         
-        LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
-        assertSame(true,d.addGold(100));
-        assertEquals(d.getGold(), 100);
-        assertSame(true,d.minusGold(45));
-        assertEquals(d.getGold(), 55);
-        assertSame(false,d.minusGold(100));
-        assertEquals(d.getGold(), 55);
+        List<Pair<Integer, Integer>> orderedPath = new ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        
+        assertTrue(testCharacter.addGold(100));
+        assertEquals(testCharacter.getGold(), 100);
+        assertTrue(testCharacter.minusGold(45));
+        assertEquals(testCharacter.getGold(), 55);
+        assertFalse(testCharacter.minusGold(100));
+        assertEquals(testCharacter.getGold(), 55);
+
     }
 
     @Test
     public void TestAddTooMuchGold() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
         
-        LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
-        assertSame(true,d.addGold(Integer.MAX_VALUE - 5));
-        assertEquals(d.getGold(), Integer.MAX_VALUE - 5);
-        assertSame(true,d.addGold(6));
-        assertEquals(d.getGold(), Integer.MAX_VALUE);
-        assertEquals(false, d.addGold(1231));
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        assertTrue(testCharacter.addGold(Integer.MAX_VALUE - 5));
+        assertEquals(testCharacter.getGold(), Integer.MAX_VALUE - 5);
+        assertTrue(testCharacter.addGold(6));
+        assertEquals(testCharacter.getGold(), Integer.MAX_VALUE);
+        assertFalse(testCharacter.addGold(1231));
         
     }
+
+    @Test
+    public void TestTakeAwayTooMuchGold() {
+        
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+
+        assertTrue(testCharacter.addGold(50));
+        assertEquals(testCharacter.getGold(), 50);
+        assertTrue(testCharacter.minusGold(48));
+        assertEquals(testCharacter.getGold(), 2);
+        assertFalse(testCharacter.minusGold(6));
+    }
+
+    @Test
+    public void TestAddRandomItems() {
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+
+        World.loadRandomUnenquippedInventoryItem();
+        World.loadRandomUnenquippedInventoryItem();
+        World.loadRandomUnenquippedInventoryItem();
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
+        World.removeUnequippedInventoryItemByCoordinates(2, 0);
+    }
+    
+    @Test
+    public void TestAddItemToFullInvetory() {
+        
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+        
+        for (int x = 0; x < 16; x++) {
+            World.addUnequippedHelmet();
+        }
+
+        World.addUnequippedHelmet();
+        assertEquals(5, World.getGold());
+        assertEquals(10, World.getExperience());
+
+        World.addUnequippedArmour();
+        assertEquals(10, World.getGold());
+        assertEquals(20, World.getExperience());
+
+        World.addUnequippedHealthPotion();
+        assertEquals(15, World.getGold());
+        assertEquals(30, World.getExperience());
+
+        World.addUnequippedShield();
+        assertEquals(20, World.getGold());
+        assertEquals(40, World.getExperience());
+
+        World.addUnequippedStaff();
+        assertEquals(25, World.getGold());
+        assertEquals(50, World.getExperience());
+
+        World.addUnequippedStake();
+        assertEquals(30, World.getGold());
+        assertEquals(60, World.getExperience());
+
+        World.addUnequippedSword();
+        assertEquals(35, World.getGold());
+        assertEquals(70, World.getExperience());
+
+        World.addUnequippedTheOneRing();
+        assertEquals(85, World.getGold());
+        assertEquals(170, World.getExperience());
+        
+    }
+    
 }

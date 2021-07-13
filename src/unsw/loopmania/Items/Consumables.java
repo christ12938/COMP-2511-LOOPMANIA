@@ -10,7 +10,6 @@ public abstract class Consumables extends Item {
     // TODO = add more weapon/item types
     public Consumables(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
-
     }
 
 }
