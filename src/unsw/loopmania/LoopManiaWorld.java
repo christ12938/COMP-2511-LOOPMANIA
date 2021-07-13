@@ -24,7 +24,7 @@ import unsw.loopmania.Loaders.ItemLoader;
 public class LoopManiaWorld {
     // TODO = add additional backend functionality
 
-    public static final int unequippedInventoryWidth = 3;
+    public static final int unequippedInventoryWidth = 4;
     public static final int unequippedInventoryHeight = 4;
 
     public static final int alliedSoldierNumber = 3;
@@ -45,7 +45,7 @@ public class LoopManiaWorld {
     private List<Entity> nonSpecifiedEntities;
 
     private Character character;
-    private Gold gold;
+    
 
     // TODO = add more lists for other entities, for equipped inventory items, etc...
 
@@ -83,7 +83,7 @@ public class LoopManiaWorld {
         unequippedInventoryItems = new ArrayList<>();
         this.orderedPath = orderedPath;
         buildingEntities = new ArrayList<>();
-        this.gold = new Gold();
+        
     }
 
     public int getWidth() {
@@ -96,6 +96,14 @@ public class LoopManiaWorld {
 
     public List<Pair<Integer, Integer>> getOrderedPath(){
         return orderedPath;
+    }
+
+    public int getGold() {
+        return character.getGold();
+    }
+
+    public int getExperience() {
+        return character.getExperience();
     }
 
     /**
@@ -193,49 +201,48 @@ public class LoopManiaWorld {
         shiftCardsDownFromXCoordinate(x);
     }
 
-    public boolean addGold(int amount) {
-        return gold.addGold(amount);
-    }
-
-    public boolean minusGold(int amount) {
-        return gold.minusGold(amount);
-    }
-
-    public int getGold() {
-        return gold.getGold();
+    public Item loadRandomUnenquippedInventoryItem(){
+        Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
+        if (firstAvailableSlot == null){
+            removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
+            firstAvailableSlot = getFirstAvailableSlotForItem();
+        }
+        
+        Item item = ItemLoader.loadRandomItem(firstAvailableSlot);
+        unequippedInventoryItems.add(item);
+        return item;
     }
 
     /**
      * spawn a sword in the world and return the sword entity
      * @return a sword to be spawned in the controller as a JavaFX node
      */
-    public Item loadRandomUnenquippedInventoryItem(){
-        // TODO = expand this - we would like to be able to add multiple types of items, apart from swords
+    public Sword addUnequippedSword(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
-        // now we insert the new sword, as we know we have at least made a slot available...
-        Item item = ItemLoader.loadRandomItem(firstAvailableSlot);
-        unequippedInventoryItems.add(item);
-        return item;
+        Sword sword = new Sword(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
+        unequippedInventoryItems.add(sword);
+        return sword;
     }
 
     
     public Stake addUnequippedStake(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
-        // now we insert the new sword, as we know we have at least made a slot available...
         Stake stake = new Stake(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(stake);
         return stake;
@@ -244,13 +251,12 @@ public class LoopManiaWorld {
     public Staff addUnequippedStaff(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
-        // now we insert the new sword, as we know we have at least made a slot available...
         Staff staff = new Staff(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(staff);
         return staff;
@@ -259,13 +265,11 @@ public class LoopManiaWorld {
     public Helmet addUnequippedHelmet(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        
-        // now we insert the new sword, as we know we have at least made a slot available...
         Helmet Helmet = new Helmet(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(Helmet);
         return Helmet;
@@ -274,13 +278,12 @@ public class LoopManiaWorld {
     public Shield addUnequippedShield(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
         
-        // now we insert the new sword, as we know we have at least made a slot available...
         Shield shield = new Shield(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(shield);
         return shield;
@@ -289,38 +292,45 @@ public class LoopManiaWorld {
     public Armour addUnequippedArmour(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }   
         
-        // now we insert the new sword, as we know we have at least made a slot available...
         Armour armour = new Armour(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(armour);
         return armour;
     }
 
-    // Consumable should be an abstract class, cannot instatiate
-    // Maybe add some functions to item loader
-    /*
-    public Consumables addUnequippedConsumables(){
+    
+    public Consumables addUnequippedHealthPotion(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            // eject the oldest unequipped item and replace it... oldest item is that at beginning of items
-            // TODO = give some cash/experience rewards for the discarding of the oldest sword
             removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }   
         
-        // now we insert the new sword, as we know we have at least made a slot available...
-        Consumables consumable = new Consumables(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
-        unequippedInventoryItems.add(consumable);
-        return consumable;
-    }*/
+        HealthPotion healthpotion = new HealthPotion(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
+        unequippedInventoryItems.add(healthpotion);
+        return healthpotion;
+    }
 
-
-
+    public TheOneRing addUnequippedTheOneRing(){
+        Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
+        if (firstAvailableSlot == null){
+            removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(100);
+            this.character.addGold(50);
+            firstAvailableSlot = getFirstAvailableSlotForItem();
+        }   
+        
+        TheOneRing theonering = new TheOneRing(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
+        unequippedInventoryItems.add(theonering);
+        return theonering;
+    }
 
     /**
      * remove an item by x,y coordinates

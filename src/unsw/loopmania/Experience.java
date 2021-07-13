@@ -1,17 +1,14 @@
 package unsw.loopmania;
 
-/**
- * represents an equipped or unequipped Helmet in the backend world
- */
-public class Gold {
 
+public class Experience {
     private int total;
     
-    public Gold() {
+    public Experience() {
         this.total = 0;
     }
     
-    public boolean addGold(int amount){
+    public boolean addExperience(int amount){
         if (this.total == Integer.MAX_VALUE) {
             return false;
         } else if (Long.valueOf(this.total) + Long.valueOf(amount) >= Integer.MAX_VALUE) {
@@ -23,18 +20,7 @@ public class Gold {
         }
     }
 
-    public boolean minusGold(int amount){
-        if (this.total == 0) {
-            return false;
-        } else if (this.total - amount < 0) {
-            return false;
-        } else {
-            this.total -= amount;
-            return true;
-        }
-    }
-
-    public int getGold() {
+    public int getExperience() {
         return this.total;
     }
 

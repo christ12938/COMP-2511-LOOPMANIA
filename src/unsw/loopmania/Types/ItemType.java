@@ -11,5 +11,6 @@ public enum ItemType{
     SHIELD,
     HELMET,
     GOLD,
-    HEALTH_POTION
+    HEALTH_POTION,
+    THE_ONE_RING
 }
