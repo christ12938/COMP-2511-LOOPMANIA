@@ -10,3 +10,4 @@ The player can hold a maximum of 8 cards before the cards are destroyed.
 The player can hold a maximum of 16 items before the items are destroyed.  
 The player can have a maximum of 5 allied soldiers.  
 The maximum amount of gold and experience is Integer.MAX_VALUE from java.math.
+When dropping an entity onto an already occupied pane, the overlapped entity will be destroyed.

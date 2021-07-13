@@ -9,11 +9,26 @@ import unsw.loopmania.Types.EnemyType;
  */
 public class VampireCastleBuilding extends Spawner{
 
+    private boolean hasSpawned = false;
+
     public VampireCastleBuilding(SimpleIntegerProperty x, SimpleIntegerProperty y) {
-        super(x, y, EnemyType.VAMPIRE);
+        super(x, y);
     }
 
     public BuildingType getBuildingType(){
         return BuildingType.VAMPIRECASTLE_BUILDING;
     }
+
+    public int getSpawningCycle(){
+        return 5;
+    }
+
+    public void setHasSpawned(boolean hasSpawned){
+        this.hasSpawned = hasSpawned;
+    }
+
+    public boolean getHasSpawned(){
+        return hasSpawned;
+    }
+
 }

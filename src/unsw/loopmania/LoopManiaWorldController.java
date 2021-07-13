@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -28,12 +29,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import unsw.loopmania.Cards.*;
-import unsw.loopmania.Enemies.BasicEnemy;
+import unsw.loopmania.Enemies.Enemy;
 import unsw.loopmania.Items.Equipable;
 import unsw.loopmania.Items.Item;
 import unsw.loopmania.Loaders.ItemLoader;
+import unsw.loopmania.Types.OverlappableEntityType;
 import unsw.loopmania.Buildings.*;
 
 
@@ -135,6 +138,9 @@ public class LoopManiaWorldController {
     @FXML
     private ImageView shieldCell;
 
+    @FXML
+    private Label moneyValue;
+
     /**
      * Gridpane for allied soldiers
      */
@@ -193,7 +199,12 @@ public class LoopManiaWorldController {
     private Image healthPotionImage;
 
 
-    private Image basicEnemyImage;
+    /**
+     * Image of Enemies
+     */
+    private Image slugImage;
+    private Image zombieImage;
+    private Image vampireImage;
 
     /**
      * the image currently being dragged, if there is one, otherwise null.
@@ -232,12 +243,15 @@ public class LoopManiaWorldController {
      */
     private MenuSwitcher mainMenuSwitcher;
 
+    private Stage primaryStage;
+
     /**
      * @param world world object loaded from file
      * @param initialEntities the initial JavaFX nodes (ImageViews) which should be loaded into the GUI
      */
     public LoopManiaWorldController(LoopManiaWorld world, List<ImageView> initialEntities) {
         this.world = world;
+        this.world.getCharacter().setObserver(this);
         entityImages = new ArrayList<>(initialEntities);
 
         /* Initialize all card images */
@@ -259,7 +273,9 @@ public class LoopManiaWorldController {
         campfireBuildingImage = new Image((new File("src/images/campfire.png")).toURI().toString());
 
         /* Initialize all enemy images */
-        basicEnemyImage = new Image((new File("src/images/slug.png")).toURI().toString());
+        slugImage = new Image((new File("src/images/slug.png")).toURI().toString());
+        zombieImage = new Image((new File("src/images/zombie.png")).toURI().toString());
+        vampireImage = new Image((new File("src/images/vampire.png")).toURI().toString());
 
         /* Initialize all item images */
         //TODO: ADD Rare items
@@ -343,15 +359,14 @@ public class LoopManiaWorldController {
         // trigger adding code to process main game logic to queue. JavaFX will target framerate of 0.3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(0.3), event -> {
             world.runTickMoves();
-            List<BasicEnemy> defeatedEnemies = world.runBattles();
-            for (BasicEnemy e: defeatedEnemies){
+            List<Enemy> defeatedEnemies = world.runBattles();
+            for (Enemy e: defeatedEnemies){
                 reactToEnemyDefeat(e);
             }
-            List<BasicEnemy> newEnemies = world.possiblySpawnEnemies();
-            for (BasicEnemy newEnemy: newEnemies){
+            List<Enemy> newEnemies = world.possiblySpawnEnemies();
+            for (Enemy newEnemy: newEnemies){
                 onLoad(newEnemy);
             }
-
             setCharacterImageToFront();
             printThreadingNotes("HANDLED TIMER");
         }));
@@ -396,14 +411,15 @@ public class LoopManiaWorldController {
      */
     private void loadRandomItem(){
         // start by getting first available coordinates
-        onLoadUnequippedItem(world.loadRandomUnenquippedInventoryItem());
+        Item item = world.loadRandomUnenquippedInventoryItem();
+        if(item != null) onLoadUnequippedItem(item);
     }
 
     /**
      * run GUI events after an enemy is defeated, such as spawning items/experience/gold
      * @param enemy defeated enemy for which we should react to the death of
      */
-    private void reactToEnemyDefeat(BasicEnemy enemy){
+    private void reactToEnemyDefeat(Enemy enemy){
         // react to character defeating an enemy
         // in starter code, spawning extra card/weapon...
         // TODO = provide different benefits to defeating the enemy based on the type of enemy
@@ -507,7 +523,7 @@ public class LoopManiaWorldController {
             addDragEventHandlers(view, draggableType, unequippedInventory, equippedItems);
         }
         addEntity(item, view);
-        unequippedInventory.getChildren().add(view);
+        unequippedInventory.add(view, item.getX(), item.getY());
     }
 
     /**
@@ -556,10 +572,23 @@ public class LoopManiaWorldController {
      * load an enemy into the GUI
      * @param enemy
      */
-    private void onLoad(BasicEnemy enemy) {
-        ImageView view = new ImageView(basicEnemyImage);
+    private void onLoad(Enemy enemy) {
+        ImageView view = null;
+        switch(enemy.getEnemyType()){
+            case SLUG:
+                view = new ImageView(slugImage);
+                break;
+            case ZOMBIE:
+                view = new ImageView(zombieImage);
+                break;
+            case VAMPIRE:
+                view = new ImageView(vampireImage);
+                break;
+            default:
+                return;
+        }
         addEntity(enemy, view);
-        squares.getChildren().add(view);
+        squares.add(view, enemy.getX(), enemy.getY());
     }
 
     /**
@@ -627,7 +656,7 @@ public class LoopManiaWorldController {
                     Dragboard db = event.getDragboard();
                     Node node = event.getPickResult().getIntersectedNode();
                     if(node != targetGridPane && db.hasImage()){
-                        if(!isPlacable(currentlyDraggedType, GridPane.getColumnIndex(node), GridPane.getRowIndex(node), targetGridPane)){
+                        if(!isPlacable(currentlyDraggedType, GridPane.getColumnIndex(node), GridPane.getRowIndex(node), sourceGridPane, targetGridPane)){
                             currentlyDraggedImage.setVisible(true);
                             printThreadingNotes("DRAG DROPPED ON GRIDPANE CANCELLED");
                         }else{
@@ -648,6 +677,7 @@ public class LoopManiaWorldController {
                                 case BARRACKS_CARD:
                                 case TRAP_CARD:
                                 case CAMPFIRE_CARD:
+                                    checkAndDestroyOverlappedEntity(x, y, targetGridPane);
                                     Building newBuilding = convertCardToBuildingByCoordinates(nodeX, nodeY, x, y);
                                     if(newBuilding instanceof Spawner){
                                         ((Spawner)newBuilding).addSpawningTile(getAdjacentPathTiles(x, y));
@@ -662,12 +692,13 @@ public class LoopManiaWorldController {
                                 case HELMET:
                                     // TODO = spawn an item in the new location. The above code for spawning a building will help, it is very similar
                                     // All these cases are equipable
-                                    // EquipableItem will always be non null (DEBUG)
-                                    Equipable equipableItem = world.getEquipableItemByCoordinates(nodeX, nodeY);
-                                    if(equipableItem.isEquipped()){
+                                    checkAndDestroyOverlappedEntity(x, y, targetGridPane);
+                                    if(targetGridPane == unequippedInventory){
+                                        Equipable equipableItem = world.getEquippedItemByCoordinates(nodeX, nodeY);
                                         equipableItem = unequip(equipableItem, nodeX, nodeY, x, y);
                                         onLoadUnequippedItem(equipableItem);
-                                    }else{
+                                    }else if(targetGridPane == equippedItems){
+                                        Equipable equipableItem = world.getUnequippedItemByCoordinates(nodeX, nodeY);
                                         equipableItem = equip(equipableItem, nodeX, nodeY, x, y);
                                         onLoadEquippedItem(equipableItem);
                                     }
@@ -758,18 +789,34 @@ public class LoopManiaWorldController {
         world.removeUnequippedInventoryItemByCoordinates(nodeX, nodeY);
     }
 
+    /**
+     * Perform unequip actions
+     * @param equipableItem item to be unequipped
+     * @param nodeX x coordinate position of the item
+     * @param nodeY y coordinate position of the item
+     * @param x x coordinate of the item to be placed
+     * @param y y coordinate of the item to be placed
+     * @return the new Equipable item
+     */
     private Equipable unequip(Equipable equipableItem, int nodeX, int nodeY, int x, int y){
         world.removeEquippedItem(equipableItem);
         equipableItem = ItemLoader.loadEquipableItem(equipableItem.getItemType(), x, y);
-        equipableItem.setIsEquipped(false);
         world.addUnequippedItem(equipableItem);
         return equipableItem;
     }
 
+    /**
+     * Perform equip actions
+     * @param equipableItem item to be equipped
+     * @param nodeX x coordinate position of the item
+     * @param nodeY y coordinate position of the item
+     * @param x x coordinate of the item to be placed
+     * @param y y coordinate of the item to be placed
+     * @return the new Equipable item
+     */
     private Equipable equip(Equipable equipableItem, int nodeX, int nodeY, int x, int y){
         removeUnequippedInventoryByCoordinates(nodeX, nodeY);
         equipableItem = ItemLoader.loadEquipableItem(equipableItem.getItemType(), x, y);
-        equipableItem.setIsEquipped(true);
         world.addEquippedItem(equipableItem);
         return equipableItem;
     }
@@ -798,7 +845,6 @@ public class LoopManiaWorldController {
 
                 buildNonEntityDragHandlers(draggableType, sourceGridPane, targetGridPane);
 
-                //TODO
                 draggedEntity.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
                 switch (draggableType){
                     case VAMPIRECASTLE_CARD:
@@ -866,7 +912,7 @@ public class LoopManiaWorldController {
                             //The drag-and-drop gesture entered the target
                             //show the user that it is an actual gesture target
                                 if(event.getGestureSource() != n && event.getDragboard().hasImage()
-                                    && isPlacable(currentlyDraggedType, GridPane.getColumnIndex(n), GridPane.getRowIndex(n), targetGridPane)){
+                                    && isPlacable(currentlyDraggedType, GridPane.getColumnIndex(n), GridPane.getRowIndex(n), sourceGridPane, targetGridPane)){
                                     n.setOpacity(0.7);
                                 }
                             }
@@ -896,8 +942,7 @@ public class LoopManiaWorldController {
 
             @Override
             public void handle(MouseEvent event) {
-                // TODO Auto-generated method stub
-                //DOSTH
+                //TODO:DOSTH
 
             }
             
@@ -1028,7 +1073,6 @@ public class LoopManiaWorldController {
         entity.shouldExist().addListener(new ChangeListener<Boolean>(){
             @Override
             public void changed(ObservableValue<? extends Boolean> obervable, Boolean oldValue, Boolean newValue) {
-                System.out.println("DETACHED");
                 handleX.detach();
                 handleY.detach();
             }
@@ -1057,7 +1101,7 @@ public class LoopManiaWorldController {
      * @param row row of the node
      * @return
      */
-    private boolean isPlacable(DRAGGABLE_TYPE draggableType, int column, int row, GridPane targetGridPane){
+    private boolean isPlacable(DRAGGABLE_TYPE draggableType, int column, int row, GridPane sourceGridPane, GridPane targetGridPane){
         switch(draggableType){
             case VAMPIRECASTLE_CARD:
             case ZOMBIEPIT_CARD:
@@ -1075,10 +1119,12 @@ public class LoopManiaWorldController {
             case ARMOUR:
             case SHIELD:
             case HELMET:
-                if(targetGridPane == unequippedInventory){
+                if(sourceGridPane == equippedItems && targetGridPane == unequippedInventory){
                     return true;
-                }else{
+                }else if(sourceGridPane == unequippedInventory && targetGridPane == equippedItems){
                     return isOnCorrectEquippableSlot(draggableType, column, row);
+                }else{
+                    return false;
                 }
             default:
                 return false;
@@ -1188,8 +1234,46 @@ public class LoopManiaWorldController {
      */
     private void setCharacterImageToFront(){
         for(ImageView view : entityImages){
-            if(view.getId() != null && view.getId().equals("character")) view.toFront();
+            if(view.getId() != null && view.getId().equals("character")) {
+                view.toFront();
+                return;
+            }
+        }
+    }
+
+    /**
+     * Destroy the overlapped entity when placed on gridpane
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param targetGridPane the targetGridPane
+     */
+    private void checkAndDestroyOverlappedEntity(int x, int y, GridPane targetGridPane){
+        OverlappableEntityType type = null;
+        if(targetGridPane == squares){
+            type = OverlappableEntityType.BUILDING;
+        }else if(targetGridPane == equippedItems){
+            type = OverlappableEntityType.EQUIPPED_ITEM;
+        }else if(targetGridPane == unequippedInventory){
+            type = OverlappableEntityType.UNEQUIPPED_INVENTORY_ITEM;
+        }else{
             return;
         }
+        world.RemoveOverlappedEntityByCoordinates(x, y, type);
+    }
+
+    /**
+     * Signal from observable about updating money (Observer pattern)
+     */
+    public void updateMoney(){
+        moneyValue.setText(Integer.toString(world.getCharacter().getMoney()));
+        primaryStage.sizeToScene();
+    }
+
+    /**
+     * Set the stage of the application
+     * @param primaryStage
+     */
+    public void setStage(Stage primaryStage){
+        this.primaryStage = primaryStage;
     }
 }
