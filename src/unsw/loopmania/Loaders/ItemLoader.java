@@ -8,6 +8,7 @@ import org.javatuples.Pair;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Items.*;
+import unsw.loopmania.Types.ItemType;
 
 public class ItemLoader{
 
@@ -33,4 +34,26 @@ public class ItemLoader{
         /* Now randomly choose a item */
         return items.get(new Random().nextInt(items.size()));
     }
+
+    public static Equipable loadEquipableItem(ItemType type, int nodeX, int nodeY){
+        SimpleIntegerProperty x = new SimpleIntegerProperty(nodeX);
+        SimpleIntegerProperty y = new SimpleIntegerProperty(nodeY);
+        switch(type){
+            case SWORD:
+                return new Sword(x, y);
+            case STAKE:
+                return new Stake(x, y);
+            case STAFF:
+                return new Staff(x, y);
+            case SHIELD:
+                return new Shield(x, y);
+            case ARMOUR:
+                return new Armour(x, y);
+            case HELMET:
+                return new Helmet(x, y);
+            default:
+                return null;
+        }
+    }
+
 }

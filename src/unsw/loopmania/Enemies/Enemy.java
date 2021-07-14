@@ -5,13 +5,14 @@ import java.util.Random;
 import unsw.loopmania.MovingEntity;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Character;
+import unsw.loopmania.Types.EnemyType;
 
 /**
  * a basic form of enemy in the world
  */
 
  // TODO: RENAME BASICENEMY TO ENEMY and change to abstract
-public class Enemy extends MovingEntity {
+public abstract class Enemy extends MovingEntity {
     private int health;
     private int battleRadius;
     private int supportRadius;
@@ -53,4 +54,6 @@ public class Enemy extends MovingEntity {
     public void takeDamage(Character character) {
         return;
     }
+
+    public abstract EnemyType getEnemyType();
 }

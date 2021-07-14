@@ -42,10 +42,12 @@ public class LoopManiaWorldControllerLoader extends LoopManiaWorldLoader {
 
     // TODO = load more entity types from the file
     @Override
-    public void onLoad(Character character, HerosCastle herosCastle) {
+    public void onLoad(HerosCastle herosCastle, Character character) {
+        /* Add hero's castle first (doesn not matter) */
         ImageView view = new ImageView(herosCastleImage);
         addEntity(herosCastle, view);
-        view= new ImageView(characterImage);
+        view = new ImageView(characterImage);
+        view.setId("character");
         addEntity(character, view);
     }
 
