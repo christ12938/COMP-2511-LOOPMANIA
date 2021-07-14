@@ -9,11 +9,16 @@ public class Character extends MovingEntity {
     private double health;
     private int gold;
     private int experience;
+    LoopManiaWorldController observer;
 
     public Character(PathPosition position) {
         super(position);
         this.gold = 0;
         this.experience = 0;
+    }
+
+    public void setObserver(LoopManiaWorldController observer){
+        this.observer = observer;
     }
     
     public int getGold() {
@@ -29,9 +34,11 @@ public class Character extends MovingEntity {
             return false;
         } else if (Long.valueOf(this.gold) + Long.valueOf(amount) >= Integer.MAX_VALUE) {
             this.gold = Integer.MAX_VALUE;
+            observer.updateGold();
             return true;
         } else {
             this.gold += amount;
+            observer.updateGold();
             return true;
         }
     }
@@ -43,6 +50,7 @@ public class Character extends MovingEntity {
             return false;
         } else {
             this.gold -= amount;
+            observer.updateGold();
             return true;
         }
     }

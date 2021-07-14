@@ -8,12 +8,19 @@ import org.javatuples.Pair;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Buildings.Building;
+import unsw.loopmania.Buildings.Spawner;
 import unsw.loopmania.Cards.Card;
-import unsw.loopmania.Enemies.BasicEnemy;
+import unsw.loopmania.Enemies.Enemy;
+import unsw.loopmania.Enemies.Slug;
+import unsw.loopmania.Enemies.Vampire;
+import unsw.loopmania.Enemies.Zombie;
 import unsw.loopmania.Items.*;
 import unsw.loopmania.Loaders.BuildingLoader;
 import unsw.loopmania.Loaders.CardLoader;
 import unsw.loopmania.Loaders.ItemLoader;
+import unsw.loopmania.Types.BuildingType;
+import unsw.loopmania.Types.ItemType;
+import unsw.loopmania.Types.OverlappableEntityType;
 
 /**
  * A backend world.
@@ -45,18 +52,26 @@ public class LoopManiaWorld {
     private List<Entity> nonSpecifiedEntities;
 
     private Character character;
-    
+    private HerosCastle herosCastle;
+
+    /**
+     * Cycle of the world
+     */
+    private int cycle = 0;
 
     // TODO = add more lists for other entities, for equipped inventory items, etc...
 
     // TODO = expand the range of enemies
-    private List<BasicEnemy> enemies;
+    private List<Enemy> enemies;
 
     // TODO = expand the range of cards
     private List<Card> cardEntities;
 
+    // List of equipped items
+    private List<Equipable> equippedItems;
+
     // TODO = expand the range of items
-    private List<Entity> unequippedInventoryItems;
+    private List<Item> unequippedInventoryItems;
 
     // TODO = expand the range of buildings
     private List<Building> buildingEntities;
@@ -80,10 +95,10 @@ public class LoopManiaWorld {
         character = null;
         enemies = new ArrayList<>();
         cardEntities = new ArrayList<>();
+        equippedItems = new ArrayList<>();
         unequippedInventoryItems = new ArrayList<>();
         this.orderedPath = orderedPath;
         buildingEntities = new ArrayList<>();
-        
     }
 
     public int getWidth() {
@@ -114,6 +129,17 @@ public class LoopManiaWorld {
         this.character = character;
     }
 
+    public Character getCharacter(){
+        return this.character;
+    }
+
+    /**
+     * set the heros castle. This is necessary because it is loaded as a special entity out of the file.
+     * @param herosCastle the heros castle
+     */
+    public void setHerosCastle(HerosCastle herosCastle){
+        this.herosCastle = herosCastle;
+    }
     /**
      * add a generic entity (without it's own dedicated method for adding to the world)
      * @param entity
@@ -128,16 +154,35 @@ public class LoopManiaWorld {
      * spawns enemies if the conditions warrant it, adds to world
      * @return list of the enemies to be displayed on screen
      */
-    public List<BasicEnemy> possiblySpawnEnemies(){
-        // TODO = expand this very basic version
-        Pair<Integer, Integer> pos = possiblyGetBasicEnemySpawnPosition();
-        List<BasicEnemy> spawningEnemies = new ArrayList<>();
-        if (pos != null){
-            int indexInPath = orderedPath.indexOf(pos);
-            BasicEnemy enemy = new BasicEnemy(new PathPosition(indexInPath, orderedPath));
+    public List<Enemy> possiblySpawnEnemies(){
+        List<Enemy> spawningEnemies = new ArrayList<>();
+        /* Get Slug Spawn Position */
+        Pair<Integer, Integer> slugPos = possiblyGetSlugSpawnPosition();
+        if (slugPos != null){
+            int indexInPath = orderedPath.indexOf(slugPos);
+            Enemy enemy = new Slug(new PathPosition(indexInPath, orderedPath));
             enemies.add(enemy);
             spawningEnemies.add(enemy);
         }
+
+        /* Get Zombie Spawn Position */
+        List<Pair<Integer, Integer>> zombiePos = possiblyGetSpawnerSpawnPositions(BuildingType.ZOMBIEPIT_BUILDING);
+        for(Pair<Integer, Integer> i : zombiePos){
+            int indexInPath = orderedPath.indexOf(i);
+            Enemy enemy = new Zombie(new PathPosition(indexInPath, orderedPath));
+            enemies.add(enemy);
+            spawningEnemies.add(enemy);
+        }
+
+        /* Get Vampire Spawn Position */
+        List<Pair<Integer, Integer>> vampirePos = possiblyGetSpawnerSpawnPositions(BuildingType.VAMPIRECASTLE_BUILDING);
+        for(Pair<Integer, Integer> i : vampirePos){
+            int indexInPath = orderedPath.indexOf(i);
+            Enemy enemy = new Vampire(new PathPosition(indexInPath, orderedPath));
+            enemies.add(enemy);
+            spawningEnemies.add(enemy);
+        }
+
         return spawningEnemies;
     }
 
@@ -145,7 +190,7 @@ public class LoopManiaWorld {
      * kill an enemy
      * @param enemy enemy to be killed
      */
-    private void killEnemy(BasicEnemy enemy){
+    private void killEnemy(Enemy enemy){
         enemy.destroy();
         enemies.remove(enemy);
     }
@@ -154,10 +199,10 @@ public class LoopManiaWorld {
      * run the expected battles in the world, based on current world state
      * @return list of enemies which have been killed
      */
-    public List<BasicEnemy> runBattles() {
-        // TODO = modify this - currently the character automatically wins all battles without any damage!
-        List<BasicEnemy> defeatedEnemies = new ArrayList<BasicEnemy>();
-        for (BasicEnemy e: enemies){
+    public List<Enemy> runBattles() {
+        // TODO- = modify this - currently the character automatically wins all battles without any damage!
+        List<Enemy> defeatedEnemies = new ArrayList<Enemy>();
+        for (Enemy e: enemies){
             // Pythagoras: a^2+b^2 < radius^2 to see if within radius
             // TODO = you should implement different RHS on this inequality, based on influence radii and battle radii
             if (Math.pow((character.getX()-e.getX()), 2) +  Math.pow((character.getY()-e.getY()), 2) < 4){
@@ -165,7 +210,7 @@ public class LoopManiaWorld {
                 defeatedEnemies.add(e);
             }
         }
-        for (BasicEnemy e: defeatedEnemies){
+        for (Enemy e: defeatedEnemies){
             // IMPORTANT = we kill enemies here, because killEnemy removes the enemy from the enemies list
             // if we killEnemy in prior loop, we get java.util.ConcurrentModificationException
             // due to mutating list we're iterating over
@@ -181,7 +226,7 @@ public class LoopManiaWorld {
     public Card loadRandomCard(){
         // if adding more cards than have, remove the first card...
         if (cardEntities.size() >= getWidth()){
-            // TODO = give some cash/experience/item rewards for the discarding of the oldest card
+            // TODO- = give some cash/experience/item rewards for the discarding of the oldest card
             removeCard(0);
         }
         Card card = CardLoader.loadRandomCard(cardEntities.size());
@@ -201,6 +246,10 @@ public class LoopManiaWorld {
         shiftCardsDownFromXCoordinate(x);
     }
 
+    /**
+     * Load random unequipped item
+     * @return
+     */
     public Item loadRandomUnenquippedInventoryItem(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -209,8 +258,12 @@ public class LoopManiaWorld {
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        
+        // now we insert the new sword, as we know we have at least made a slot available...        
         Item item = ItemLoader.loadRandomItem(firstAvailableSlot);
+        if(item.getItemType() == ItemType.GOLD){
+            character.addGold(100);
+            return null;
+        }
         unequippedInventoryItems.add(item);
         return item;
     }
@@ -227,13 +280,11 @@ public class LoopManiaWorld {
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        
         Sword sword = new Sword(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(sword);
         return sword;
     }
 
-    
     public Stake addUnequippedStake(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -338,7 +389,7 @@ public class LoopManiaWorld {
      * @param y y coordinate from 0 to height-1
      */
     public void removeUnequippedInventoryItemByCoordinates(int x, int y){
-        Entity item = getUnequippedInventoryItemEntityByCoordinates(x, y);
+        Item item = getUnequippedInventoryItemEntityByCoordinates(x, y);
         removeUnequippedInventoryItem(item);
     }
 
@@ -347,16 +398,48 @@ public class LoopManiaWorld {
      */
     public void runTickMoves(){
         character.moveDownPath();
-        moveBasicEnemies();
+        moveEnemies();
+        if(character.getX() == herosCastle.getX() && character.getY() == herosCastle.getY()){
+            //TODO-: SHOP
+            nextCycle();
+        }
     }
 
     /**
      * remove an item from the unequipped inventory
      * @param item item to be removed
      */
-    private void removeUnequippedInventoryItem(Entity item){
+    private void removeUnequippedInventoryItem(Item item){
+        int x = item.getX();
+        int y = item.getY();
         item.destroy();
         unequippedInventoryItems.remove(item);
+        //shiftUnequippedInventoryItemsFromXYCoordinate(x, y);
+    }
+
+    /**
+     * Add equipped item to list
+     * @param item equipped item
+     */
+    public void addEquippedItem(Equipable item){
+        equippedItems.add(item);
+    }
+
+    /**
+     * remove an item from the equipped item slot
+     * @param item item to be removed
+     */
+    public void removeEquippedItem(Item item){
+        item.destroy();
+        equippedItems.remove(item);
+    }
+
+    /**
+     * Add unequipped item to list
+     * @param item unequipped item
+     */
+    public void addUnequippedItem(Equipable item){
+        unequippedInventoryItems.add(item);
     }
 
     /**
@@ -366,10 +449,96 @@ public class LoopManiaWorld {
      * @param y y index from 0 to height-1
      * @return unequipped inventory item at the input position
      */
-    private Entity getUnequippedInventoryItemEntityByCoordinates(int x, int y){
-        for (Entity e: unequippedInventoryItems){
+    private Item getUnequippedInventoryItemEntityByCoordinates(int x, int y){
+        for (Item e: unequippedInventoryItems){
             if ((e.getX() == x) && (e.getY() == y)){
                 return e;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Remove the entity that is overlapped on the pane
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param type type of entity being overlapped
+     */
+    public void RemoveOverlappedEntityByCoordinates(int x, int y, OverlappableEntityType type){
+        Entity result = null;
+        if(type == OverlappableEntityType.BUILDING){
+            for(Entity e : buildingEntities){
+                if(e.getX() == x && e.getY() == y){
+                    result = e;
+                    break;
+                }
+            }
+            if(result != null){
+                buildingEntities.remove(result);
+                result.destroy();
+                return;
+            }
+        }     
+        if(type == OverlappableEntityType.EQUIPPED_ITEM){
+            for(Entity e : equippedItems){
+                if(e.getX() == x && e.getY() == y){
+                    result = e;
+                    break;
+                }
+            }
+            if(result != null){
+                equippedItems.remove(result);
+                result.destroy();
+                return;
+            }
+        }
+        if(type == OverlappableEntityType.UNEQUIPPED_INVENTORY_ITEM){
+            for(Entity e : unequippedInventoryItems){
+                if(e.getX() == x && e.getY() == y){
+                    result = e;
+                    break;
+                }
+            }
+            if(result != null){
+                unequippedInventoryItems.remove(result);
+                result.destroy();
+                return;
+            }
+        }
+    }
+
+    /**
+     * Get the equipped item by corrdinates
+     * @param x x index from 0 to width-1
+     * @param y y index from 0 to height-1
+     * @return equipped item
+     */
+    public Equipable getEquippedItemByCoordinates(int x, int y){
+        for (Equipable e: equippedItems){
+            if ((e.getX() == x) && (e.getY() == y)){
+                return e;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Get the unequipped item by corrdinates
+     * @param x x index from 0 to width-1
+     * @param y y index from 0 to height-1
+     * @return unequipped item
+     */
+    public Equipable getUnequippedItemByCoordinates(int x, int y){
+        for (Item e: unequippedInventoryItems){
+            if ((e.getX() == x) && (e.getY() == y)){
+                //Redundant, just in case
+                if(e instanceof Equipable){
+                    return (Equipable)e;
+                }else{
+                    return null;
+                }
             }
         }
         return null;
@@ -380,7 +549,7 @@ public class LoopManiaWorld {
      * @param index index from 0 to length-1
      */
     private void removeItemByPositionInUnequippedInventoryItems(int index){
-        Entity item = unequippedInventoryItems.get(index);
+        Item item = unequippedInventoryItems.get(index);
         item.destroy();
         unequippedInventoryItems.remove(index);
     }
@@ -414,21 +583,41 @@ public class LoopManiaWorld {
         }
     }
 
+    //TODO: DEBUG
+    /**
+     * shift inventory items down starting from x and y coordinates
+     * @param x
+     * @param y
+     */
+    private void shiftUnequippedInventoryItemsFromXYCoordinate(int x, int y){
+        boolean flag = false;
+        for(Item i : unequippedInventoryItems){
+            if(!flag && i.getY() >= y && i.getX() >= x){
+                flag = true;
+            }
+            if(!flag) continue;
+            int newX = (i.getX() == 0) ? (unequippedInventoryWidth - 1) : i.getX() - 1;
+            int newY = (i.getX() == 0) ? i.getY() - 1 : i.getY();
+            i.x().set(newX);
+            i.y().set(newY);
+        }
+    }
+
     /**
      * move all enemies
      */
-    private void moveBasicEnemies() {
+    private void moveEnemies() {
         // TODO = expand to more types of enemy
-        for (BasicEnemy e: enemies){
+        for (Enemy e: enemies){
             e.move();
         }
     }
 
     /**
-     * get a randomly generated position which could be used to spawn an enemy
+     * get a randomly generated position which could be used to spawn a slug
      * @return null if random choice is that wont be spawning an enemy or it isn't possible, or random coordinate pair if should go ahead
      */
-    private Pair<Integer, Integer> possiblyGetBasicEnemySpawnPosition(){
+    private Pair<Integer, Integer> possiblyGetSlugSpawnPosition(){
         // TODO = modify this
         
         // has a chance spawning a basic enemy on a tile the character isn't on or immediately before or after (currently space required = 2)...
@@ -452,6 +641,24 @@ public class LoopManiaWorld {
             return spawnPosition;
         }
         return null;
+    }
+
+    /**
+     * Get all spawner possible spawning locations on that cycle
+     * @param type Spawner type
+     * @return List of possibly spawn locations
+     */
+    private List<Pair<Integer, Integer>> possiblyGetSpawnerSpawnPositions(BuildingType type){
+        List<Pair<Integer, Integer>> result = new ArrayList<>();
+        for(Building b : buildingEntities){
+            if(cycle != 0 && b.getBuildingType() == type
+                && !((Spawner)b).getHasSpawned() && cycle%((Spawner)b).getSpawningCycle() == 0){
+                List<Pair<Integer, Integer>> temp = ((Spawner)b).getSpawningTiles();
+                result.add(temp.get(new Random().nextInt(temp.size())));
+                ((Spawner)b).setHasSpawned(true);
+            }
+        }
+        return result;
     }
 
     /**
@@ -481,5 +688,19 @@ public class LoopManiaWorld {
         shiftCardsDownFromXCoordinate(cardNodeX);
 
         return newBuilding;
+    }
+
+    /**
+     * Perform actions before heading to next cycle
+     */
+    public void nextCycle(){
+        this.cycle++;
+        /* Reset all spawner spawning behaviour */
+        /* Kind of observer pattern (DEBUG) */
+        for(Building b : buildingEntities){
+            if(b instanceof Spawner){
+                ((Spawner)b).setHasSpawned(false);
+            }
+        }
     }
 }
