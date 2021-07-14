@@ -6,7 +6,7 @@ import unsw.loopmania.Types.EnemyType;
 public class Vampire extends Enemy{
 
     public Vampire(PathPosition position) {
-        super(position);
+        super(position, 15, 4, 5);
     }
 
     public EnemyType getEnemyType(){

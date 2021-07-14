@@ -6,7 +6,7 @@ import unsw.loopmania.Types.EnemyType;
 public class Slug extends Enemy{
 
     public Slug(PathPosition position) {
-        super(position);
+        super(position, 5, 2, 2);
     }
     
     public EnemyType getEnemyType(){

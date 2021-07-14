@@ -6,7 +6,7 @@ import unsw.loopmania.Types.EnemyType;
 public class Zombie extends Enemy{
 
     public Zombie(PathPosition position) {
-        super(position);
+        super(position, 10, 3, 3);
     }
 
     public EnemyType getEnemyType(){

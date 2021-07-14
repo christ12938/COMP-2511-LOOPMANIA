@@ -15,6 +15,8 @@ public class Character extends MovingEntity {
         super(position);
         this.gold = 0;
         this.experience = 0;
+        // just putting random health value for now for testing
+        this.health = 20;
     }
 
     public void setObserver(LoopManiaWorldController observer){
@@ -27,6 +29,10 @@ public class Character extends MovingEntity {
 
     public int getExperience() {
         return this.experience;
+    }
+
+    public double getHealth() {
+        return health;
     }
 
     public boolean addGold(int amount){

@@ -13,15 +13,20 @@ import unsw.loopmania.Types.EnemyType;
 
  // TODO: RENAME BASICENEMY TO ENEMY and change to abstract
 public abstract class Enemy extends MovingEntity {
-    private int health;
+    private double health;
     private int battleRadius;
     private int supportRadius;
 
     // TODO = modify this, and add additional forms of enemy
-    public Enemy(PathPosition position) {
+    public Enemy(PathPosition position, int health, int battleRadius, int supportRadius) {
         super(position);
-        battleRadius = supportRadius = 4;
-        health = 10;
+        this.health = health;
+        this.battleRadius = battleRadius;
+        this.supportRadius = supportRadius;
+    }
+
+    public double getHealth() {
+        return health;
     }
 
     /**
