@@ -77,21 +77,26 @@ public class EnemyTest {
 
     @Test
     public void TestDealDamage() {
-        Character character = new Character(new PathPosition(0, new ArrayList<>()));
-        Slug slug = new Slug(new PathPosition(2, new ArrayList<>()));
-        double health = character.getHealth();
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        Character character = new Character(new PathPosition(0, orderedPath));
+        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        int health = character.getHealth();
 
         slug.dealDamage(character);
-        assertTrue(health < character.getHealth());
+        assertTrue(health > character.getHealth());
     }
 
     @Test
     public void TestTakeDamage() {
-        Character character = new Character(new PathPosition(0, new ArrayList<>()));
-        Slug slug = new Slug(new PathPosition(2, new ArrayList<>()));
-        double health = slug.getHealth();
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        int health = slug.getHealth();
 
-        slug.takeDamage(character);
-        assertTrue(health < slug.getHealth());
+        slug.takeDamage(5);
+        assertTrue(health > slug.getHealth());
     }
 }

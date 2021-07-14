@@ -6,7 +6,7 @@ package unsw.loopmania;
  */
 public class Character extends MovingEntity {
 
-    private double health;
+    private int health;
     private int gold;
     private int experience;
     LoopManiaWorldController observer;
@@ -31,8 +31,12 @@ public class Character extends MovingEntity {
         return this.experience;
     }
 
-    public double getHealth() {
+    public int getHealth() {
         return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     public boolean addGold(int amount){

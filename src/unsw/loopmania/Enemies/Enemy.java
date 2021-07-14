@@ -13,9 +13,11 @@ import unsw.loopmania.Types.EnemyType;
 
  // TODO: RENAME BASICENEMY TO ENEMY and change to abstract
 public abstract class Enemy extends MovingEntity {
-    private double health;
+    private int health;
     private int battleRadius;
     private int supportRadius;
+    private double critRate;
+    private int damage;
 
     // TODO = modify this, and add additional forms of enemy
     public Enemy(PathPosition position, int health, int battleRadius, int supportRadius) {
@@ -23,9 +25,11 @@ public abstract class Enemy extends MovingEntity {
         this.health = health;
         this.battleRadius = battleRadius;
         this.supportRadius = supportRadius;
+        this.critRate = 0.05;
+        this.damage = 5;
     }
 
-    public double getHealth() {
+    public int getHealth() {
         return health;
     }
 
@@ -45,18 +49,24 @@ public abstract class Enemy extends MovingEntity {
     }
 
     public boolean inBattleRadius(Character character) {
-        return Math.pow((character.getX()-super.getX()), 2) < battleRadius;
+        return Math.pow((character.getX()-super.getX()), 2) +  Math.pow((character.getY()-super.getY()), 2) < battleRadius;
     }
 
     public boolean inSupportRadius(Character character) {
-        return Math.pow((character.getX()-super.getX()), 2) < supportRadius;
+        return Math.pow((character.getX()-super.getX()), 2) +  Math.pow((character.getY()-super.getY()), 2) < supportRadius;
     }
 
     public void dealDamage(Character character) {
+        int damage = this.damage;
+        if ((new Random()).nextDouble() < critRate) {
+            damage *= 1.5;
+        }
+        character.setHealth(character.getHealth() - damage);
         return;
     }
 
-    public void takeDamage(Character character) {
+    public void takeDamage(int damage) {
+        health -= damage;
         return;
     }
 
