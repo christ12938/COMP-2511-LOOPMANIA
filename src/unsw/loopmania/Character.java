@@ -16,6 +16,9 @@ public class Character extends MovingEntity {
         super(position);
         this.gold = 0;
         this.experience = 0;
+        this.health = 10;
+        this.attack = 1;
+        this.defense = 1;
     }
     
     public int getGold() {

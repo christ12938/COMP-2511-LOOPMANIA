@@ -117,6 +117,14 @@ public class LoopManiaWorld {
     public int getCharacterAttack() {
         return this.character.getAttack();
     }
+
+    public int getCharacterDefense() {
+        return this.character.getDefense();
+    }
+
+    public int getCharacterHp() {
+        return this.character.getHp();
+    }
     /**
      * add a generic entity (without it's own dedicated method for adding to the world)
      * @param entity

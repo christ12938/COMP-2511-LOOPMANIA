@@ -87,7 +87,7 @@ public class StatsTest {
         World.setCharacter(testCharacter);
 
         assertEquals(10, World.getCharacterHp());
-        assertEquals(0, World.getCharacterDefense());
+        assertEquals(1, World.getCharacterDefense());
         assertEquals(1, World.getCharacterAttack());
     }
 
