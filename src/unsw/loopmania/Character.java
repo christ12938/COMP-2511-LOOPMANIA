@@ -7,6 +7,8 @@ package unsw.loopmania;
 public class Character extends MovingEntity {
 
     private double health;
+    private double attack;
+    private double defense;
     private int gold;
     private int experience;
 

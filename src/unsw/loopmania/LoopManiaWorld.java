@@ -322,8 +322,8 @@ public class LoopManiaWorld {
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
             removeItemByPositionInUnequippedInventoryItems(0);
-            this.character.addExperience(100);
-            this.character.addGold(50);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }   
         

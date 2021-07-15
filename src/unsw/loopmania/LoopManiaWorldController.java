@@ -90,7 +90,7 @@ enum DRAGGABLE_TYPE{
  *     This is run on the JavaFX application thread when it has enough time.
  */
 public class LoopManiaWorldController {
-
+    
     /**
      * squares gridpane includes path images, enemies, character, empty grass, buildings
      */
