@@ -4,9 +4,10 @@ import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Types.ItemType;
 
 public class Shield extends DefensiveItems{
-
+    private int defense;
     public Shield(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
+        this.defense = 3;
     }
     
     public ItemType getItemType(){
@@ -14,6 +15,6 @@ public class Shield extends DefensiveItems{
     }
 
     public int getDefense() {
-        return 0; 
+        return this.defense; 
      }
 }

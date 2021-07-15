@@ -8,7 +8,7 @@ public class Armour extends DefensiveItems{
 
     public Armour(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
-        
+        this.defense = 3;
     }
 
     public ItemType getItemType(){
@@ -16,7 +16,7 @@ public class Armour extends DefensiveItems{
     }
 
     public int getDefense() {
-        return 0; 
+        return this.defense; 
      }
     
 }

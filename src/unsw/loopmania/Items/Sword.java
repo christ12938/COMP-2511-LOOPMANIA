@@ -5,6 +5,7 @@ import unsw.loopmania.Types.ItemType;
 
 public class Sword extends OffensiveItems {
     private int attack;
+    
     public Sword(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
         this.attack = 5;
