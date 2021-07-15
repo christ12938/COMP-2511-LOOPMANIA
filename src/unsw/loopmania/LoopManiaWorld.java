@@ -14,6 +14,7 @@ import unsw.loopmania.Items.*;
 import unsw.loopmania.Loaders.BuildingLoader;
 import unsw.loopmania.Loaders.CardLoader;
 import unsw.loopmania.Loaders.ItemLoader;
+import unsw.loopmania.Types.ItemType;
 
 /**
  * A backend world.
@@ -57,7 +58,7 @@ public class LoopManiaWorld {
 
     // TODO = expand the range of items
     private List<Entity> unequippedInventoryItems;
-    private List<Entity> equippedInventoryItems;
+    private List<Equipable> equippedInventoryItems;
 
     // TODO = expand the range of buildings
     private List<Building> buildingEntities;
@@ -344,20 +345,22 @@ public class LoopManiaWorld {
         return theonering;
     }
 
-    public Sword EquipSword() {
+    public void EquipEquippableItem(Equipable item) {
+        for (Equipable items : equippedInventoryItems) {
+            Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
 
-    }
-
-    public Armour EquipArmour() {
-
-    }
-
-    public Helmet EquipHelmet() {
-
-    }
-
-    public Shield EquipShield() {
-        
+            if (firstAvailableSlot == null) {
+                return;
+            } else if (items.getItemType() == item.getItemType()) {
+                // when adding an equipping an equippable if an equippable is already 
+                // in the slot, that equippable gets put into the unequipp inventory
+                // and thr new equippable goes intoo the slot
+                unequippedInventoryItems.add(items);
+                equippedInventoryItems.remove(items);
+                equippedInventoryItems.add(item);
+            }
+        }
+            
     }
     /**
      * remove an item by x,y coordinates

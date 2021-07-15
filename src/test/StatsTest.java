@@ -103,14 +103,15 @@ public class StatsTest {
         LoopManiaWorld World = d;
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
         World.setCharacter(testCharacter);
-        World.addUnequippedArmour();
-        World.addUnequippedHelmet();
-        World.addUnequippedSword();
-        World.addUnequippedShield();
-        World.EquipArmour();
-        World.EquipHelmet();
-        World.EquipSword();
-        World.EquipShield();
+        Armour armour = World.addUnequippedArmour();
+        Helmet helmet = World.addUnequippedHelmet();
+        Sword sword = World.addUnequippedSword();
+        Shield shield = World.addUnequippedShield();
+        World.EquipEquippableItem(armour);
+        World.EquipEquippableItem(helmet);
+        World.EquipEquippableItem(sword);
+        World.EquipEquippableItem(shield);
+        
 
         assertEquals(10, World.getCharacterHp());
         assertEquals(6, World.getCharacterDefense());
