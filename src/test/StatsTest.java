@@ -31,45 +31,45 @@ public class StatsTest {
     public void TestSwordStat(){
         LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
         Sword sword = World.addUnequippedSword();
-        assertEqual(5, sword.getAttack());
+        assertEquals(5, sword.getAttack());
     }
 
     @Test
     public void TestStaffStat(){
         LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
         Staff staff = World.addUnequippedStaff();
-        assertEqual(1, staff.getAttack());
+        assertEquals(1, staff.getAttack());
     }
 
     @Test
     public void TestStakeStat(){
         LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
         Stake stake = World.addUnequippedStake();
-        assertEqual(3, stake.getAttack());
+        assertEquals(3, stake.getAttack());
     }
 
 
-    /* Armour doesn't ahve stats as it halves the enemies attack?
+    
     @Test
     public void TestArmourState(){
         LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
         Armour armour = World.addUnequippedArmour();
-        assertEqual(3, armour.getDefense());
+        assertEquals(3, armour.getDefense());
     }
-    */
+    
     @Test
 
     public void TestHelmetStat(){
         LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
         Helmet helmet = World.addUnequippedHelmet();
-        assertEqual(3, helmet.getDefense());
+        assertEquals(3, helmet.getDefense());
     }
 
     @Test
     public void TestShieldStat(){
         LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
         Shield shield = World.addUnequippedShield();
-        assertEqual(3, shield.getDefense());
+        assertEquals(3, shield.getDefense());
     
     }
 

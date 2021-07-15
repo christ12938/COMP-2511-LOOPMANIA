@@ -12,4 +12,8 @@ public class Shield extends DefensiveItems{
     public ItemType getItemType(){
         return ItemType.SHIELD;
     }
+
+    public int getDefense() {
+        return 0; 
+     }
 }

@@ -4,12 +4,16 @@ import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Types.ItemType;
 
 public class Helmet extends DefensiveItems{
-
+    
     public Helmet(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
     }
     
     public ItemType getItemType(){
         return ItemType.HELMET;
+    }
+
+    public int getDefense() {
+       return 0; 
     }
 }
