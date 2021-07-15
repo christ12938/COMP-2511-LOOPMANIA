@@ -6,9 +6,9 @@ package unsw.loopmania;
  */
 public class Character extends MovingEntity {
 
-    private double health;
-    private double attack;
-    private double defense;
+    private int health;
+    private int attack;
+    private int defense;
     private int gold;
     private int experience;
 
@@ -24,6 +24,18 @@ public class Character extends MovingEntity {
 
     public int getExperience() {
         return this.experience;
+    }
+
+    public int getAttack() {
+        return this.attack;
+    }
+
+    public int getDefense() {
+        return this.defense;
+    }
+
+    public int getHp() {
+        return this.health;
     }
 
     public boolean addGold(int amount){

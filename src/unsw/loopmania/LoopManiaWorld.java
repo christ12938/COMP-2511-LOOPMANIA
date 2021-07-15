@@ -114,6 +114,9 @@ public class LoopManiaWorld {
         this.character = character;
     }
 
+    public int getCharacterAttack() {
+        return this.character.getAttack();
+    }
     /**
      * add a generic entity (without it's own dedicated method for adding to the world)
      * @param entity
