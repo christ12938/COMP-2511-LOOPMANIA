@@ -57,6 +57,7 @@ public class LoopManiaWorld {
 
     // TODO = expand the range of items
     private List<Entity> unequippedInventoryItems;
+    private List<Entity> equippedInventoryItems;
 
     // TODO = expand the range of buildings
     private List<Building> buildingEntities;
@@ -343,6 +344,21 @@ public class LoopManiaWorld {
         return theonering;
     }
 
+    public Sword EquipSword() {
+
+    }
+
+    public Armour EquipArmour() {
+
+    }
+
+    public Helmet EquipHelmet() {
+
+    }
+
+    public Shield EquipShield() {
+        
+    }
     /**
      * remove an item by x,y coordinates
      * @param x x coordinate from 0 to width-1
