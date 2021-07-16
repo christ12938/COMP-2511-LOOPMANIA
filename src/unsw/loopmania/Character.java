@@ -12,7 +12,7 @@ public class Character extends MovingEntity {
     private int defense;
     private int gold;
     private int experience;
-    LoopManiaWorldController observer;
+    private LoopManiaWorldController observer;
 
     public Character(PathPosition position) {
         super(position);
@@ -21,6 +21,8 @@ public class Character extends MovingEntity {
         this.experience = 0;
         this.attack = 5;
         this.defense = 5;
+        this.observer = null;
+        
     }
 
     public void setObserver(LoopManiaWorldController observer){
@@ -36,12 +38,13 @@ public class Character extends MovingEntity {
     }
 
     public void addHp(long amount) {
+        this.currentHealth += amount;
+        if (currentHealth > maxHealth) {
+            this.currentHealth = maxHealth;
+        }
         return;
     }
 
-    public void decreaseHp(long amount) {
-        return;
-    }
     
     public int getGold() {
         return this.gold;
@@ -72,11 +75,15 @@ public class Character extends MovingEntity {
             return false;
         } else if (Long.valueOf(this.gold) + Long.valueOf(amount) >= Integer.MAX_VALUE) {
             this.gold = Integer.MAX_VALUE;
-            observer.updateGold();
+            if (observer != null) {
+                observer.updateGold();
+            }
             return true;
         } else {
             this.gold += amount;
-            observer.updateGold();
+            if (observer != null) {
+                observer.updateGold();
+            }
             return true;
         }
     }
@@ -88,7 +95,9 @@ public class Character extends MovingEntity {
             return false;
         } else {
             this.gold -= amount;
-            observer.updateGold();
+            if (observer != null) {
+                observer.updateGold();
+            }
             return true;
         }
     }
@@ -98,11 +107,15 @@ public class Character extends MovingEntity {
             return false;
         } else if (Long.valueOf(this.experience) + Long.valueOf(amount) >= Integer.MAX_VALUE) {
             this.experience = Integer.MAX_VALUE;
-            observer.updateExperience();
+            if (observer != null) {
+                observer.updateExperience();
+            }
             return true;
         } else {
             this.experience += amount;
-            observer.updateExperience();
+            if (observer != null) {
+                observer.updateExperience();
+            }
             return true;
         }
     }
@@ -110,11 +123,20 @@ public class Character extends MovingEntity {
     public void minusHealth(double health){
         if(currentHealth - health == 0){
             currentHealth = 0;
-            observer.updateHealth(this.currentHealth, this.maxHealth);
+
+            if (observer != null) {
+                observer.updateHealth(this.currentHealth, this.maxHealth);
+            }
+
             //DO STH ELSE
         }else{
             currentHealth = currentHealth - health;
-            observer.updateHealth(this.currentHealth, this.maxHealth);
+
+            if (observer != null) {
+                observer.updateHealth(this.currentHealth, this.maxHealth);
+            }
+
+            
         }
     }
 

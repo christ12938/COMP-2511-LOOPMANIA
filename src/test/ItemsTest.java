@@ -11,11 +11,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.robot.Robot;
 
 import org.javatuples.Pair;
 import unsw.loopmania.LoopManiaWorld;
+import unsw.loopmania.LoopManiaWorldController;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Character;
@@ -261,15 +263,15 @@ public class ItemsTest {
         World.addUnequippedHealthPotion();
         World.addUnequippedHealthPotion();
         World.addUnequippedHealthPotion();
-
+        
         World.decreaseCharacterHp(90);
-
+       
         World.useHealthPotion();
         World.useHealthPotion();
         World.useHealthPotion();
         World.useHealthPotion();
         World.useHealthPotion();
-
+        
         assertEquals(60,World.getCharacterCurrentHp(), "comparing two doubles");
     }
     
@@ -285,9 +287,8 @@ public class ItemsTest {
         
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
         World.setCharacter(testCharacter);
-
+        
         World.decreaseCharacterHp(90);
-
         World.useHealthPotion();
         
         assertEquals(10,World.getCharacterCurrentHp(), "comparing two doubles");

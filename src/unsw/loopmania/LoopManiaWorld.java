@@ -142,11 +142,13 @@ public class LoopManiaWorld {
     }
 
     public void decreaseCharacterHp(long amount) {
+        this.character.minusHealth(amount);
         return;
     }
 
     public void increaseCharacterHp(long amount) {
-        return 
+        this.character.addHp(amount);
+        return;
     }
 
     public Character getCharacter(){
@@ -458,7 +460,13 @@ public class LoopManiaWorld {
     }
     
     public void useHealthPotion() {
-
+        for (Item item : this.unequippedInventoryItems) {
+            if (item.getItemType() == ItemType.HEALTH_POTION) {
+                increaseCharacterHp(10);
+                removeUnequippedInventoryItemByCoordinates(item.getX(), item.getY());
+                return;
+            }
+        }
     }
 
     /**

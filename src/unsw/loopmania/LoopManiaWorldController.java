@@ -1312,6 +1312,7 @@ public class LoopManiaWorldController {
      * Signal from observable about updating experience (Observer pattern)
      */
     public void updateHealth(double currentHealth, double maxHealth){
+        System.err.println("test");
         if(currentHealth/maxHealth <= 0.3){
             healthBar.setStyle("-fx-accent: red;");
         }else if(currentHealth/maxHealth <= 0.6){
