@@ -86,7 +86,7 @@ public class StatsTest {
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
         World.setCharacter(testCharacter);
 
-        assertEquals(100, World.getCharacterHp());
+        assertEquals(100, World.getCharacterCurrentHp(), "comparing two doubles");
         assertEquals(5, World.getCharacterDefense());
         assertEquals(5, World.getCharacterAttack());
     }
@@ -107,22 +107,22 @@ public class StatsTest {
         Helmet helmet = World.addUnequippedHelmet();
         Sword sword = World.addUnequippedSword();
         Shield shield = World.addUnequippedShield();
-
+        
         World.EquipEquippableItem(armour);
         World.EquipEquippableItem(helmet);
         World.EquipEquippableItem(sword);
         World.EquipEquippableItem(shield);
         
-        assertEquals(100, World.getCharacterHp());
+        assertEquals(100, World.getCharacterCurrentHp(), "comparing two doubles");
         assertEquals(14, World.getCharacterDefense());
         assertEquals(10, World.getCharacterAttack());
-
+        
         World.unequipEquippableItem(armour); 
         World.unequipEquippableItem(helmet); 
         World.unequipEquippableItem(sword); 
         World.unequipEquippableItem(shield); 
 
-        assertEquals(100, World.getCharacterHp());
+        assertEquals(100, World.getCharacterCurrentHp(), "comparing two doubles");
         assertEquals(5, World.getCharacterDefense());
         assertEquals(5, World.getCharacterAttack());
     }

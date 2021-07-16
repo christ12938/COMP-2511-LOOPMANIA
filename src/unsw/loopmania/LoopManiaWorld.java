@@ -136,8 +136,9 @@ public class LoopManiaWorld {
     public int getCharacterDefense() {
         return this.character.getDefense();
     }
-
-    
+    public double getCharacterCurrentHp() {
+        return this.character.getCurrentHealth();
+    }
     public Character getCharacter(){
         return this.character;
     }
@@ -270,7 +271,7 @@ public class LoopManiaWorld {
         // now we insert the new sword, as we know we have at least made a slot available...        
         Item item = ItemLoader.loadRandomItem(firstAvailableSlot);
         if(item.getItemType() == ItemType.GOLD){
-            character.addGold(Integer.MAX_VALUE);
+            character.addGold(5);
             return null;
         }
         unequippedInventoryItems.add(item);
