@@ -1013,10 +1013,9 @@ public class LoopManiaWorldController {
             else{
                 pause();
             }
-            System.err.println("test");
             break;
-        case E:
-            
+        case H:
+            this.world.useHealthPotion();
         default:
             break;
         }
