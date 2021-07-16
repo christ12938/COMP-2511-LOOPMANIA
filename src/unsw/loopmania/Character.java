@@ -17,9 +17,9 @@ public class Character extends MovingEntity {
         super(position);
         this.gold = 0;
         this.experience = 0;
-        this.health = 10;
-        this.attack = 1;
-        this.defense = 1;
+        this.health = 100;
+        this.attack = 5;
+        this.defense = 5;
     }
 
     public void setObserver(LoopManiaWorldController observer){

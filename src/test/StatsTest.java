@@ -86,9 +86,9 @@ public class StatsTest {
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
         World.setCharacter(testCharacter);
 
-        assertEquals(10, World.getCharacterHp());
-        assertEquals(1, World.getCharacterDefense());
-        assertEquals(1, World.getCharacterAttack());
+        assertEquals(100, World.getCharacterHp());
+        assertEquals(5, World.getCharacterDefense());
+        assertEquals(5, World.getCharacterAttack());
     }
 
     @Test
@@ -113,17 +113,17 @@ public class StatsTest {
         World.EquipEquippableItem(sword);
         World.EquipEquippableItem(shield);
         
-        assertEquals(10, World.getCharacterHp());
-        assertEquals(10, World.getCharacterDefense());
-        assertEquals(6, World.getCharacterAttack());
+        assertEquals(100, World.getCharacterHp());
+        assertEquals(14, World.getCharacterDefense());
+        assertEquals(10, World.getCharacterAttack());
 
         World.unequipEquippableItem(armour); 
         World.unequipEquippableItem(helmet); 
         World.unequipEquippableItem(sword); 
         World.unequipEquippableItem(shield); 
 
-        assertEquals(10, World.getCharacterHp());
-        assertEquals(1, World.getCharacterDefense());
-        assertEquals(1, World.getCharacterAttack());
+        assertEquals(100, World.getCharacterHp());
+        assertEquals(5, World.getCharacterDefense());
+        assertEquals(5, World.getCharacterAttack());
     }
 }

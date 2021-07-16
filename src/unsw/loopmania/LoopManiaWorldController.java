@@ -702,10 +702,12 @@ public class LoopManiaWorldController {
                                     if(targetGridPane == unequippedInventory){
                                         Equipable equipableItem = world.getEquippedItemByCoordinates(nodeX, nodeY);
                                         equipableItem = unequip(equipableItem, nodeX, nodeY, x, y);
+                                        world.unequipEquippableItem(equipableItem);
                                         onLoadUnequippedItem(equipableItem);
                                     }else if(targetGridPane == equippedItems){
                                         Equipable equipableItem = world.getUnequippedItemByCoordinates(nodeX, nodeY);
                                         equipableItem = equip(equipableItem, nodeX, nodeY, x, y);
+                                        world.EquipEquippableItem(equipableItem);
                                         onLoadEquippedItem(equipableItem);
 
                                     }
