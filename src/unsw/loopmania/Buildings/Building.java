@@ -10,6 +10,15 @@ public abstract class Building extends StaticEntity{
         super(x, y);
     }
 
+    public boolean inRange(int x, int y){
+        if(x == this.getX() && y == this.getY()){
+            return true;
+        }
+
+        return false;
+    }
+
     public abstract BuildingType getBuildingType();
-    
+
+
 }

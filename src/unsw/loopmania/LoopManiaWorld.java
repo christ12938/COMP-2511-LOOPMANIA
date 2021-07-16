@@ -8,6 +8,7 @@ import org.javatuples.Pair;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Buildings.Building;
+import unsw.loopmania.Buildings.CampfireBuilding;
 import unsw.loopmania.Buildings.Spawner;
 import unsw.loopmania.Cards.Card;
 import unsw.loopmania.Enemies.Enemy;
@@ -612,7 +613,13 @@ public class LoopManiaWorld {
         // TODO = expand to more types of enemy
         for (Enemy e: enemies){
             e.move();
-
+            if(MovingEntityOnBuilding(e)){
+                Building b = movingEntityLocationBuilding(e);
+                if(b.getBuildingType()==BuildingType.TRAP_BUILDING){
+                    e.takeDamage(30);
+                    buildingEntities.remove(b);
+                }
+            }
         }
     }
 
@@ -707,24 +714,26 @@ public class LoopManiaWorld {
         }
     }
 
-    public boolean checkIfCharacterOnBuilding(){
+    public boolean MovingEntityOnBuilding(MovingEntity e){
         for (Building b : buildingEntities) {
-            if((b.getX() == character.getX()) && (b.getY() == character.getY())){
+            if((b.getX() == e.getX()) && (b.getY() == e.getY())){
                 return true;
             }
         }
         return false;
     }
-    public Building charecterLocationBuildingType(){
+
+    // DO NOT call when the character is not on a building
+    public Building movingEntityLocationBuilding(MovingEntity e){
+        Building firstb = buildingEntities.get(0);
         for (Building b : buildingEntities) {
-            Building lastb;
-            if((b.getX() == character.getX()) && (b.getY() == character.getY())){
+            if((b.getX() == e.getX()) && (b.getY() == e.getY())){
                 return b;
-                lastb = b;
             }
         }
 
-        return lastb;
+        //returns first building if none is found (note: shouldn't happpen with correct use)
+        return firstb;
     }
 
     public void subtractCharacterHP(double amount){
@@ -733,5 +742,31 @@ public class LoopManiaWorld {
 
     public double getCharacterHP(){
         return this.character.getHealth();
+    }
+
+    //use for battle calculation
+    //check at the start of each battle to determine
+    //character atk
+    public Boolean inRangeOfCampfire(int x, int y){
+        for (Building b : buildingEntities) {
+            if(b.getBuildingType()==BuildingType.CAMPFIRE_BUILDING){
+                if(b.inRange(x, y)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    //use for battle calculation to determine dmg to enemies
+    public Boolean inRangeOfTower(int x, int y){
+        for (Building b : buildingEntities) {
+            if(b.getBuildingType()==BuildingType.TOWER_BUILDING){
+                if(b.inRange(x, y)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
