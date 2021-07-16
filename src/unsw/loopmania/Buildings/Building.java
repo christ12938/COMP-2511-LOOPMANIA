@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.StaticEntity;
 import unsw.loopmania.Enemies.Enemy;
 import unsw.loopmania.Types.BuildingType;
+import unsw.loopmania.Character;
 
 public abstract class Building extends StaticEntity{
 
@@ -29,4 +30,5 @@ public abstract class Building extends StaticEntity{
 
     public abstract int getBuildingRadius();
     public abstract BuildingType getBuildingType();
+    public abstract boolean isBuffingCharacter();
 }

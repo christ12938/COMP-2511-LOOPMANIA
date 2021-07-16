@@ -11,10 +11,6 @@ public class ZombiePitBuilding extends Spawner{
         super(x, y);
     }
 
-    public int getBuildingRadius(){
-        return 0;
-    }
-
     public BuildingType getBuildingType(){
         return BuildingType.ZOMBIEPIT_BUILDING;
     }
