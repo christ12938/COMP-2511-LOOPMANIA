@@ -5,7 +5,6 @@ import java.util.Random;
 import unsw.loopmania.MovingEntity;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Character;
-import unsw.loopmania.Damageable;
 import unsw.loopmania.Types.EnemyType;
 
 /**

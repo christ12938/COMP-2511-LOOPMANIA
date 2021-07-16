@@ -1,5 +1,6 @@
 package unsw.loopmania;
 
+import unsw.loopmania.Enemies.Damageable;
 
 /**
  * represents the main character in the backend of the game world
