@@ -207,6 +207,7 @@ public class LoopManiaWorld {
             // TODO = you should implement different RHS on this inequality, based on influence radii and battle radii
             if (Math.pow((character.getX()-e.getX()), 2) +  Math.pow((character.getY()-e.getY()), 2) < 4){
                 // fight...
+                character.minusHealth(50);
                 defeatedEnemies.add(e);
             }
         }
@@ -261,7 +262,7 @@ public class LoopManiaWorld {
         // now we insert the new sword, as we know we have at least made a slot available...        
         Item item = ItemLoader.loadRandomItem(firstAvailableSlot);
         if(item.getItemType() == ItemType.GOLD){
-            character.addGold(100);
+            character.addGold(Integer.MAX_VALUE);
             return null;
         }
         unequippedInventoryItems.add(item);

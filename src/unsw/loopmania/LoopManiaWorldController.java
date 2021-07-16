@@ -19,6 +19,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -137,6 +138,9 @@ public class LoopManiaWorldController {
 
     @FXML
     private ImageView shieldCell;
+
+    @FXML
+    private ProgressBar healthBar;
 
     @FXML
     private Label goldValue;
@@ -313,7 +317,7 @@ public class LoopManiaWorldController {
         Image inventorySlotImage = new Image((new File("src/images/empty_slot.png")).toURI().toString());
         Rectangle2D imagePart = new Rectangle2D(0, 0, 32, 32);
         Image cardSlotImage = new Image((new File("src/images/card_slot.png")).toURI().toString());
-
+        healthBar.setStyle("-fx-accent: green;");
         // Add the ground first so it is below all other entities (inculding all the twists and turns)
         for (int x = 0; x < world.getWidth(); x++) {
             for (int y = 0; y < world.getHeight(); y++) {
@@ -524,6 +528,8 @@ public class LoopManiaWorldController {
             case HEALTH_POTION:
                 view = new ImageView(healthPotionImage);
                 break;
+            default:
+                return;
         }
         if(!(draggableType == null)){
             addDragEventHandlers(view, draggableType, unequippedInventory, equippedItems);
@@ -945,11 +951,24 @@ public class LoopManiaWorldController {
         });
 
         view.setOnMouseReleased(new EventHandler<MouseEvent>(){
-
             @Override
             public void handle(MouseEvent event) {
-                //TODO:DOSTH
-
+                /**
+                 * currentlyDraggedImage == null means when the view is released
+                 * all the other handlers didnt fire
+                 * meaning out of bounds dropping
+                 * perform action when it is null else just consume the event as it is valid
+                 */
+                if(currentlyDraggedImage != null){
+                    currentlyDraggedImage.setVisible(true);
+                    draggedEntity.setVisible(false);
+                    draggedEntity.setMouseTransparent(false);
+                    // remove drag event handlers before setting currently dragged image to null
+                    removeDraggableDragEventHandlers(draggableType, targetGridPane);
+                    currentlyDraggedImage = null;
+                    currentlyDraggedType = null;
+                }
+                event.consume();
             }
             
         });
@@ -1280,6 +1299,21 @@ public class LoopManiaWorldController {
      */
     public void updateExperience(){
         expValue.setText(Integer.toString(world.getCharacter().getExperience()));
+        primaryStage.sizeToScene();
+    }
+
+    /**
+     * Signal from observable about updating experience (Observer pattern)
+     */
+    public void updateHealth(double currentHealth, double maxHealth){
+        if(currentHealth/maxHealth <= 0.3){
+            healthBar.setStyle("-fx-accent: red;");
+        }else if(currentHealth/maxHealth <= 0.6){
+            healthBar.setStyle("-fx-accent: yellow;");
+        }else{
+            healthBar.setStyle("-fx-accent: green;");
+        }
+        healthBar.setProgress(currentHealth/maxHealth);
         primaryStage.sizeToScene();
     }
 

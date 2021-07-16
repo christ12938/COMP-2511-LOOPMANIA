@@ -6,19 +6,29 @@ package unsw.loopmania;
  */
 public class Character extends MovingEntity {
 
-    private double health;
+    private final double maxHealth = 100;
+    private double currentHealth;
     private int gold;
     private int experience;
     LoopManiaWorldController observer;
 
     public Character(PathPosition position) {
         super(position);
+        this.currentHealth = this.maxHealth;
         this.gold = 0;
         this.experience = 0;
     }
 
     public void setObserver(LoopManiaWorldController observer){
         this.observer = observer;
+    }
+
+    public double getCurrentHealth(){
+        return this.currentHealth;
+    }
+
+    public double getMaxHealth(){
+        return this.maxHealth;
     }
     
     public int getGold() {
@@ -60,10 +70,23 @@ public class Character extends MovingEntity {
             return false;
         } else if (Long.valueOf(this.experience) + Long.valueOf(amount) >= Integer.MAX_VALUE) {
             this.experience = Integer.MAX_VALUE;
+            observer.updateExperience();
             return true;
         } else {
             this.experience += amount;
+            observer.updateExperience();
             return true;
+        }
+    }
+
+    public void minusHealth(double health){
+        if(currentHealth - health == 0){
+            currentHealth = 0;
+            observer.updateHealth(this.currentHealth, this.maxHealth);
+            //DO STH ELSE
+        }else{
+            currentHealth = currentHealth - health;
+            observer.updateHealth(this.currentHealth, this.maxHealth);
         }
     }
 
