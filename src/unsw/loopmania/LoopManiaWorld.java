@@ -136,9 +136,19 @@ public class LoopManiaWorld {
     public int getCharacterDefense() {
         return this.character.getDefense();
     }
+
     public double getCharacterCurrentHp() {
         return this.character.getCurrentHealth();
     }
+
+    public void decreaseCharacterHp(long amount) {
+        return;
+    }
+
+    public void increaseCharacterHp(long amount) {
+        return 
+    }
+
     public Character getCharacter(){
         return this.character;
     }
@@ -447,6 +457,9 @@ public class LoopManiaWorld {
         this.equippedItems.remove(item);  
     }
     
+    public void useHealthPotion() {
+
+    }
 
     /**
      * remove an item by x,y coordinates

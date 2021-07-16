@@ -34,6 +34,14 @@ public class Character extends MovingEntity {
     public double getMaxHealth(){
         return this.maxHealth;
     }
+
+    public void addHp(long amount) {
+        return;
+    }
+
+    public void decreaseHp(long amount) {
+        return;
+    }
     
     public int getGold() {
         return this.gold;
