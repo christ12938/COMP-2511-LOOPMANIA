@@ -107,14 +107,23 @@ public class StatsTest {
         Helmet helmet = World.addUnequippedHelmet();
         Sword sword = World.addUnequippedSword();
         Shield shield = World.addUnequippedShield();
+
         World.EquipEquippableItem(armour);
         World.EquipEquippableItem(helmet);
         World.EquipEquippableItem(sword);
         World.EquipEquippableItem(shield);
         
+        assertEquals(10, World.getCharacterHp());
+        assertEquals(10, World.getCharacterDefense());
+        assertEquals(6, World.getCharacterAttack());
+
+        World.unequipEquippableItem(armour); 
+        World.unequipEquippableItem(helmet); 
+        World.unequipEquippableItem(sword); 
+        World.unequipEquippableItem(shield); 
 
         assertEquals(10, World.getCharacterHp());
-        assertEquals(6, World.getCharacterDefense());
-        assertEquals(6, World.getCharacterAttack());
+        assertEquals(1, World.getCharacterDefense());
+        assertEquals(1, World.getCharacterAttack());
     }
 }

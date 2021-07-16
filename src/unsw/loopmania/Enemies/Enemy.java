@@ -4,15 +4,16 @@ import java.util.Random;
 
 import unsw.loopmania.MovingEntity;
 import unsw.loopmania.PathPosition;
+import unsw.loopmania.Types.EnemyType;
 
 /**
  * a basic form of enemy in the world
  */
 
  // TODO: RENAME BASICENEMY TO ENEMY and change to abstract
-public class BasicEnemy extends MovingEntity {
+public abstract class Enemy extends MovingEntity {
     // TODO = modify this, and add additional forms of enemy
-    public BasicEnemy(PathPosition position) {
+    public Enemy(PathPosition position) {
         super(position);
     }
 
@@ -30,4 +31,6 @@ public class BasicEnemy extends MovingEntity {
             moveDownPath();
         }
     }
+
+    public abstract EnemyType getEnemyType();
 }

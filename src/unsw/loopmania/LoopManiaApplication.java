@@ -32,6 +32,7 @@ public class LoopManiaApplication extends Application {
         // load the main game
         LoopManiaWorldControllerLoader loopManiaLoader = new LoopManiaWorldControllerLoader("world_with_twists_and_turns.json");
         mainController = loopManiaLoader.loadController();
+        mainController.setStage(primaryStage);
         FXMLLoader gameLoader = new FXMLLoader(getClass().getResource("LoopManiaView.fxml"));
         gameLoader.setController(mainController);
         Parent gameRoot = gameLoader.load();
