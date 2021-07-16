@@ -27,31 +27,8 @@ import unsw.loopmania.HerosCastle;
  */
 public class BuildingsTest{
     @Test
-    public void blahTest(){
-        assertEquals("a", "a");
-    }
-
-    @Test
-    public void blahTest2(){
-        LoopManiaWorld d = new LoopManiaWorld(1, 2, new ArrayList<>());
-        assertEquals(d.getWidth(), 1);
-    }
-
-    @Test
     public void TowerRadiusTrue() {
-        /*
-        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
-        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
-        Pair<Integer, Integer> pair3 = new Pair<Integer, Integer>(1,3);
 
-        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
-        orderedPath.add(pair1);
-        orderedPath.add(pair2);
-        orderedPath.add(pair3);
-
-        Character character = new Character(new PathPosition(0, orderedPath));
-        Slug slug = new Slug(new PathPosition(2, orderedPath));
-        assertFalse(slug.inBattleRadius(character));*/
     }
 
     @Test
@@ -60,7 +37,9 @@ public class BuildingsTest{
     }
 
     @Test
-    public void TestBarracks(){}
+    public void TestBarracks(){
+
+    }
 
     @Test
     public void TestVillage(){
@@ -143,5 +122,7 @@ public class BuildingsTest{
     }
 
     @Test
-    public void TestTrap(){}
+    public void TestTrap(){
+
+    }
 }
