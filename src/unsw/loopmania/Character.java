@@ -6,7 +6,7 @@ package unsw.loopmania;
  */
 public class Character extends MovingEntity implements Damageable{
 
-    private int health;
+    private double health;
     private int gold;
     private int experience;
     private int damage;
@@ -33,11 +33,11 @@ public class Character extends MovingEntity implements Damageable{
         return this.experience;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
     }
 
-    public void setHealth(int health) {
+    public void setHealth(double health) {
         this.health = health;
     }
 

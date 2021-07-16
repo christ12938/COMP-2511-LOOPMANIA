@@ -14,7 +14,7 @@ import unsw.loopmania.Types.EnemyType;
 
  // TODO: RENAME BASICENEMY TO ENEMY and change to abstract
 public abstract class Enemy extends MovingEntity implements Damageable{
-    private int health;
+    private double health;
     private int battleRadius;
     private int supportRadius;
     private double critRate;
@@ -31,7 +31,7 @@ public abstract class Enemy extends MovingEntity implements Damageable{
         this.damage = 5;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
     }
 

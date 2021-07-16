@@ -1,7 +1,7 @@
 package unsw.loopmania;
 
 public class AlliedSoldier implements Damageable{
-    private int health;
+    private double health;
     private int damage;
     private static int count = 0;
 

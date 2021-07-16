@@ -82,7 +82,7 @@ public class EnemyTest {
         orderedPath.add(pair1);
         Character character = new Character(new PathPosition(0, orderedPath));
         Slug slug = new Slug(new PathPosition(0, orderedPath));
-        int health = character.getHealth();
+        double health = character.getHealth();
 
         slug.dealDamage(character);
         assertTrue(health > character.getHealth());
@@ -94,7 +94,7 @@ public class EnemyTest {
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
         Slug slug = new Slug(new PathPosition(0, orderedPath));
-        int health = slug.getHealth();
+        double health = slug.getHealth();
 
         slug.takeDamage(5);
         assertTrue(health > slug.getHealth());
