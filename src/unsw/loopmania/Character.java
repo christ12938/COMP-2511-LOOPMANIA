@@ -4,11 +4,12 @@ package unsw.loopmania;
 /**
  * represents the main character in the backend of the game world
  */
-public class Character extends MovingEntity {
+public class Character extends MovingEntity implements Damageable{
 
     private int health;
     private int gold;
     private int experience;
+    private int damage;
     LoopManiaWorldController observer;
 
     public Character(PathPosition position) {
@@ -16,7 +17,8 @@ public class Character extends MovingEntity {
         this.gold = 0;
         this.experience = 0;
         // just putting random health value for now for testing
-        this.health = 20;
+        this.health = 100;
+        this.damage = 5;
     }
 
     public void setObserver(LoopManiaWorldController observer){
@@ -75,6 +77,16 @@ public class Character extends MovingEntity {
             this.experience += amount;
             return true;
         }
+    }
+
+    @Override
+    public void takeDamage(int damage) {
+        health -= damage;
+    }
+
+    @Override
+    public void dealDamage(Damageable damageable) {
+        damageable.takeDamage(damage);
     }
 
     

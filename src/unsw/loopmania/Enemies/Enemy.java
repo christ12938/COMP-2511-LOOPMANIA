@@ -5,6 +5,7 @@ import java.util.Random;
 import unsw.loopmania.MovingEntity;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Character;
+import unsw.loopmania.Damageable;
 import unsw.loopmania.Types.EnemyType;
 
 /**
@@ -12,12 +13,13 @@ import unsw.loopmania.Types.EnemyType;
  */
 
  // TODO: RENAME BASICENEMY TO ENEMY and change to abstract
-public abstract class Enemy extends MovingEntity {
+public abstract class Enemy extends MovingEntity implements Damageable{
     private int health;
     private int battleRadius;
     private int supportRadius;
     private double critRate;
     private int damage;
+    private CritStrategy critStrategy;
 
     // TODO = modify this, and add additional forms of enemy
     public Enemy(PathPosition position, int health, int battleRadius, int supportRadius) {
@@ -31,6 +33,10 @@ public abstract class Enemy extends MovingEntity {
 
     public int getHealth() {
         return health;
+    }
+
+    public void setCritStrategy(CritStrategy critStrategy) {
+        this.critStrategy = critStrategy;
     }
 
     /**
@@ -56,18 +62,17 @@ public abstract class Enemy extends MovingEntity {
         return Math.pow((character.getX()-super.getX()), 2) +  Math.pow((character.getY()-super.getY()), 2) < supportRadius;
     }
 
-    public void dealDamage(Character character) {
-        int damage = this.damage;
-        if ((new Random()).nextDouble() < critRate) {
-            damage *= 1.5;
-        }
-        character.setHealth(character.getHealth() - damage);
-        return;
-    }
-
+    @Override
     public void takeDamage(int damage) {
         health -= damage;
-        return;
+    }
+
+    @Override
+    public void dealDamage(Damageable damageable) {
+        if ((new Random()).nextDouble() < critRate) {
+            critStrategy.applyCrit();
+        }
+        damageable.takeDamage(damage);
     }
 
     public abstract EnemyType getEnemyType();
