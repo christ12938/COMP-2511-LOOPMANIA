@@ -86,7 +86,7 @@ public class StatsTest {
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
         World.setCharacter(testCharacter);
 
-        assertEquals(100, World.getCharacterHp());
+        assertEquals(100, World.getCharacterCurrentHp(), "comparing two doubles");
         assertEquals(5, World.getCharacterDefense());
         assertEquals(5, World.getCharacterAttack());
     }
