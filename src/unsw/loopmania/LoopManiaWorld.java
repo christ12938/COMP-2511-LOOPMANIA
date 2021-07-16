@@ -278,6 +278,21 @@ public class LoopManiaWorld {
     }
 
     /**
+     * Get all the buildings that contains the entity within the building radius
+     * @param e the entiy being passed
+     * @return
+     */
+    public List<Building> getBuildingsWithinRadiusOfEntity(Entity e){
+        List<Building> result = new ArrayList<>();
+        for(Building b : buildingEntities){
+            if (Math.pow((b.getX()-e.getX()), 2) +  Math.pow((b.getY()-e.getY()), 2) < Math.pow(b.getBuildingRadius(), 2)){
+                result.add(b);
+            }
+        }
+        return result;
+    }
+
+    /**
      * spawn a sword in the world and return the sword entity
      * @return a sword to be spawned in the controller as a JavaFX node
      */
@@ -463,10 +478,17 @@ public class LoopManiaWorld {
     public void runTickMoves(){
         character.moveDownPath();
         moveEnemies();
+    }
+
+    /**
+     * determine if the character is on hero castle
+     * @return
+     */
+    public boolean characterIsOnHeroCastle(){
         if(character.getX() == herosCastle.getX() && character.getY() == herosCastle.getY()){
-            //TODO-: SHOP
-            nextCycle();
+            return true;
         }
+        return false;
     }
 
     /**

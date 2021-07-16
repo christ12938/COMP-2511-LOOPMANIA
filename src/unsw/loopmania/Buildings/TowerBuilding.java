@@ -9,6 +9,10 @@ public class TowerBuilding extends Building{
         super(x, y);
     }
 
+    public int getBuildingRadius(){
+        return 0;
+    }
+    
     public BuildingType getBuildingType(){
         return BuildingType.TOWER_BUILDING;
     }

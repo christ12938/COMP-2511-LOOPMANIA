@@ -9,6 +9,10 @@ public class TrapBuilding extends Building{
         super(x, y);
     }
 
+    public int getBuildingRadius(){
+        return 1;
+    }
+
     public BuildingType getBuildingType(){
         return BuildingType.TRAP_BUILDING;
     }

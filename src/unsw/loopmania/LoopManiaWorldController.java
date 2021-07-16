@@ -62,12 +62,19 @@ enum DRAGGABLE_TYPE{
     TRAP_CARD,
     CAMPFIRE_CARD,
 
-    SWORD,
-    STAKE,
-    STAFF,
-    ARMOUR,
-    SHIELD,
-    HELMET
+    SWORD_EQUIPPED,
+    STAKE_EQUIPPED,
+    STAFF_EQUIPPED,
+    ARMOUR_EQUIPPED,
+    SHIELD_EQUIPPED,
+    HELMET_EQUIPPED,
+
+    SWORD_UNEQUIPPED,
+    STAKE_UNEQUIPPED,
+    STAFF_UNEQUIPPED,
+    ARMOUR_UNEQUIPPED,
+    SHIELD_UNEQUIPPED,
+    HELMET_UNEQUIPPED
 }
 
 /**
@@ -218,6 +225,12 @@ public class LoopManiaWorldController {
      * Holding the ImageView being dragged allows us to spawn it again in the drop location if appropriate.
      */
     private ImageView currentlyDraggedImage;
+
+    /**
+     * the image currently being highlighted on the grid
+     * added for refining the GUI
+     */
+    private Node currentlyHighlightedImage;
     
     /**
      * null if nothing being dragged, or the type of item being dragged
@@ -299,6 +312,7 @@ public class LoopManiaWorldController {
         healthPotionImage = new Image((new File("src/images/brilliant_blue_new.png")).toURI().toString());
 
         currentlyDraggedImage = null;
+        currentlyHighlightedImage = null;
         currentlyDraggedType = null;
 
         // initialize them all...
@@ -369,6 +383,9 @@ public class LoopManiaWorldController {
         // trigger adding code to process main game logic to queue. JavaFX will target framerate of 0.3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(0.3), event -> {
             world.runTickMoves();
+            if(world.characterIsOnHeroCastle()){
+                world.nextCycle();
+            }
             List<Enemy> defeatedEnemies = world.runBattles();
             for (Enemy e: defeatedEnemies){
                 reactToEnemyDefeat(e);
@@ -445,7 +462,6 @@ public class LoopManiaWorldController {
      */
     private void onLoad(Card card){
         ImageView view = null;
-        /* TODO: Enum conversion ??? Possible maintainence problem */
         DRAGGABLE_TYPE draggableType = null;
         switch(card.getCardType()){
             case VAMPIRECASTLE_CARD:
@@ -500,27 +516,27 @@ public class LoopManiaWorldController {
         switch(item.getItemType()){
             case SWORD:
                 view = new ImageView(swordImage);
-                draggableType = DRAGGABLE_TYPE.SWORD;
+                draggableType = DRAGGABLE_TYPE.SWORD_UNEQUIPPED;
                 break;
             case STAKE:
                 view = new ImageView(stakeImage);
-                draggableType = DRAGGABLE_TYPE.STAKE;
+                draggableType = DRAGGABLE_TYPE.STAKE_UNEQUIPPED;
                 break;
             case STAFF:
                 view = new ImageView(staffImage);
-                draggableType = DRAGGABLE_TYPE.STAFF;
+                draggableType = DRAGGABLE_TYPE.STAFF_UNEQUIPPED;
                 break;
             case ARMOUR:
                 view = new ImageView(armourImage);
-                draggableType = DRAGGABLE_TYPE.ARMOUR;
+                draggableType = DRAGGABLE_TYPE.ARMOUR_UNEQUIPPED;
                 break;
             case SHIELD:
                 view = new ImageView(shieldImage);
-                draggableType = DRAGGABLE_TYPE.SHIELD;
+                draggableType = DRAGGABLE_TYPE.SHIELD_UNEQUIPPED;
                 break;
             case HELMET:
                 view = new ImageView(helmetImage);
-                draggableType = DRAGGABLE_TYPE.HELMET;
+                draggableType = DRAGGABLE_TYPE.HELMET_UNEQUIPPED;
                 break;
             case GOLD:
                 view = new ImageView(goldImage);
@@ -550,27 +566,27 @@ public class LoopManiaWorldController {
         switch(item.getItemType()){
             case SWORD:
                 view = new ImageView(swordImage);
-                draggableType = DRAGGABLE_TYPE.SWORD;
+                draggableType = DRAGGABLE_TYPE.SWORD_EQUIPPED;
                 break;
             case STAKE:
                 view = new ImageView(stakeImage);
-                draggableType = DRAGGABLE_TYPE.STAKE;
+                draggableType = DRAGGABLE_TYPE.STAKE_EQUIPPED;
                 break;
             case STAFF:
                 view = new ImageView(staffImage);
-                draggableType = DRAGGABLE_TYPE.STAFF;
+                draggableType = DRAGGABLE_TYPE.STAFF_EQUIPPED;
                 break;
             case ARMOUR:
                 view = new ImageView(armourImage);
-                draggableType = DRAGGABLE_TYPE.ARMOUR;
+                draggableType = DRAGGABLE_TYPE.ARMOUR_EQUIPPED;
                 break;
             case SHIELD:
                 view = new ImageView(shieldImage);
-                draggableType = DRAGGABLE_TYPE.SHIELD;
+                draggableType = DRAGGABLE_TYPE.SHIELD_EQUIPPED;
                 break;
             case HELMET:
                 view = new ImageView(helmetImage);
-                draggableType = DRAGGABLE_TYPE.HELMET;
+                draggableType = DRAGGABLE_TYPE.HELMET_EQUIPPED;
                 break;
             default:
                 return;
@@ -668,7 +684,7 @@ public class LoopManiaWorldController {
                     Dragboard db = event.getDragboard();
                     Node node = event.getPickResult().getIntersectedNode();
                     if(node != targetGridPane && db.hasImage()){
-                        if(!isPlacable(currentlyDraggedType, GridPane.getColumnIndex(node), GridPane.getRowIndex(node), sourceGridPane, targetGridPane)){
+                        if(!isPlacable(currentlyDraggedType, GridPane.getColumnIndex(node), GridPane.getRowIndex(node))){
                             currentlyDraggedImage.setVisible(true);
                             printThreadingNotes("DRAG DROPPED ON GRIDPANE CANCELLED");
                         }else{
@@ -681,6 +697,13 @@ public class LoopManiaWorldController {
 
                             int nodeX = GridPane.getColumnIndex(currentlyDraggedImage);
                             int nodeY = GridPane.getRowIndex(currentlyDraggedImage);
+
+                            /**
+                             * At this point everything dropped is valid and should destroy
+                             * any overlapped entities
+                             */
+                            checkAndDestroyOverlappedEntity(x, y, targetGridPane);
+
                             switch (draggableType){
                                 case VAMPIRECASTLE_CARD:
                                 case ZOMBIEPIT_CARD:
@@ -689,34 +712,33 @@ public class LoopManiaWorldController {
                                 case BARRACKS_CARD:
                                 case TRAP_CARD:
                                 case CAMPFIRE_CARD:
-                                    checkAndDestroyOverlappedEntity(x, y, targetGridPane);
                                     Building newBuilding = convertCardToBuildingByCoordinates(nodeX, nodeY, x, y);
                                     if(newBuilding instanceof Spawner){
                                         ((Spawner)newBuilding).addSpawningTile(getAdjacentPathTiles(x, y));
                                     }
                                     onLoad(newBuilding);
                                     break;
-                                case SWORD:
-                                case STAKE:
-                                case STAFF:
-                                case ARMOUR:
-                                case SHIELD:
-                                case HELMET:
-                                    // TODO = spawn an item in the new location. The above code for spawning a building will help, it is very similar
-                                    // All these cases are equipable
-                                    checkAndDestroyOverlappedEntity(x, y, targetGridPane);
-                                    if(targetGridPane == unequippedInventory){
-                                        Equipable equipableItem = world.getEquippedItemByCoordinates(nodeX, nodeY);
-                                        equipableItem = unequip(equipableItem, nodeX, nodeY, x, y);
-                                        world.unequipEquippableItem(equipableItem);
-                                        onLoadUnequippedItem(equipableItem);
-                                    }else if(targetGridPane == equippedItems){
-                                        Equipable equipableItem = world.getUnequippedItemByCoordinates(nodeX, nodeY);
-                                        equipableItem = equip(equipableItem, nodeX, nodeY, x, y);
-                                        world.EquipEquippableItem(equipableItem);
-                                        onLoadEquippedItem(equipableItem);
-
-                                    }
+                                case SWORD_EQUIPPED:
+                                case STAKE_EQUIPPED:
+                                case STAFF_EQUIPPED:
+                                case ARMOUR_EQUIPPED:
+                                case SHIELD_EQUIPPED:
+                                case HELMET_EQUIPPED:
+                                    Equipable equippedItem = world.getEquippedItemByCoordinates(nodeX, nodeY);
+                                    equippedItem = unequip(equippedItem, nodeX, nodeY, x, y);
+                                    world.unequipEquippableItem(equippedItem);
+                                    onLoadUnequippedItem(equippedItem);
+                                    break;
+                                case SWORD_UNEQUIPPED:
+                                case STAKE_UNEQUIPPED:
+                                case STAFF_UNEQUIPPED:
+                                case ARMOUR_UNEQUIPPED:
+                                case SHIELD_UNEQUIPPED:
+                                case HELMET_UNEQUIPPED:
+                                    Equipable unequippedItem = world.getUnequippedItemByCoordinates(nodeX, nodeY);
+                                    unequippedItem = equip(unequippedItem, nodeX, nodeY, x, y);
+                                    world.EquipEquippableItem(unequippedItem);
+                                    onLoadEquippedItem(unequippedItem);
                                     break;
                                 default:
                                     break;
@@ -846,6 +868,9 @@ public class LoopManiaWorldController {
     private void addDragEventHandlers(ImageView view, DRAGGABLE_TYPE draggableType, GridPane sourceGridPane, GridPane targetGridPane){
         view.setOnDragDetected(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
+                System.out.println("1 " + gridPaneNodeSetOnDragEntered.size());
+                System.out.println("2 " + gridPaneNodeSetOnDragExited.size());
+                System.out.println("3 " + gridPaneSetOnDragDropped.size());
                 currentlyDraggedImage = view; // set image currently being dragged, so squares setOnDragEntered can detect it...
                 currentlyDraggedType = draggableType;
                 //Drag was detected, start drap-and-drop gesture
@@ -883,22 +908,28 @@ public class LoopManiaWorldController {
                     case CAMPFIRE_CARD:
                         draggedEntity.setImage(campfireCardImage);
                         break;
-                    case SWORD:
+                    case SWORD_EQUIPPED:
+                    case SWORD_UNEQUIPPED:
                         draggedEntity.setImage(swordImage);
                         break;
-                    case STAKE:
+                    case STAKE_EQUIPPED:
+                    case STAKE_UNEQUIPPED:
                         draggedEntity.setImage(stakeImage);
                         break;
-                    case STAFF:
+                    case STAFF_EQUIPPED:
+                    case STAFF_UNEQUIPPED:
                         draggedEntity.setImage(staffImage);
                         break;
-                    case ARMOUR:
+                    case ARMOUR_EQUIPPED:
+                    case ARMOUR_UNEQUIPPED:
                         draggedEntity.setImage(armourImage);
                         break;
-                    case SHIELD:
+                    case SHIELD_EQUIPPED:
+                    case SHIELD_UNEQUIPPED:
                         draggedEntity.setImage(shieldImage);
                         break;
-                    case HELMET:
+                    case HELMET_EQUIPPED:
+                    case HELMET_UNEQUIPPED:
                         draggedEntity.setImage(helmetImage);
                         break;
                     default:
@@ -927,8 +958,9 @@ public class LoopManiaWorldController {
                             //The drag-and-drop gesture entered the target
                             //show the user that it is an actual gesture target
                                 if(event.getGestureSource() != n && event.getDragboard().hasImage()
-                                    && isPlacable(currentlyDraggedType, GridPane.getColumnIndex(n), GridPane.getRowIndex(n), sourceGridPane, targetGridPane)){
+                                    && isPlacable(currentlyDraggedType, GridPane.getColumnIndex(n), GridPane.getRowIndex(n))){
                                     n.setOpacity(0.7);
+                                    currentlyHighlightedImage = n;
                                 }
                             }
                             event.consume();
@@ -938,6 +970,7 @@ public class LoopManiaWorldController {
                         public void handle(DragEvent event) {
                             if (currentlyDraggedType == draggableType){
                                 n.setOpacity(1);
+                                currentlyHighlightedImage = null;
                             }
                 
                             event.consume();
@@ -992,9 +1025,18 @@ public class LoopManiaWorldController {
         anchorPaneRoot.removeEventHandler(DragEvent.DRAG_DROPPED, anchorPaneRootSetOnDragDropped.get(draggableType));
 
         for (Node n: targetGridPane.getChildren()){
+            if(n == currentlyHighlightedImage){
+                n.setOpacity(1);
+                currentlyHighlightedImage = null;
+            }
             n.removeEventHandler(DragEvent.DRAG_ENTERED, gridPaneNodeSetOnDragEntered.get(draggableType));
             n.removeEventHandler(DragEvent.DRAG_EXITED, gridPaneNodeSetOnDragExited.get(draggableType));
         }
+        gridPaneSetOnDragDropped.clear();
+        anchorPaneRootSetOnDragOver.clear();
+        anchorPaneRootSetOnDragDropped.clear();
+        gridPaneNodeSetOnDragEntered.clear();
+        gridPaneNodeSetOnDragExited.clear();
     }
 
     /**
@@ -1129,7 +1171,7 @@ public class LoopManiaWorldController {
      * @param row row of the node
      * @return
      */
-    private boolean isPlacable(DRAGGABLE_TYPE draggableType, int column, int row, GridPane sourceGridPane, GridPane targetGridPane){
+    private boolean isPlacable(DRAGGABLE_TYPE draggableType, int column, int row){
         switch(draggableType){
             case VAMPIRECASTLE_CARD:
             case ZOMBIEPIT_CARD:
@@ -1141,19 +1183,20 @@ public class LoopManiaWorldController {
                 return isOnPath(column, row);
             case CAMPFIRE_CARD:
                 return !isOnPath(column, row);
-            case SWORD:
-            case STAKE:
-            case STAFF:
-            case ARMOUR:
-            case SHIELD:
-            case HELMET:
-                if(sourceGridPane == equippedItems && targetGridPane == unequippedInventory){
-                    return true;
-                }else if(sourceGridPane == unequippedInventory && targetGridPane == equippedItems){
-                    return isOnCorrectEquippableSlot(draggableType, column, row);
-                }else{
-                    return false;
-                }
+            case SWORD_EQUIPPED:
+            case STAKE_EQUIPPED:
+            case STAFF_EQUIPPED:
+            case ARMOUR_EQUIPPED:
+            case SHIELD_EQUIPPED:
+            case HELMET_EQUIPPED:
+                return true;
+            case SWORD_UNEQUIPPED:
+            case STAKE_UNEQUIPPED:
+            case STAFF_UNEQUIPPED:
+            case ARMOUR_UNEQUIPPED:
+            case SHIELD_UNEQUIPPED:
+            case HELMET_UNEQUIPPED:
+                return isOnCorrectEquippableSlot(draggableType, column, row);
             default:
                 return false;
         }
@@ -1232,18 +1275,18 @@ public class LoopManiaWorldController {
     private boolean isOnCorrectEquippableSlot(DRAGGABLE_TYPE draggableType, int column, int row){
         ImageView targetCell = null;
         switch(draggableType){
-            case SWORD:
-            case STAKE:
-            case STAFF:
+            case SWORD_UNEQUIPPED:
+            case STAKE_UNEQUIPPED:
+            case STAFF_UNEQUIPPED:
                 targetCell = weaponCell;
                 break;
-            case ARMOUR:
+            case ARMOUR_UNEQUIPPED:
                 targetCell = armourCell;
                 break;
-            case SHIELD:
+            case SHIELD_UNEQUIPPED:
                 targetCell = shieldCell;
                 break;
-            case HELMET:
+            case HELMET_UNEQUIPPED:
                 targetCell = helmetCell;
                 break;
             default:
@@ -1289,6 +1332,17 @@ public class LoopManiaWorldController {
         world.RemoveOverlappedEntityByCoordinates(x, y, type);
     }
 
+    /**
+     * Apply static buffs that would not be reverted after a battle
+     * I.e. health regain is a static buff, would not revert even after battle
+     * non static aka temporary buff: temporal damage increase
+     */
+    public void applyNonBattleBuffToCharacter(){
+        List<Building> buffingBuildings = world.getBuildingsWithinRadiusOfEntity(world.getCharacter());
+        for(Building b : buffingBuildings){
+            
+        }
+    }
     /**
      * Signal from observable about updating gold (Observer pattern)
      */
