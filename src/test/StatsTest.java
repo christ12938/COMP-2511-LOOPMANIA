@@ -26,47 +26,132 @@ public class StatsTest {
 
     @Test
     public void TestSwordStat(){
-        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, orderedPath);
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
         Sword sword = World.addUnequippedSword();
         assertEquals(5, sword.getAttack());
+        
+        World.EquipEquippableItem(sword);
+        assertEquals(10, World.getCharacterAttack());
+
+        World.unequipEquippableItem(sword);
+        assertEquals(5, World.getCharacterAttack());
+        
     }
 
     @Test
     public void TestStaffStat(){
-        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, orderedPath);
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
         Staff staff = World.addUnequippedStaff();
         assertEquals(1, staff.getAttack());
+        
+        World.EquipEquippableItem(staff);
+        assertEquals(6, World.getCharacterAttack());
+
+        World.unequipEquippableItem(staff);
+        assertEquals(5, World.getCharacterAttack());
     }
 
     @Test
     public void TestStakeStat(){
-        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, orderedPath);
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
         Stake stake = World.addUnequippedStake();
         assertEquals(3, stake.getAttack());
+        
+        World.EquipEquippableItem(stake);
+        assertEquals(8, World.getCharacterAttack());
+
+        World.unequipEquippableItem(stake);
+        assertEquals(5, World.getCharacterAttack());
     }
 
 
     
     @Test
     public void TestArmourState(){
-        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, orderedPath);
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
         Armour armour = World.addUnequippedArmour();
         assertEquals(3, armour.getDefense());
+        
+        World.EquipEquippableItem(armour);
+        assertEquals(8, World.getCharacterDefense());
+
+        World.unequipEquippableItem(armour);
+        assertEquals(5, World.getCharacterDefense());
     }
     
     @Test
 
     public void TestHelmetStat(){
-        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, orderedPath);
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
         Helmet helmet = World.addUnequippedHelmet();
         assertEquals(3, helmet.getDefense());
+        
+        World.EquipEquippableItem(helmet);
+        assertEquals(8, World.getCharacterDefense());
+
+        World.unequipEquippableItem(helmet);
+        assertEquals(5, World.getCharacterDefense());
     }
 
     @Test
     public void TestShieldStat(){
-        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, orderedPath);
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
         Shield shield = World.addUnequippedShield();
         assertEquals(3, shield.getDefense());
+        
+        World.EquipEquippableItem(shield);
+        assertEquals(8, World.getCharacterDefense());
+
+        World.unequipEquippableItem(shield);
+        assertEquals(5, World.getCharacterDefense());
     
     }
 
@@ -89,15 +174,13 @@ public class StatsTest {
     }
 
     @Test
-
     public void TestCharacterStatsWithEquipment() {
         Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
         Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(test1);
         orderedPath.add(test2);
-        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
-        LoopManiaWorld World = d;
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, orderedPath);
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
         World.setCharacter(testCharacter);
 
@@ -123,5 +206,48 @@ public class StatsTest {
         assertEquals(100, World.getCharacterCurrentHp(), "comparing two doubles");
         assertEquals(5, World.getCharacterDefense());
         assertEquals(5, World.getCharacterAttack());
+    }
+
+    @Test
+    public void TestCharacterStatsWithEquipmentv2() {
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
+        Armour armour = World.addUnequippedArmour();
+        Helmet helmet = World.addUnequippedHelmet();
+        Sword sword = World.addUnequippedSword();
+        Shield shield = World.addUnequippedShield();
+        
+        World.EquipEquippableItem(armour);
+        World.EquipEquippableItem(helmet);
+        World.EquipEquippableItem(shield);
+        
+        assertEquals(14, World.getCharacterDefense());
+        assertEquals(5, World.getCharacterAttack());
+
+        World.unequipEquippableItem(armour);
+        World.unequipEquippableItem(helmet);
+        World.unequipEquippableItem(shield);
+        World.EquipEquippableItem(sword);
+
+        assertEquals(10, World.getCharacterAttack());
+        assertEquals(5, World.getCharacterDefense());
+
+        World.EquipEquippableItem(shield);
+
+        assertEquals(10, World.getCharacterAttack());
+        assertEquals(8, World.getCharacterDefense());
+        
+        World.EquipEquippableItem(armour);
+        
+        assertEquals(10, World.getCharacterAttack());
+        assertEquals(11, World.getCharacterDefense());
     }
 }

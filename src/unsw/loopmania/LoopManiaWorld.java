@@ -417,7 +417,7 @@ public class LoopManiaWorld {
                 this.character.addAttack(5);
                 break;
             case STAKE:
-                this.character.addAttack(2);
+                this.character.addAttack(3);
                 break;
             case STAFF:
                 this.character.addAttack(1);
@@ -432,6 +432,7 @@ public class LoopManiaWorld {
                 this.character.addDefense(3);
             break;
         }
+        this.unequippedInventoryItems.remove(item);
         this.equippedItems.add(item);  
     }
 
@@ -441,7 +442,7 @@ public class LoopManiaWorld {
                 this.character.addAttack(-5);
                 break;
             case STAKE:
-                this.character.addAttack(-2);
+                this.character.addAttack(-3);
                 break;
             case STAFF:
                 this.character.addAttack(-1);
@@ -456,6 +457,7 @@ public class LoopManiaWorld {
                 this.character.addDefense(-3);
             break;
         }
+        this.unequippedInventoryItems.add(item);
         this.equippedItems.remove(item);  
     }
     

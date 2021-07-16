@@ -169,6 +169,7 @@ public class ItemsTest {
         World.loadRandomUnenquippedInventoryItem();
         World.loadRandomUnenquippedInventoryItem();
         World.loadRandomUnenquippedInventoryItem();
+        
         World.removeUnequippedInventoryItemByCoordinates(0, 0);
         World.removeUnequippedInventoryItemByCoordinates(1, 0);
         World.removeUnequippedInventoryItemByCoordinates(2, 0);
