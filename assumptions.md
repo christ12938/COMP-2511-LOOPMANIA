@@ -16,4 +16,4 @@ If player is given an amount of exp that makes them exceed the exp limit, their 
 If a common item is obtained with a full inventory player is given 5 gold and 10 exp
 If a rare item is obtained with a full inventory player is given 50 gold and 100 exp
 When passing through a village player gains 2 HP
-The radius for towers and campfires will be 2
+The radius for towers and campfires will be 5
