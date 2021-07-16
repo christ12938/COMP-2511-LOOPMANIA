@@ -612,6 +612,7 @@ public class LoopManiaWorld {
         // TODO = expand to more types of enemy
         for (Enemy e: enemies){
             e.move();
+
         }
     }
 
@@ -714,14 +715,16 @@ public class LoopManiaWorld {
         }
         return false;
     }
-    public BuildingType charecterLocationBuildingType(){
+    public Building charecterLocationBuildingType(){
         for (Building b : buildingEntities) {
+            Building lastb;
             if((b.getX() == character.getX()) && (b.getY() == character.getY())){
-                return b.getBuildingType();
+                return b;
+                lastb = b;
             }
         }
 
-        return BuildingType.BARRACKS_BUILDING;
+        return lastb;
     }
 
     public void subtractCharacterHP(double amount){

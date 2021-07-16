@@ -17,3 +17,4 @@ If a common item is obtained with a full inventory player is given 5 gold and 10
 If a rare item is obtained with a full inventory player is given 50 gold and 100 exp
 When passing through a village player gains 2 HP
 The radius for towers and campfires will be 5
+Enemies will take 30 dmg from traps
