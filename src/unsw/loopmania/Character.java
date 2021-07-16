@@ -7,7 +7,10 @@ import unsw.loopmania.Enemies.Damageable;
  */
 public class Character extends MovingEntity implements Damageable{
 
-    private double health;
+    private final double maxHealth = 100;
+    private double currentHealth;
+    private int attack;
+    private int defense;
     private int gold;
     private int experience;
     private int damage;
@@ -15,15 +18,24 @@ public class Character extends MovingEntity implements Damageable{
 
     public Character(PathPosition position) {
         super(position);
+        this.currentHealth = this.maxHealth;
         this.gold = 0;
         this.experience = 0;
         // just putting random health value for now for testing
-        this.health = 100;
-        this.damage = 5;
+        this.attack = 5;
+        this.defense = 5;
     }
 
     public void setObserver(LoopManiaWorldController observer){
         this.observer = observer;
+    }
+
+    public double getCurrentHealth(){
+        return this.currentHealth;
+    }
+
+    public double getMaxHealth(){
+        return this.maxHealth;
     }
     
     public int getGold() {
@@ -35,11 +47,26 @@ public class Character extends MovingEntity implements Damageable{
     }
 
     public double getHealth() {
-        return health;
+        return currentHealth;
     }
 
     public void setHealth(double health) {
-        this.health = health;
+        this.currentHealth = health;
+
+    public int getAttack() {
+        return this.attack;
+    }
+
+    public int getDefense() {
+        return this.defense;
+    }
+
+    public void addAttack(int attack) {
+        this.attack += attack;
+    }
+
+    public void addDefense(int defense) {
+        this.defense += defense;
     }
 
     public boolean addGold(int amount){
@@ -73,21 +100,24 @@ public class Character extends MovingEntity implements Damageable{
             return false;
         } else if (Long.valueOf(this.experience) + Long.valueOf(amount) >= Integer.MAX_VALUE) {
             this.experience = Integer.MAX_VALUE;
+            observer.updateExperience();
             return true;
         } else {
             this.experience += amount;
+            observer.updateExperience();
             return true;
         }
     }
 
-    @Override
-    public void takeDamage(int damage) {
-        health -= damage;
-    }
-
-    @Override
-    public void dealDamage(Damageable damageable) {
-        damageable.takeDamage(damage);
+    public void minusHealth(double health){
+        if(currentHealth - health == 0){
+            currentHealth = 0;
+            observer.updateHealth(this.currentHealth, this.maxHealth);
+            //DO STH ELSE
+        }else{
+            currentHealth = currentHealth - health;
+            observer.updateHealth(this.currentHealth, this.maxHealth);
+        }
     }
 
     
