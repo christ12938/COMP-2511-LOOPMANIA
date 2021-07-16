@@ -12,10 +12,12 @@ import unsw.loopmania.Types.CardType;
 import org.javatuples.Pair;
 import org.junit.jupiter.api.Test;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.LoopManiaWorldController;
 import unsw.loopmania.LoopManiaWorldLoader;
 import unsw.loopmania.Character;
+import unsw.loopmania.HerosCastle;
 
 
 /**
@@ -71,7 +73,10 @@ public class BuildingsTest{
         LoopManiaWorld d = new LoopManiaWorld(1, 3, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+        d.setHerosCastle(hc);
         d.setCharacter(testCharacter);
+
 
         Card card;
         do{
@@ -96,6 +101,8 @@ public class BuildingsTest{
         LoopManiaWorld d = new LoopManiaWorld(1, 3, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+        d.setHerosCastle(hc);
         d.setCharacter(testCharacter);
 
         Card card;
@@ -120,17 +127,19 @@ public class BuildingsTest{
         LoopManiaWorld d = new LoopManiaWorld(1, 3, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+        d.setHerosCastle(hc);
         d.setCharacter(testCharacter);
 
         Card card;
         do{
             card = d.loadRandomCard();
         }while(card.getCardType() != CardType.CAMPFIRE_CARD);
-        d.convertCardToBuildingByCoordinates(card.getX(), card.getY(), 2, 2);
+        d.convertCardToBuildingByCoordinates(card.getX(), card.getY(), 7, 2);
         d.runTickMoves();
 
         //assumes base attack is 5
-        assertTrue(d.getCharacterAttack() == 10);
+        assertTrue(d.getCharacterAttack() == 5);
     }
 
     @Test

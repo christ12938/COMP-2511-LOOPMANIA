@@ -1,4 +1,5 @@
 package unsw.loopmania.Buildings;
+import java.lang.Math;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Types.BuildingType;
@@ -13,7 +14,10 @@ public class TowerBuilding extends Building{
         return BuildingType.TOWER_BUILDING;
     }
 
-    public boolean inRange(SimpleIntegerProperty x, SimpleIntegerProperty y){
+    public boolean inRange(int x, int y){
+        if(Math.sqrt((this.getX()-x)*(this.getX()-x) + (this.getY()-y)*(this.getY()-y))<=5){
+            return true;
+        }
         return false;
     }
 }

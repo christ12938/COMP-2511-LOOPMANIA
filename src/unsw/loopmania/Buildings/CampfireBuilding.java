@@ -14,7 +14,7 @@ public class CampfireBuilding extends Building{
     }
 
     public boolean inRange(int x, int y){
-        if(Math.sqrt((this.getX()-x)*(this.getX()-x) + (this.getY()-y)*(this.getY()-y))<=2){
+        if(Math.sqrt((this.getX()-x)*(this.getX()-x) + (this.getY()-y)*(this.getY()-y))<=5){
             return true;
         }
         return false;
