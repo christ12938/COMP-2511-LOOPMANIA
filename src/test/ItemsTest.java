@@ -217,8 +217,8 @@ public class ItemsTest {
         assertEquals(70, World.getExperience());
 
         World.addUnequippedTheOneRing();
-        assertEquals(85, World.getGold());
-        assertEquals(170, World.getExperience());
+        assertEquals(40, World.getGold());
+        assertEquals(80, World.getExperience());
         
     }
     
