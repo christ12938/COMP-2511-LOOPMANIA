@@ -1,10 +1,8 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,6 @@ import unsw.loopmania.Items.Shield;
 import unsw.loopmania.Items.Staff;
 import unsw.loopmania.Items.Stake;
 import unsw.loopmania.Items.Sword;
-import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Character;
 
 
@@ -103,6 +100,7 @@ public class StatsTest {
         LoopManiaWorld World = d;
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
         World.setCharacter(testCharacter);
+
         Armour armour = World.addUnequippedArmour();
         Helmet helmet = World.addUnequippedHelmet();
         Sword sword = World.addUnequippedSword();

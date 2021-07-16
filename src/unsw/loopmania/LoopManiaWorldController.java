@@ -1013,7 +1013,10 @@ public class LoopManiaWorldController {
             else{
                 pause();
             }
+            System.err.println("test");
             break;
+        case E:
+            
         default:
             break;
         }
