@@ -70,9 +70,10 @@ public abstract class Enemy extends MovingEntity implements Damageable{
     @Override
     public void dealDamage(Damageable damageable) {
         if ((new Random()).nextDouble() < critRate) {
-            critStrategy.applyCrit();
+            critStrategy.applyCrit(damageable);
+        } else {
+            damageable.takeDamage(damage);
         }
-        damageable.takeDamage(damage);
     }
 
     public abstract EnemyType getEnemyType();
