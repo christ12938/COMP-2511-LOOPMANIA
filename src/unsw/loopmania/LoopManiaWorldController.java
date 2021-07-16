@@ -1016,6 +1016,8 @@ public class LoopManiaWorldController {
             break;
         case H:
             this.world.useHealthPotion();
+            break;
+            
         default:
             break;
         }
