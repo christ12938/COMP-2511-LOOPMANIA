@@ -136,8 +136,9 @@ public class LoopManiaWorld {
     public int getCharacterDefense() {
         return this.character.getDefense();
     }
-
-    
+    public double getCharacterCurrentHp() {
+        return this.character.getCurrentHealth();
+    }
     public Character getCharacter(){
         return this.character;
     }
