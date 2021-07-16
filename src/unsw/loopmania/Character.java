@@ -8,6 +8,8 @@ public class Character extends MovingEntity {
 
     private final double maxHealth = 100;
     private double currentHealth;
+    private int attack;
+    private int defense;
     private int gold;
     private int experience;
     LoopManiaWorldController observer;
@@ -17,6 +19,8 @@ public class Character extends MovingEntity {
         this.currentHealth = this.maxHealth;
         this.gold = 0;
         this.experience = 0;
+        this.attack = 5;
+        this.defense = 5;
     }
 
     public void setObserver(LoopManiaWorldController observer){
@@ -37,6 +41,22 @@ public class Character extends MovingEntity {
 
     public int getExperience() {
         return this.experience;
+    }
+
+    public int getAttack() {
+        return this.attack;
+    }
+
+    public int getDefense() {
+        return this.defense;
+    }
+
+    public void addAttack(int attack) {
+        this.attack += attack;
+    }
+
+    public void addDefense(int defense) {
+        this.defense += defense;
     }
 
     public boolean addGold(int amount){

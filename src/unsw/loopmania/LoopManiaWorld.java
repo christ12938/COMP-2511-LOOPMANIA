@@ -129,6 +129,15 @@ public class LoopManiaWorld {
         this.character = character;
     }
 
+    public int getCharacterAttack() {
+        return this.character.getAttack();
+    }
+
+    public int getCharacterDefense() {
+        return this.character.getDefense();
+    }
+
+    
     public Character getCharacter(){
         return this.character;
     }
@@ -207,7 +216,6 @@ public class LoopManiaWorld {
             // TODO = you should implement different RHS on this inequality, based on influence radii and battle radii
             if (Math.pow((character.getX()-e.getX()), 2) +  Math.pow((character.getY()-e.getY()), 2) < 4){
                 // fight...
-                character.minusHealth(50);
                 defeatedEnemies.add(e);
             }
         }
@@ -374,8 +382,8 @@ public class LoopManiaWorld {
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
             removeItemByPositionInUnequippedInventoryItems(0);
-            this.character.addExperience(100);
-            this.character.addGold(50);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }   
         
@@ -383,6 +391,61 @@ public class LoopManiaWorld {
         unequippedInventoryItems.add(theonering);
         return theonering;
     }
+
+    
+    public void EquipEquippableItem(Equipable item) {
+        for (Equipable items : this.equippedItems) {
+            if (item.getItemType() == items.getItemType()) {
+                return;
+            } 
+        }
+        switch(item.getItemType()) {
+            case SWORD:
+                this.character.addAttack(5);
+                break;
+            case STAKE:
+                this.character.addAttack(2);
+                break;
+            case STAFF:
+                this.character.addAttack(1);
+                break;
+            case ARMOUR:
+                this.character.addDefense(3);
+                break;
+            case SHIELD:
+                this.character.addDefense(3);
+                break;
+            case HELMET:
+                this.character.addDefense(3);
+            break;
+        }
+        this.equippedItems.add(item);  
+    }
+
+    public void unequipEquippableItem(Equipable item) {
+        switch(item.getItemType()) {
+            case SWORD:
+                this.character.addAttack(-5);
+                break;
+            case STAKE:
+                this.character.addAttack(-2);
+                break;
+            case STAFF:
+                this.character.addAttack(-1);
+                break;
+            case ARMOUR:
+                this.character.addDefense(-3);
+                break;
+            case SHIELD:
+                this.character.addDefense(-3);
+                break;
+            case HELMET:
+                this.character.addDefense(-3);
+            break;
+        }
+        this.equippedItems.remove(item);  
+    }
+    
 
     /**
      * remove an item by x,y coordinates
