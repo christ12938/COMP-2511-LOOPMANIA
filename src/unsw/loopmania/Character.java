@@ -22,6 +22,7 @@ public class Character extends MovingEntity implements Damageable{
         this.gold = 0;
         this.experience = 0;
         // just putting random health value for now for testing
+        this.damage = 5;
         this.attack = 5;
         this.defense = 5;
     }
@@ -53,6 +54,7 @@ public class Character extends MovingEntity implements Damageable{
     public void setHealth(double health) {
         this.currentHealth = health;
 
+    }
     public int getAttack() {
         return this.attack;
     }
@@ -107,6 +109,16 @@ public class Character extends MovingEntity implements Damageable{
             observer.updateExperience();
             return true;
         }
+    }
+
+    @Override
+    public void takeDamage(int damage) {
+        currentHealth -= damage;
+    }
+
+    @Override
+    public void dealDamage(Damageable damageable) {
+        damageable.takeDamage(damage);
     }
 
     public void minusHealth(double health){
