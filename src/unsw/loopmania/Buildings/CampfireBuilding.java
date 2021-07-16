@@ -12,5 +12,12 @@ public class CampfireBuilding extends Building{
     public BuildingType getBuildingType(){
         return BuildingType.CAMPFIRE_BUILDING;
     }
-    
+
+    public boolean inRange(int x, int y){
+        if(Math.sqrt((this.getX()-x)*(this.getX()-x) + (this.getY()-y)*(this.getY()-y))<=2){
+            return true;
+        }
+        return false;
+    }
+
 }

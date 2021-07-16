@@ -20,10 +20,15 @@ public class Character extends MovingEntity {
     public void setObserver(LoopManiaWorldController observer){
         this.observer = observer;
     }
-    
+
     public int getGold() {
         return this.gold;
     }
+
+    public double getHealth() {
+        return this.health;
+    }
+
 
     public int getExperience() {
         return this.experience;
@@ -39,6 +44,34 @@ public class Character extends MovingEntity {
         } else {
             this.gold += amount;
             observer.updateGold();
+            return true;
+        }
+    }
+
+    public boolean addHealth(double amount){
+        if (this.health == 100) {
+            return false;
+        } else if (this.health + amount >= 100) {
+            this.health = 100;
+            observer.updateHealth();
+            return true;
+        } else {
+            this.health += amount;
+            observer.updateHealth();
+            return true;
+        }
+    }
+
+    public boolean subtractHealth(double amount){
+        if (this.health == 0) {
+            return false;
+        } else if (this.health - amount <= 0) {
+            this.health = 0;
+            observer.updateHealth();
+            return true;
+        } else {
+            this.health -= amount;
+            observer.updateHealth();
             return true;
         }
     }
@@ -67,5 +100,5 @@ public class Character extends MovingEntity {
         }
     }
 
-    
+
 }

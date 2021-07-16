@@ -12,5 +12,8 @@ public class TowerBuilding extends Building{
     public BuildingType getBuildingType(){
         return BuildingType.TOWER_BUILDING;
     }
-    
+
+    public boolean inRange(SimpleIntegerProperty x, SimpleIntegerProperty y){
+        return false;
+    }
 }

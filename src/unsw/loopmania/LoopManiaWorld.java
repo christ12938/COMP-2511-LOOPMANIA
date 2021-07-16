@@ -83,7 +83,7 @@ public class LoopManiaWorld {
 
     /**
      * create the world (constructor)
-     * 
+     *
      * @param width width of world in number of cells
      * @param height height of world in number of cells
      * @param orderedPath ordered list of x, y coordinate pairs representing position of path cells in world
@@ -258,7 +258,7 @@ public class LoopManiaWorld {
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        // now we insert the new sword, as we know we have at least made a slot available...        
+        // now we insert the new sword, as we know we have at least made a slot available...
         Item item = ItemLoader.loadRandomItem(firstAvailableSlot);
         if(item.getItemType() == ItemType.GOLD){
             character.addGold(100);
@@ -293,7 +293,7 @@ public class LoopManiaWorld {
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        
+
         Stake stake = new Stake(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(stake);
         return stake;
@@ -307,7 +307,7 @@ public class LoopManiaWorld {
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        
+
         Staff staff = new Staff(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(staff);
         return staff;
@@ -334,7 +334,7 @@ public class LoopManiaWorld {
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        
+
         Shield shield = new Shield(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(shield);
         return shield;
@@ -347,14 +347,14 @@ public class LoopManiaWorld {
             this.character.addExperience(10);
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
-        }   
-        
+        }
+
         Armour armour = new Armour(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(armour);
         return armour;
     }
 
-    
+
     public Consumables addUnequippedHealthPotion(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -362,8 +362,8 @@ public class LoopManiaWorld {
             this.character.addExperience(10);
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
-        }   
-        
+        }
+
         HealthPotion healthpotion = new HealthPotion(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(healthpotion);
         return healthpotion;
@@ -376,8 +376,8 @@ public class LoopManiaWorld {
             this.character.addExperience(100);
             this.character.addGold(50);
             firstAvailableSlot = getFirstAvailableSlotForItem();
-        }   
-        
+        }
+
         TheOneRing theonering = new TheOneRing(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(theonering);
         return theonering;
@@ -397,7 +397,9 @@ public class LoopManiaWorld {
      * run moves which occur with every tick without needing to spawn anything immediately
      */
     public void runTickMoves(){
+        System.err.println(herosCastle.getX());
         character.moveDownPath();
+
         moveEnemies();
         if(character.getX() == herosCastle.getX() && character.getY() == herosCastle.getY()){
             //TODO-: SHOP
@@ -479,7 +481,7 @@ public class LoopManiaWorld {
                 result.destroy();
                 return;
             }
-        }     
+        }
         if(type == OverlappableEntityType.EQUIPPED_ITEM){
             for(Entity e : equippedItems){
                 if(e.getX() == x && e.getY() == y){
@@ -619,7 +621,7 @@ public class LoopManiaWorld {
      */
     private Pair<Integer, Integer> possiblyGetSlugSpawnPosition(){
         // TODO = modify this
-        
+
         // has a chance spawning a basic enemy on a tile the character isn't on or immediately before or after (currently space required = 2)...
         Random rand = new Random();
         int choice = rand.nextInt(2); // TODO = change based on spec... currently low value for dev purposes...
@@ -677,7 +679,7 @@ public class LoopManiaWorld {
                 break;
             }
         }
-        
+
         // now spawn building
         Building newBuilding = BuildingLoader.loadBuilding(card.getCardType(), buildingNodeX, buildingNodeY);
         buildingEntities.add(newBuilding);
@@ -702,5 +704,31 @@ public class LoopManiaWorld {
                 ((Spawner)b).setHasSpawned(false);
             }
         }
+    }
+
+    public boolean checkIfCharacterOnBuilding(){
+        for (Building b : buildingEntities) {
+            if((b.getX() == character.getX()) && (b.getY() == character.getY())){
+                return true;
+            }
+        }
+        return false;
+    }
+    public BuildingType charecterLocationBuildingType(){
+        for (Building b : buildingEntities) {
+            if((b.getX() == character.getX()) && (b.getY() == character.getY())){
+                return b.getBuildingType();
+            }
+        }
+
+        return BuildingType.BARRACKS_BUILDING;
+    }
+
+    public void subtractCharacterHP(double amount){
+        this.character.subtractHealth(amount);
+    }
+
+    public double getCharacterHP(){
+        return this.character.getHealth();
     }
 }
