@@ -45,4 +45,8 @@ public class AlliedSoldier extends MovingEntity implements Damageable{
     public void dealDamage(Damageable damageable) {
         damageable.takeDamage(damage);
     }
+
+    public double getHealth() {
+        return health;
+    }
 }

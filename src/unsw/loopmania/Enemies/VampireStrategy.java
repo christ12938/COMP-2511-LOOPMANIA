@@ -1,6 +1,8 @@
 package unsw.loopmania.Enemies;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Random;
 
 import unsw.loopmania.Damageable;
@@ -21,12 +23,17 @@ public class VampireStrategy implements CritStrategy {
 
     @Override
     public void processCrit() {
+        List<Damageable> rem = new ArrayList<Damageable>();
         critEnemies.forEach((k, v) -> {
             k.takeDamage(damage);
             v--;
             if (v <= 0) {
-                critEnemies.remove(k);
+                rem.add(k);
             }
         });
+
+        for (Damageable r : rem) {
+            critEnemies.remove(r);
+        }
     }
 }

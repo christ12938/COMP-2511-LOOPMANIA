@@ -12,9 +12,7 @@ public class StandardCritStrategy implements CritStrategy {
 
     @Override
     public void applyCrit(Damageable damageable) {
-        if ((new Random()).nextDouble() < 0.05) {
-            damageable.takeDamage(damage);
-        }
+        damageable.takeDamage(damage);
     }
 
     @Override

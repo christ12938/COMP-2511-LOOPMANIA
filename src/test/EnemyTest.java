@@ -9,10 +9,20 @@ import java.util.List;
 import org.junit.Test;
 
 import org.javatuples.Pair;
+
+import unsw.loopmania.AlliedSoldier;
 import unsw.loopmania.Character;
 import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
+import unsw.loopmania.Enemies.CritStrategy;
 import unsw.loopmania.Enemies.Slug;
+import unsw.loopmania.Enemies.StandardCritStrategy;
+import unsw.loopmania.Enemies.Vampire;
+import unsw.loopmania.Enemies.VampireStrategy;
+import unsw.loopmania.Enemies.Zombie;
+import unsw.loopmania.Enemies.ZombieStrategy;
+import unsw.loopmania.Types.EnemyType;
+
 
 public class EnemyTest {
     @Test
@@ -99,4 +109,83 @@ public class EnemyTest {
         slug.takeDamage(5);
         assertTrue(health > slug.getHealth());
     }
+
+    @Test
+    public void TestGetEnemyType() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+
+        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        Vampire vampire = new Vampire(new PathPosition(0, orderedPath));
+        Zombie zombie = new Zombie(new PathPosition(0, orderedPath));
+
+        assertTrue(slug.getEnemyType().equals(EnemyType.SLUG));
+        assertTrue(vampire.getEnemyType().equals(EnemyType.VAMPIRE));
+        assertTrue(zombie.getEnemyType().equals(EnemyType.ZOMBIE));
+    }
+
+    @Test
+    public void TestMove() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
+        Pair<Integer, Integer> pair3 = new Pair<Integer, Integer>(1,3);
+        
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+        orderedPath.add(pair3);
+
+        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        slug.move();
+    }
+
+    @Test
+    public void TestStandardCritStrategy() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        double health = character.getHealth();
+
+        CritStrategy crit = new StandardCritStrategy();
+        crit.applyCrit(character);
+        crit.processCrit();
+
+        assertTrue(health > character.getHealth());
+    }
+
+    @Test
+    public void TestZombieStrategy() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+
+        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), new Pair<Integer, Integer>(0, 0));
+
+        assertTrue(soldier.isAllied());
+        CritStrategy crit = new ZombieStrategy();
+        crit.applyCrit(soldier);
+        crit.processCrit();
+
+        assertFalse(soldier.isAllied());
+    }
+
+    @Test
+    public void TestVampireStrategy() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        double health = character.getHealth();
+
+        CritStrategy crit = new VampireStrategy();
+        crit.applyCrit(character);
+        crit.processCrit();
+
+        assertTrue(health > character.getHealth());
+    }
+
 }
