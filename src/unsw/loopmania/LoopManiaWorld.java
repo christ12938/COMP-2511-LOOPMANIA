@@ -130,6 +130,28 @@ public class LoopManiaWorld {
         this.character = character;
     }
 
+    public int getCharacterAttack() {
+        return this.character.getAttack();
+    }
+
+    public int getCharacterDefense() {
+        return this.character.getDefense();
+    }
+
+    public double getCharacterCurrentHp() {
+        return this.character.getCurrentHealth();
+    }
+
+    public void decreaseCharacterHp(long amount) {
+        this.character.minusHealth(amount);
+        return;
+    }
+
+    public void increaseCharacterHp(long amount) {
+        this.character.addHp(amount);
+        return;
+    }
+
     public Character getCharacter(){
         return this.character;
     }
@@ -262,7 +284,7 @@ public class LoopManiaWorld {
         // now we insert the new sword, as we know we have at least made a slot available...
         Item item = ItemLoader.loadRandomItem(firstAvailableSlot);
         if(item.getItemType() == ItemType.GOLD){
-            character.addGold(100);
+            character.addGold(5);
             return null;
         }
         unequippedInventoryItems.add(item);
@@ -374,14 +396,80 @@ public class LoopManiaWorld {
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
             removeItemByPositionInUnequippedInventoryItems(0);
-            this.character.addExperience(100);
-            this.character.addGold(50);
+            this.character.addExperience(10);
+            this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
 
         TheOneRing theonering = new TheOneRing(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(theonering);
         return theonering;
+    }
+
+    
+    public void EquipEquippableItem(Equipable item) {
+        for (Equipable items : this.equippedItems) {
+            if (item.getItemType() == items.getItemType()) {
+                return;
+            } 
+        }
+        switch(item.getItemType()) {
+            case SWORD:
+                this.character.addAttack(5);
+                break;
+            case STAKE:
+                this.character.addAttack(3);
+                break;
+            case STAFF:
+                this.character.addAttack(1);
+                break;
+            case ARMOUR:
+                this.character.addDefense(3);
+                break;
+            case SHIELD:
+                this.character.addDefense(3);
+                break;
+            case HELMET:
+                this.character.addDefense(3);
+            break;
+        }
+        this.unequippedInventoryItems.remove(item);
+        this.equippedItems.add(item);  
+    }
+
+    public void unequipEquippableItem(Equipable item) {
+        switch(item.getItemType()) {
+            case SWORD:
+                this.character.addAttack(-5);
+                break;
+            case STAKE:
+                this.character.addAttack(-3);
+                break;
+            case STAFF:
+                this.character.addAttack(-1);
+                break;
+            case ARMOUR:
+                this.character.addDefense(-3);
+                break;
+            case SHIELD:
+                this.character.addDefense(-3);
+                break;
+            case HELMET:
+                this.character.addDefense(-3);
+            break;
+        }
+        this.unequippedInventoryItems.add(item);
+        this.equippedItems.remove(item);  
+    }
+    
+    public void useHealthPotion() {
+        for (Item item : this.unequippedInventoryItems) {
+            if (item.getItemType() == ItemType.HEALTH_POTION) {
+                increaseCharacterHp(10);
+                removeUnequippedInventoryItemByCoordinates(item.getX(), item.getY());
+                return;
+            }
+        }
     }
 
     /**
