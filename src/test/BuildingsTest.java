@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 import unsw.loopmania.PathPosition;
+import unsw.loopmania.Buildings.VillageBuilding;
 import unsw.loopmania.Cards.Card;
+import unsw.loopmania.Types.BuildingType;
 import unsw.loopmania.Types.CardType;
 
 import org.javatuples.Pair;
@@ -57,14 +59,21 @@ public class BuildingsTest{
         d.setCharacter(testCharacter);
 
 
-        Card card;
+        /*Card card;
         do{
             card = d.loadRandomCard();
         }while(card.getCardType() != CardType.VILLAGE_CARD);
-        d.subtractCharacterHP(90);
-        d.convertCardToBuildingByCoordinates(card.getX(), card.getY(), 1, 2);
-        d.runTickMoves();
 
+        d.subtractCharacterHP(90);
+
+        d.convertCardToBuildingByCoordinates(card.getX(), card.getY(), 1, 2);*/
+        //d.subtractCharacterHP(90);
+        d.decreaseCharacterHp(90);
+        d.spawnBuilding(CardType.VILLAGE_CARD,1,1);
+        System.err.println("bruh1");
+        d.runTickMoves();
+        d.applyBuildingBuffsToCharacter();
+        System.err.println("bruh2");
         //assumes player hp starts at 100 and vilage adds 2
         assertTrue(d.getCharacterHP() == 12);
     }
@@ -88,6 +97,7 @@ public class BuildingsTest{
         do{
             card = d.loadRandomCard();
         }while(card.getCardType() != CardType.CAMPFIRE_CARD);
+
         d.convertCardToBuildingByCoordinates(card.getX(), card.getY(), 2, 2);
         d.runTickMoves();
 

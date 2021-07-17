@@ -21,16 +21,6 @@ public class TowerBuilding extends Building{
         return BuildingType.TOWER_BUILDING;
     }
 
-<<<<<<< HEAD
-    //use to see if a location is in rage of this tower
-    //use in battle calculation
-    @Override
-    public boolean inRange(int x, int y){
-        if(Math.sqrt((this.getX()-x)*(this.getX()-x) + (this.getY()-y)*(this.getY()-y))<=5){
-            return true;
-        }
-        return false;
-=======
     public void applyBuffToCharacter(Character character){
         character.addBattleBuildings(this);
         isBuffingCharacter = true;
@@ -43,7 +33,6 @@ public class TowerBuilding extends Building{
 
     public boolean isBuffingCharacter(){
         return isBuffingCharacter;
->>>>>>> 8e91f70171228b4dccaf26e702571430705948f9
     }
-    
+
 }

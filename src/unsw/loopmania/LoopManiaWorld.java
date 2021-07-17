@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.smartcardio.CardTerminal;
+
 import org.javatuples.Pair;
 
 import javafx.beans.property.SimpleIntegerProperty;
@@ -20,6 +22,7 @@ import unsw.loopmania.Loaders.BuildingLoader;
 import unsw.loopmania.Loaders.CardLoader;
 import unsw.loopmania.Loaders.ItemLoader;
 import unsw.loopmania.Types.BuildingType;
+import unsw.loopmania.Types.CardType;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Types.OverlappableEntityType;
 
@@ -816,6 +819,14 @@ public class LoopManiaWorld {
         shiftCardsDownFromXCoordinate(cardNodeX);
 
         return newBuilding;
+    }
+
+    //added for testing
+    public Building spawnBuilding(CardType cardType, int buildingNodeX, int buildingNodeY){
+         Building newBuilding = BuildingLoader.loadBuilding(cardType, buildingNodeX, buildingNodeY);
+         buildingEntities.add(newBuilding);
+
+         return newBuilding;
     }
 
     public void applyBuildingBuffsToCharacter(){

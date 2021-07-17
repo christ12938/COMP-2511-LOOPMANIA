@@ -27,25 +27,14 @@ public class CampfireBuilding extends Building{
         isBuffingCharacter = true;
     }
 
-<<<<<<< HEAD
-    //use to see if a location is in rage of this campfire
-    //use in battle calculation (check at start of each battle)
-    @Override
-    public boolean inRange(int x, int y){
-        if(Math.sqrt((this.getX()-x)*(this.getX()-x) + (this.getY()-y)*(this.getY()-y))<=5){
-            return true;
-        }
-        return false;
-=======
     public void removeBuffFromCharacter(Character character){
         character.setAttack(character.getAttack() - attackBuffed);
         attackBuffed = 0;
         isBuffingCharacter = false;
->>>>>>> 8e91f70171228b4dccaf26e702571430705948f9
     }
 
     public boolean isBuffingCharacter(){
         return isBuffingCharacter;
     }
-    
+
 }
