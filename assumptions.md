@@ -26,4 +26,6 @@ Assume Progress per time tick is as follow:
     4. Remove Building buffs from character
     5. Remove Building Debuffs from enemy (Not used right now)
     6. Spawn enemies
+Assume enemies can spawn on any structures, except Hero's Castle.
+Assume if the no tiles are available for the spawner to spawn enemies, then that tile is not placable for that type of spawner
                  

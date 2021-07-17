@@ -391,35 +391,37 @@ public class LoopManiaWorldController {
         isPaused = false;
         // trigger adding code to process main game logic to queue. JavaFX will target framerate of 0.3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(0.3), event -> {
+
             world.runTickMoves();
+
+            /**
+             * Progress: 1. Apply Building Debuffs to enemy
+             *           2. Apply Building Buffs to character
+             *           3. Run Battles if character is not on hero castle
+             *           4. Remove Building buffs from character
+             *           5. Remove Building Debuffs from enemy (Not used right now)
+             *           6. Spawn enemies
+             *           P.S. Equipped items buff are in real time, so wont be included in the timeline
+             */
+
+            world.applyBuildingDebuffsToEnemies();
+            world.applyBuildingBuffsToCharacter();
+
             if(world.characterIsOnHeroCastle()){
                 world.nextCycle();
             }else{
-                /**
-                 * Progress: 1. Apply Building Debuffs to enemy
-                 *           2. Apply Building Buffs to character
-                 *           3. Run Battles
-                 *           4. Remove Building buffs from character
-                 *           5. Remove Building Debuffs from enemy (Not used right now)
-                 *           6. Spawn enemies
-                 *           P.S. Equipped items buff are in real time, so wont be included in the timeline
-                 */
-
-                world.applyBuildingDebuffsToEnemies();
-                world.applyBuildingBuffsToCharacter();
-            
                 List<Enemy> defeatedEnemies = world.runBattles();
                 for (Enemy e: defeatedEnemies){
                     reactToEnemyDefeat(e);
                 }
+            }
 
-                world.removeBuildingBuffsFromCharacter();
-                world.removeBuildingDebuffsFromEnemies();
+            world.removeBuildingBuffsFromCharacter();
+            world.removeBuildingDebuffsFromEnemies();
 
-                List<Enemy> newEnemies = world.possiblySpawnEnemies();
-                for (Enemy newEnemy: newEnemies){
-                    onLoad(newEnemy);
-                }
+            List<Enemy> newEnemies = world.possiblySpawnEnemies();
+            for (Enemy newEnemy: newEnemies){
+                onLoad(newEnemy);
             }
             setCharacterImageToFront();
             printThreadingNotes("HANDLED TIMER");
@@ -749,7 +751,7 @@ public class LoopManiaWorldController {
                                 case CAMPFIRE_CARD:
                                     Building newBuilding = convertCardToBuildingByCoordinates(nodeX, nodeY, x, y);
                                     if(newBuilding instanceof Spawner){
-                                        ((Spawner)newBuilding).addSpawningTile(getAdjacentPathTiles(x, y));
+                                        ((Spawner)newBuilding).addSpawningTile(getSpawnablePathTiles(x, y));
                                     }
                                     onLoad(newBuilding);
                                     break;
@@ -1238,6 +1240,7 @@ public class LoopManiaWorldController {
         switch(draggableType){
             case VAMPIRECASTLE_CARD:
             case ZOMBIEPIT_CARD:
+                return canSpawnEnemies(column, row);
             case TOWER_CARD:
                 return isAdjacentToPath(column, row);
             case VILLAGE_CARD:
@@ -1287,6 +1290,39 @@ public class LoopManiaWorldController {
         return false;
     }
 
+    private boolean canSpawnEnemies(int column, int row){
+        
+        if(!isAdjacentToPath(column, row)) return false;
+
+        Pair<Integer, Integer> up = new Pair<>(column, row - 1);
+        Pair<Integer, Integer> right = new Pair<>(column + 1, row);
+        Pair<Integer, Integer> down = new Pair<>(column, row + 1);
+        Pair<Integer, Integer> left = new Pair<>(column - 1, row);
+
+        int count = 0;
+
+        if(world.getOrderedPath().contains(up)){
+            count++;
+        }
+        if(world.getOrderedPath().contains(right)){
+            count++;
+        }
+        if(world.getOrderedPath().contains(down)){
+            count++;
+        }
+        if(world.getOrderedPath().contains(left)){
+            count++;
+        }
+        if((up.getValue0() == world.getHerosCastle().getX() && up.getValue1() == world.getHerosCastle().getY())
+            || (right.getValue0() == world.getHerosCastle().getX() && right.getValue1() == world.getHerosCastle().getY())
+            || (down.getValue0() == world.getHerosCastle().getX() && down.getValue1() == world.getHerosCastle().getY())
+            || (left.getValue0() == world.getHerosCastle().getX() && left.getValue1() == world.getHerosCastle().getY())){
+                if(count == 1) return false;
+            }
+
+        return true;
+    }
+
     /**
      * Determine if the target node is on the path
      * @param column column of the node
@@ -1306,23 +1342,27 @@ public class LoopManiaWorldController {
      * @param row row of the node
      * @return
      */
-    private List<Pair<Integer, Integer>> getAdjacentPathTiles(int column, int row){
+    private List<Pair<Integer, Integer>> getSpawnablePathTiles(int column, int row){
         List<Pair<Integer, Integer>> result = new ArrayList<Pair<Integer, Integer>>();
         /* Check if the target surroundings has a path nearby */
         Pair<Integer, Integer> up = new Pair<>(column, row - 1);
         Pair<Integer, Integer> right = new Pair<>(column + 1, row);
         Pair<Integer, Integer> down = new Pair<>(column, row + 1);
         Pair<Integer, Integer> left = new Pair<>(column - 1, row);
-        if(world.getOrderedPath().contains(up)){
+        if(world.getOrderedPath().contains(up)
+            && !(up.getValue0() == world.getHerosCastle().getX() && up.getValue1() == world.getHerosCastle().getY())){
             result.add(up);
         }
-        if(world.getOrderedPath().contains(right)){
+        if(world.getOrderedPath().contains(right)
+            && !(right.getValue0() == world.getHerosCastle().getX() && right.getValue1() == world.getHerosCastle().getY())){
             result.add(right);
         }
-        if(world.getOrderedPath().contains(down)){
+        if(world.getOrderedPath().contains(down)
+            && !(down.getValue0() == world.getHerosCastle().getX() && down.getValue1() == world.getHerosCastle().getY())){
             result.add(down);
         }
-        if(world.getOrderedPath().contains(left)){
+        if(world.getOrderedPath().contains(left)
+            && !(left.getValue0() == world.getHerosCastle().getX() && left.getValue1() == world.getHerosCastle().getY())){
             result.add(left);
         }
         return result;
@@ -1396,17 +1436,6 @@ public class LoopManiaWorldController {
     }
 
     /**
-     * Apply static buffs that would not be reverted after a battle
-     * I.e. health regain is a static buff, would not revert even after battle
-     * non static aka temporary buff: temporal damage increase
-     */
-    public void applyNonBattleBuffToCharacter(){
-        List<Building> buffingBuildings = world.getBuildingsWithinRadiusOfEntity(world.getCharacter());
-        for(Building b : buffingBuildings){
-            
-        }
-    }
-    /**
      * Signal from observable about updating gold (Observer pattern)
      */
     public void updateGold(){
@@ -1452,8 +1481,8 @@ public class LoopManiaWorldController {
      * Font end code for removing allied soldier
      */
     public void removeAlliedSoldier(AlliedSoldier soldierToBeRemoved){
-        List<AlliedSoldier> alliedSoldiers =  world.getAlliedSoldiers();
-        shiftAlliedSoldiersFromXCoordinate(alliedSoldiers, soldierToBeRemoved.getSlotPosition());
+        //List<AlliedSoldier> alliedSoldiers =  world.getAlliedSoldiers();
+        //shiftAlliedSoldiersFromXCoordinate(alliedSoldiers, soldierToBeRemoved.getSlotPosition());
     }
 
     /**

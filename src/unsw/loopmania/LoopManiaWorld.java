@@ -143,6 +143,10 @@ public class LoopManiaWorld {
         return this.character;
     }
 
+    public HerosCastle getHerosCastle(){
+        return this.herosCastle;
+    }
+
     public List<AlliedSoldier> getAlliedSoldiers(){
         return alliedSoldiers;
     }
@@ -722,8 +726,22 @@ public class LoopManiaWorld {
             }
 
             // choose random choice
-            Pair<Integer, Integer> spawnPosition = orderedPathSpawnCandidates.get(rand.nextInt(orderedPathSpawnCandidates.size()));
-
+            // If on hero castle, dont spawn
+            Pair<Integer, Integer> spawnPosition = null;
+            int index = -1;
+            for(int i = 0; i < orderedPathSpawnCandidates.size(); i++){
+                if(orderedPathSpawnCandidates.get(i).getValue0() == herosCastle.getX() 
+                    && orderedPathSpawnCandidates.get(i).getValue1() == herosCastle.getY()){
+                    index = i;
+                    break;
+                }
+            }
+            if(index != -1){
+                orderedPathSpawnCandidates.remove(index);
+            }
+            if(orderedPathSpawnCandidates.size() != 0){
+                spawnPosition = orderedPathSpawnCandidates.get(rand.nextInt(orderedPathSpawnCandidates.size()));
+            }
             return spawnPosition;
         }
         return null;
