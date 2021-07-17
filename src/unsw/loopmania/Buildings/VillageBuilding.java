@@ -2,7 +2,6 @@ package unsw.loopmania.Buildings;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Character;
-import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.Types.BuildingType;
 
 public class VillageBuilding extends Building{
@@ -11,12 +10,19 @@ public class VillageBuilding extends Building{
         super(x, y);
     }
 
+    public int getBuildingRadius(){
+        return 1;
+    }
+
     public BuildingType getBuildingType(){
         return BuildingType.VILLAGE_BUILDING;
     }
 
-    public void characterEffect(Character c){
-        c.addHealth(2);
+    public void applyBuffToCharacter(Character character){
+        character.addHealth(2.0);
     }
-
+    
+    public boolean isBuffingCharacter(){
+        return false;
+    }
 }

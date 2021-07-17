@@ -38,7 +38,7 @@ public class StatsTest {
         Sword sword = World.addUnequippedSword();
         assertEquals(5, sword.getAttack());
         
-        World.EquipEquippableItem(sword);
+        World.equipEquippableItem(sword);
         assertEquals(10, World.getCharacterAttack());
 
         World.unequipEquippableItem(sword);
@@ -60,7 +60,7 @@ public class StatsTest {
         Staff staff = World.addUnequippedStaff();
         assertEquals(1, staff.getAttack());
         
-        World.EquipEquippableItem(staff);
+        World.equipEquippableItem(staff);
         assertEquals(6, World.getCharacterAttack());
 
         World.unequipEquippableItem(staff);
@@ -81,7 +81,7 @@ public class StatsTest {
         Stake stake = World.addUnequippedStake();
         assertEquals(3, stake.getAttack());
         
-        World.EquipEquippableItem(stake);
+        World.equipEquippableItem(stake);
         assertEquals(8, World.getCharacterAttack());
 
         World.unequipEquippableItem(stake);
@@ -104,7 +104,7 @@ public class StatsTest {
         Armour armour = World.addUnequippedArmour();
         assertEquals(3, armour.getDefense());
         
-        World.EquipEquippableItem(armour);
+        World.equipEquippableItem(armour);
         assertEquals(8, World.getCharacterDefense());
 
         World.unequipEquippableItem(armour);
@@ -126,7 +126,7 @@ public class StatsTest {
         Helmet helmet = World.addUnequippedHelmet();
         assertEquals(3, helmet.getDefense());
         
-        World.EquipEquippableItem(helmet);
+        World.equipEquippableItem(helmet);
         assertEquals(8, World.getCharacterDefense());
 
         World.unequipEquippableItem(helmet);
@@ -147,7 +147,7 @@ public class StatsTest {
         Shield shield = World.addUnequippedShield();
         assertEquals(3, shield.getDefense());
         
-        World.EquipEquippableItem(shield);
+        World.equipEquippableItem(shield);
         assertEquals(8, World.getCharacterDefense());
 
         World.unequipEquippableItem(shield);
@@ -189,10 +189,10 @@ public class StatsTest {
         Sword sword = World.addUnequippedSword();
         Shield shield = World.addUnequippedShield();
         
-        World.EquipEquippableItem(armour);
-        World.EquipEquippableItem(helmet);
-        World.EquipEquippableItem(sword);
-        World.EquipEquippableItem(shield);
+        World.equipEquippableItem(armour);
+        World.equipEquippableItem(helmet);
+        World.equipEquippableItem(sword);
+        World.equipEquippableItem(shield);
         
         assertEquals(100, World.getCharacterCurrentHp(), "comparing two doubles");
         assertEquals(14, World.getCharacterDefense());
@@ -225,9 +225,9 @@ public class StatsTest {
         Sword sword = World.addUnequippedSword();
         Shield shield = World.addUnequippedShield();
         
-        World.EquipEquippableItem(armour);
-        World.EquipEquippableItem(helmet);
-        World.EquipEquippableItem(shield);
+        World.equipEquippableItem(armour);
+        World.equipEquippableItem(helmet);
+        World.equipEquippableItem(shield);
         
         assertEquals(14, World.getCharacterDefense());
         assertEquals(5, World.getCharacterAttack());
@@ -235,17 +235,17 @@ public class StatsTest {
         World.unequipEquippableItem(armour);
         World.unequipEquippableItem(helmet);
         World.unequipEquippableItem(shield);
-        World.EquipEquippableItem(sword);
+        World.equipEquippableItem(sword);
 
         assertEquals(10, World.getCharacterAttack());
         assertEquals(5, World.getCharacterDefense());
 
-        World.EquipEquippableItem(shield);
+        World.equipEquippableItem(shield);
 
         assertEquals(10, World.getCharacterAttack());
         assertEquals(8, World.getCharacterDefense());
         
-        World.EquipEquippableItem(armour);
+        World.equipEquippableItem(armour);
         
         assertEquals(10, World.getCharacterAttack());
         assertEquals(11, World.getCharacterDefense());
