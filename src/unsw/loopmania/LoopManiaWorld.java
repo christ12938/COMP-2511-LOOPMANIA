@@ -58,7 +58,7 @@ public class LoopManiaWorld {
     /**
      * Cycle of the world
      */
-    private int cycle = 0;
+    private volatile int cycle = 0;
 
     // TODO = add more lists for other entities, for equipped inventory items, etc...
 
@@ -68,14 +68,14 @@ public class LoopManiaWorld {
     // TODO = expand the range of cards
     private List<Card> cardEntities;
 
-    // List of equipped items
-    private List<Equipable> equippedItems;
-
     // TODO = expand the range of items
     private List<Item> unequippedInventoryItems;
 
     // TODO = expand the range of buildings
     private List<Building> buildingEntities;
+
+    //TODO = REDUNDANT CAN REMOVE
+    private List<AlliedSoldier> alliedSoldiers;
 
     /**
      * list of x,y coordinate pairs in the order by which moving entities traverse them
@@ -96,10 +96,10 @@ public class LoopManiaWorld {
         character = null;
         enemies = new ArrayList<>();
         cardEntities = new ArrayList<>();
-        equippedItems = new ArrayList<>();
         unequippedInventoryItems = new ArrayList<>();
         this.orderedPath = orderedPath;
         buildingEntities = new ArrayList<>();
+        alliedSoldiers = new ArrayList<>();
     }
 
     public int getWidth() {
@@ -147,13 +147,51 @@ public class LoopManiaWorld {
         return;
     }
 
-    public void increaseCharacterHp(long amount) {
-        this.character.addHp(amount);
+    public void increaseCharacterHp(double amount) {
+        this.character.addHealth(amount);
         return;
     }
 
     public Character getCharacter(){
         return this.character;
+    }
+
+    public HerosCastle getHerosCastle(){
+        return this.herosCastle;
+    }
+
+    public List<AlliedSoldier> getAlliedSoldiers(){
+        return alliedSoldiers;
+    }
+
+
+    /**
+     * Add allied Soldier in the backend and return to the front end
+     * @return
+     */
+    public AlliedSoldier addAlliedSoldier(){
+        if(alliedSoldiers.size() < alliedSoldierNumber){
+            Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForAlliedSoldier();
+            if(firstAvailableSlot == null) return null;
+            /**
+             * Get a reference to the character since allied soldiers always move with character
+             */
+            AlliedSoldier alliedSoldier = new AlliedSoldier(character.getPathPosition(), firstAvailableSlot);
+            alliedSoldiers.add(alliedSoldier);
+            return alliedSoldier;
+        }
+        return null;
+    }
+
+    /**
+     * Backend code for removing allied soldier
+     * @param alliedSoldier
+     */
+    public void removeAlliedSoldier(AlliedSoldier alliedSoldier){
+        if(alliedSoldier == null) return;
+        alliedSoldiers.remove(alliedSoldier);
+        alliedSoldier.destroy();
+        character.removeAlliedSoldier(alliedSoldier);
     }
 
     /**
@@ -292,6 +330,21 @@ public class LoopManiaWorld {
     }
 
     /**
+     * Get all the buildings that contains the entity within the building radius
+     * @param e the entiy being passed
+     * @return
+     */
+    public List<Building> getBuildingsWithinRadiusOfEntity(Entity e){
+        List<Building> result = new ArrayList<>();
+        for(Building b : buildingEntities){
+            if (Math.pow((b.getX()-e.getX()), 2) +  Math.pow((b.getY()-e.getY()), 2) < Math.pow(b.getBuildingRadius(), 2)){
+                result.add(b);
+            }
+        }
+        return result;
+    }
+
+    /**
      * spawn a sword in the world and return the sword entity
      * @return a sword to be spawned in the controller as a JavaFX node
      */
@@ -407,65 +460,19 @@ public class LoopManiaWorld {
     }
 
     
-    public void EquipEquippableItem(Equipable item) {
-        for (Equipable items : this.equippedItems) {
-            if (item.getItemType() == items.getItemType()) {
-                return;
-            } 
-        }
-        switch(item.getItemType()) {
-            case SWORD:
-                this.character.addAttack(5);
-                break;
-            case STAKE:
-                this.character.addAttack(3);
-                break;
-            case STAFF:
-                this.character.addAttack(1);
-                break;
-            case ARMOUR:
-                this.character.addDefense(3);
-                break;
-            case SHIELD:
-                this.character.addDefense(3);
-                break;
-            case HELMET:
-                this.character.addDefense(3);
-            break;
-        }
-        this.unequippedInventoryItems.remove(item);
-        this.equippedItems.add(item);  
+    public void equipEquippableItem(Equipable item) {
+        character.equip(item);
     }
 
     public void unequipEquippableItem(Equipable item) {
-        switch(item.getItemType()) {
-            case SWORD:
-                this.character.addAttack(-5);
-                break;
-            case STAKE:
-                this.character.addAttack(-3);
-                break;
-            case STAFF:
-                this.character.addAttack(-1);
-                break;
-            case ARMOUR:
-                this.character.addDefense(-3);
-                break;
-            case SHIELD:
-                this.character.addDefense(-3);
-                break;
-            case HELMET:
-                this.character.addDefense(-3);
-            break;
-        }
-        this.unequippedInventoryItems.add(item);
-        this.equippedItems.remove(item);  
+        character.unequip(item);
+        item.destroy();
     }
     
     public void useHealthPotion() {
         for (Item item : this.unequippedInventoryItems) {
             if (item.getItemType() == ItemType.HEALTH_POTION) {
-                increaseCharacterHp(10);
+                increaseCharacterHp(10.0);
                 removeUnequippedInventoryItemByCoordinates(item.getX(), item.getY());
                 return;
             }
@@ -490,10 +497,17 @@ public class LoopManiaWorld {
         character.moveDownPath();
 
         moveEnemies();
+    }
+
+    /**
+     * determine if the character is on hero castle
+     * @return
+     */
+    public boolean characterIsOnHeroCastle(){
         if(character.getX() == herosCastle.getX() && character.getY() == herosCastle.getY()){
-            //TODO-: SHOP
-            nextCycle();
+            return true;
         }
+        return false;
     }
 
     /**
@@ -506,23 +520,6 @@ public class LoopManiaWorld {
         item.destroy();
         unequippedInventoryItems.remove(item);
         //shiftUnequippedInventoryItemsFromXYCoordinate(x, y);
-    }
-
-    /**
-     * Add equipped item to list
-     * @param item equipped item
-     */
-    public void addEquippedItem(Equipable item){
-        equippedItems.add(item);
-    }
-
-    /**
-     * remove an item from the equipped item slot
-     * @param item item to be removed
-     */
-    public void removeEquippedItem(Item item){
-        item.destroy();
-        equippedItems.remove(item);
     }
 
     /**
@@ -556,6 +553,7 @@ public class LoopManiaWorld {
      * @param y y coordinate
      * @param type type of entity being overlapped
      */
+    //DEBUG
     public void RemoveOverlappedEntityByCoordinates(int x, int y, OverlappableEntityType type){
         Entity result = null;
         if(type == OverlappableEntityType.BUILDING){
@@ -566,20 +564,25 @@ public class LoopManiaWorld {
                 }
             }
             if(result != null){
+                //TODO: Should also add removeDebuffFromEnemy, but at this stage not required
+                //DEBUG??? MIGHT CAUSE ERROR? ADD FLAG
+                if(((Building)result).isBuffingCharacter()){
+                    ((Building)result).removeBuffFromCharacter(character);
+                }
                 buildingEntities.remove(result);
                 result.destroy();
                 return;
             }
         }
         if(type == OverlappableEntityType.EQUIPPED_ITEM){
-            for(Entity e : equippedItems){
+            for(Entity e : character.getEquippedItems()){
                 if(e.getX() == x && e.getY() == y){
                     result = e;
                     break;
                 }
             }
             if(result != null){
-                equippedItems.remove(result);
+                character.unequip((Equipable)result);
                 result.destroy();
                 return;
             }
@@ -606,7 +609,7 @@ public class LoopManiaWorld {
      * @return equipped item
      */
     public Equipable getEquippedItemByCoordinates(int x, int y){
-        for (Equipable e: equippedItems){
+        for (Equipable e: character.getEquippedItems()){
             if ((e.getX() == x) && (e.getY() == y)){
                 return e;
             }
@@ -663,6 +666,26 @@ public class LoopManiaWorld {
     }
 
     /**
+     * get the first available slot for allied soldier
+     * @return
+     */
+    private Pair<Integer, Integer> getFirstAvailableSlotForAlliedSoldier(){
+        for(int i = 0; i < alliedSoldierNumber; i++){
+            if(getAlliedSoldierByCoordinate(i) == null){
+                return new Pair<Integer, Integer>(i, 0);
+            }
+        }
+        return null;
+    }
+
+    private AlliedSoldier getAlliedSoldierByCoordinate(int x){
+        for(AlliedSoldier soldier : alliedSoldiers){
+            if(soldier.getSlotPosition() == x) return soldier;
+        }
+        return null;
+    }
+
+    /**
      * shift card coordinates down starting from x coordinate
      * @param x x coordinate which can range from 0 to width-1
      */
@@ -701,13 +724,6 @@ public class LoopManiaWorld {
         // TODO = expand to more types of enemy
         for (Enemy e: enemies){
             e.move();
-            if(MovingEntityOnBuilding(e)){
-                Building b = movingEntityLocationBuilding(e);
-                if(b.getBuildingType()==BuildingType.TRAP_BUILDING){
-                    e.takeDamage(30);
-                    buildingEntities.remove(b);
-                }
-            }
         }
     }
 
@@ -734,8 +750,22 @@ public class LoopManiaWorld {
             }
 
             // choose random choice
-            Pair<Integer, Integer> spawnPosition = orderedPathSpawnCandidates.get(rand.nextInt(orderedPathSpawnCandidates.size()));
-
+            // If on hero castle, dont spawn
+            Pair<Integer, Integer> spawnPosition = null;
+            int index = -1;
+            for(int i = 0; i < orderedPathSpawnCandidates.size(); i++){
+                if(orderedPathSpawnCandidates.get(i).getValue0() == herosCastle.getX() 
+                    && orderedPathSpawnCandidates.get(i).getValue1() == herosCastle.getY()){
+                    index = i;
+                    break;
+                }
+            }
+            if(index != -1){
+                orderedPathSpawnCandidates.remove(index);
+            }
+            if(orderedPathSpawnCandidates.size() != 0){
+                spawnPosition = orderedPathSpawnCandidates.get(rand.nextInt(orderedPathSpawnCandidates.size()));
+            }
             return spawnPosition;
         }
         return null;
@@ -788,6 +818,39 @@ public class LoopManiaWorld {
         return newBuilding;
     }
 
+    public void applyBuildingBuffsToCharacter(){
+        List<Building> buffingBuildings = getBuildingsWithinRadiusOfEntity(character);
+        for(Building b : buffingBuildings){
+            b.applyBuffToCharacter(character);
+        }
+    }
+
+    public void applyBuildingDebuffsToEnemies(){
+        for(Enemy enemy : enemies){
+            List<Building> debuffBuildings = getBuildingsWithinRadiusOfEntity(enemy);
+            for(Building b : debuffBuildings){
+                b.applyDeBuffToEnemy(enemy);
+                if(b.getBuildingType() == BuildingType.TRAP_BUILDING) buildingEntities.remove(b);
+            }
+        }
+    }
+
+    public void removeBuildingBuffsFromCharacter(){
+        List<Building> buffingBuildings = getBuildingsWithinRadiusOfEntity(character);
+        for(Building b : buffingBuildings){
+            b.removeBuffFromCharacter(character);
+        }
+    }
+
+    public void removeBuildingDebuffsFromEnemies(){
+        for(Enemy enemy : enemies){
+            List<Building> debuffBuildings = getBuildingsWithinRadiusOfEntity(enemy);
+            for(Building b : debuffBuildings){
+                b.removeDeBuffFromEnemy(enemy);
+            }
+        }
+    }
+
     /**
      * Perform actions before heading to next cycle
      */
@@ -825,22 +888,20 @@ public class LoopManiaWorld {
     }
 
     public void subtractCharacterHP(double amount){
-        this.character.subtractHealth(amount);
+        this.character.minusHealth(amount);
     }
 
     public double getCharacterHP(){
-        return this.character.getHealth();
+        return this.character.getCurrentHealth();
     }
 
     //use for battle calculation
     //check at the start of each battle to determine
     //character atk
     public Boolean inRangeOfCampfire(int x, int y){
-        for (Building b : buildingEntities) {
+        for (Building b : getBuildingsWithinRadiusOfEntity(character)) {
             if(b.getBuildingType()==BuildingType.CAMPFIRE_BUILDING){
-                if(b.inRange(x, y)){
-                    return true;
-                }
+                return true;
             }
         }
         return false;
@@ -848,11 +909,9 @@ public class LoopManiaWorld {
 
     //use for battle calculation to determine dmg to enemies
     public Boolean inRangeOfTower(int x, int y){
-        for (Building b : buildingEntities) {
+        for (Building b : getBuildingsWithinRadiusOfEntity(character)) {
             if(b.getBuildingType()==BuildingType.TOWER_BUILDING){
-                if(b.inRange(x, y)){
-                    return true;
-                }
+                return true;
             }
         }
         return false;
