@@ -14,4 +14,5 @@ public class BarracksBuilding extends Building{
     }
 
 
+
 }

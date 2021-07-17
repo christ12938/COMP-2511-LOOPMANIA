@@ -616,7 +616,9 @@ public class LoopManiaWorld {
             if(MovingEntityOnBuilding(e)){
                 Building b = movingEntityLocationBuilding(e);
                 if(b.getBuildingType()==BuildingType.TRAP_BUILDING){
-                    e.takeDamage(30);
+                    //need enemy functions to be written
+                    //e.takeDamage(30);
+
                     buildingEntities.remove(b);
                 }
             }
@@ -718,6 +720,7 @@ public class LoopManiaWorld {
         for (Building b : buildingEntities) {
             if((b.getX() == e.getX()) && (b.getY() == e.getY())){
                 return true;
+
             }
         }
         return false;

@@ -16,6 +16,7 @@ public class CampfireBuilding extends Building{
 
     //use to see if a location is in rage of this campfire
     //use in battle calculation (check at start of each battle)
+    @Override
     public boolean inRange(int x, int y){
         if(Math.sqrt((this.getX()-x)*(this.getX()-x) + (this.getY()-y)*(this.getY()-y))<=5){
             return true;
