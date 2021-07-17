@@ -1,6 +1,7 @@
 package unsw.loopmania.Loaders;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
@@ -35,6 +36,29 @@ public class ItemLoader{
         return items.get(new Random().nextInt(items.size()));
     }
 
+    public static Item loadBoughtItem(ItemType type, int nodeX, int nodeY){
+        SimpleIntegerProperty x = new SimpleIntegerProperty(nodeX);
+        SimpleIntegerProperty y = new SimpleIntegerProperty(nodeY);
+        switch(type){
+            case SWORD:
+                return new Sword(x, y);
+            case STAKE:
+                return new Stake(x, y);
+            case STAFF:
+                return new Staff(x, y);
+            case SHIELD:
+                return new Shield(x, y);
+            case ARMOUR:
+                return new Armour(x, y);
+            case HELMET:
+                return new Helmet(x, y);
+            case HEALTH_POTION:
+                return new HealthPotion(x, y);
+            default:
+                return null;
+        }
+    }
+
     public static Equipable loadEquipableItem(ItemType type, int nodeX, int nodeY){
         SimpleIntegerProperty x = new SimpleIntegerProperty(nodeX);
         SimpleIntegerProperty y = new SimpleIntegerProperty(nodeY);
@@ -54,6 +78,43 @@ public class ItemLoader{
             default:
                 return null;
         }
+    }
+
+    public static List<Item> loadShopItems(EnumMap<ItemType, Pair<Integer, Integer>> itemPositions){
+        /**
+         * Define shop items position manually ???
+         */
+        List<Item> result = new ArrayList<>();
+
+        SimpleIntegerProperty swordPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.SWORD).getValue0());
+        SimpleIntegerProperty swordPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.SWORD).getValue1());
+        result.add(new Sword(swordPosX, swordPosY));
+
+        SimpleIntegerProperty stakePosX = new SimpleIntegerProperty(itemPositions.get(ItemType.STAKE).getValue0());
+        SimpleIntegerProperty stakePosY = new SimpleIntegerProperty(itemPositions.get(ItemType.STAKE).getValue1());
+        result.add(new Stake(stakePosX, stakePosY));
+
+        SimpleIntegerProperty staffPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.STAFF).getValue0());
+        SimpleIntegerProperty staffPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.STAFF).getValue1());
+        result.add(new Staff(staffPosX, staffPosY));
+
+        SimpleIntegerProperty armourPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.ARMOUR).getValue0());
+        SimpleIntegerProperty armourPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.ARMOUR).getValue1());
+        result.add(new Armour(armourPosX, armourPosY));
+
+        SimpleIntegerProperty shieldPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.SHIELD).getValue0());
+        SimpleIntegerProperty shieldPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.SHIELD).getValue1());
+        result.add(new Shield(shieldPosX, shieldPosY));
+
+        SimpleIntegerProperty helmetPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.HELMET).getValue0());
+        SimpleIntegerProperty helmetPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.HELMET).getValue1());
+        result.add(new Helmet(helmetPosX, helmetPosY));
+
+        SimpleIntegerProperty healthPotionPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.HEALTH_POTION).getValue0());
+        SimpleIntegerProperty healthPotionPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.HEALTH_POTION).getValue1());
+        result.add(new HealthPotion(healthPotionPosX, healthPotionPosY));
+
+        return result;
     }
 
 }

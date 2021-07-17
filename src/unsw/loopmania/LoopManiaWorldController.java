@@ -16,9 +16,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
@@ -31,7 +33,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import unsw.loopmania.Cards.*;
 import unsw.loopmania.Enemies.Enemy;
@@ -409,6 +414,7 @@ public class LoopManiaWorldController {
 
             if(world.characterIsOnHeroCastle()){
                 world.nextCycle();
+                openShop();
             }else{
                 List<Enemy> defeatedEnemies = world.runBattles();
                 for (Enemy e: defeatedEnemies){
@@ -468,7 +474,6 @@ public class LoopManiaWorldController {
     private void loadRandomItem(){
         // start by getting first available coordinates
         Item item = world.loadRandomUnenquippedInventoryItem();
-        System.out.println(item);
         if(item != null) onLoadUnequippedItem(item);
     }
 
@@ -540,7 +545,7 @@ public class LoopManiaWorldController {
      * and load the image into the unequippedInventory GridPane.
      * @param item
      */
-    private void onLoadUnequippedItem(Item item) {
+    public void onLoadUnequippedItem(Item item) {
         ImageView view = null;
         DRAGGABLE_TYPE draggableType = null;
         switch(item.getItemType()){
@@ -1459,7 +1464,6 @@ public class LoopManiaWorldController {
      * Signal from observable about updating experience (Observer pattern)
      */
     public void updateHealth(double currentHealth, double maxHealth){
-        System.err.println("test");
         if(currentHealth/maxHealth <= 0.3){
             healthBar.setStyle("-fx-accent: red;");
         }else if(currentHealth/maxHealth <= 0.6){
@@ -1511,5 +1515,51 @@ public class LoopManiaWorldController {
      */
     public void setStage(Stage primaryStage){
         this.primaryStage = primaryStage;
+    }
+
+    /**
+     * Open the shop 
+     */
+    private void openShop(){
+        /* Pause the game first */
+        if(!isPaused) pause();
+
+        try {
+            Stage shopStage = new Stage();
+            FXMLLoader shopLoader = new FXMLLoader(getClass().getResource("LoopManiaShop.fxml"));
+            shopLoader.setController(new LoopManiaShopController(this, world, shopStage));
+            shopStage.setScene(new Scene(shopLoader.load()));
+            shopStage.initStyle(StageStyle.UNDECORATED);
+            shopStage.setResizable(false);
+
+            /**
+             * Set Stage modality and owner to block all controls to owner
+             */
+            shopStage.initModality(Modality.WINDOW_MODAL);
+            shopStage.initOwner(primaryStage);
+            
+            /**
+             * Found on stack overflow
+             * cannot find the poisition of shop until it is rendered
+             * thus show stage first then hide, relocate and show again does the trick
+             */
+            shopStage.setOnShowing(event -> shopStage.hide());
+            
+            shopStage.setOnShown(event -> {
+                /**
+                 * Set the shop position to the center
+                 */
+                double centerXPosition = primaryStage.getX() + primaryStage.getWidth()/2d;
+                double centerYPosition = primaryStage.getY() + primaryStage.getHeight()/2d;
+                shopStage.setX(centerXPosition - shopStage.getWidth()/2d);
+                shopStage.setY(centerYPosition - shopStage.getHeight()/2d);
+                shopStage.show();
+            });
+
+            shopStage.show();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }
