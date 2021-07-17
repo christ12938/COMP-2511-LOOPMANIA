@@ -5,7 +5,7 @@ import unsw.loopmania.Types.BuildingType;
 
 public class ZombiePitBuilding extends Spawner{
 
-    private boolean hasSpawned = false;
+    private boolean hasSpawned = true;
 
     public ZombiePitBuilding(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);

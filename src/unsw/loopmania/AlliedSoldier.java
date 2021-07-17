@@ -1,14 +1,29 @@
 package unsw.loopmania;
 
-public class AlliedSoldier implements Damageable{
+import org.javatuples.Pair;
+
+public class AlliedSoldier extends MovingEntity implements Damageable{
+    /**
+     * The position of the soldier on the slot
+     */
+    private Pair<Integer, Integer> slotPosition;
+
     private double health;
     private int damage;
-    private static int count = 0;
 
-    public AlliedSoldier () {
-        count++;
+    public AlliedSoldier (PathPosition position, Pair<Integer, Integer> slotPosition) {
+        super(position);
+        this.slotPosition = slotPosition;
         this.health = 30;
         this.damage = 5;
+    }
+
+    public int getSlotPosition(){
+        return slotPosition.getValue0();
+    }
+
+    public void setSlotPosition(int slotPosition){
+        this.slotPosition = new Pair<Integer, Integer>(slotPosition, 0);
     }
 
     @Override
