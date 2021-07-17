@@ -1,7 +1,5 @@
 package unsw.loopmania.Enemies;
 
-import java.util.Random;
-
 import unsw.loopmania.Damageable;
 
 public class StandardCritStrategy implements CritStrategy {

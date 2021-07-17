@@ -69,7 +69,7 @@ public abstract class Enemy extends MovingEntity implements Damageable{
 
     @Override
     public void dealDamage(Damageable damageable) {
-        if ((new Random()).nextDouble() < 0.05) {
+        if ((new Random()).nextDouble() < critRate) {
             critStrategy.applyCrit(damageable);
         }
         

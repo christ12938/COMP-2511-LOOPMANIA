@@ -12,7 +12,6 @@ import org.javatuples.Pair;
 
 import unsw.loopmania.AlliedSoldier;
 import unsw.loopmania.Character;
-import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Enemies.CritStrategy;
 import unsw.loopmania.Enemies.Slug;
@@ -91,10 +90,14 @@ public class EnemyTest {
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
         Character character = new Character(new PathPosition(0, orderedPath));
+        character.setHealth(99999999);
         Slug slug = new Slug(new PathPosition(0, orderedPath));
         double health = character.getHealth();
 
-        slug.dealDamage(character);
+        for (int i = 0; i < 100; i++) {
+            slug.dealDamage(character);
+        }
+
         assertTrue(health > character.getHealth());
     }
 
@@ -137,7 +140,9 @@ public class EnemyTest {
         orderedPath.add(pair3);
 
         Slug slug = new Slug(new PathPosition(0, orderedPath));
-        slug.move();
+        for (int i = 0; i < 100; i++) {
+            slug.move();
+        }
     }
 
     @Test
@@ -162,11 +167,13 @@ public class EnemyTest {
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
 
+        Character character = new Character(new PathPosition(0, orderedPath));
         AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), new Pair<Integer, Integer>(0, 0));
 
         assertTrue(soldier.isAllied());
         CritStrategy crit = new ZombieStrategy();
         crit.applyCrit(soldier);
+        crit.applyCrit(character);
         crit.processCrit();
 
         assertFalse(soldier.isAllied());
@@ -183,7 +190,9 @@ public class EnemyTest {
 
         CritStrategy crit = new VampireStrategy();
         crit.applyCrit(character);
-        crit.processCrit();
+        for (int i = 0; i < 5; i++) {
+            crit.processCrit();
+        }
 
         assertTrue(health > character.getHealth());
     }
