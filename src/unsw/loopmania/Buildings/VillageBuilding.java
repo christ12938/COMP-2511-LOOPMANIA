@@ -19,7 +19,7 @@ public class VillageBuilding extends Building{
     }
 
     public void applyBuffToCharacter(Character character){
-        character.addHealth(20.0);
+        character.addHealth(2.0);
     }
     
     public boolean isBuffingCharacter(){

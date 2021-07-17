@@ -46,11 +46,10 @@ public class Character extends MovingEntity implements Damageable{
         // just putting random health value for now for testing
         this.attack = 5;
         this.defense = 5;
-        this.observer = null;
-        
         battleBuildings = new ArrayList<>();
         alliedSoldiers = new ArrayList<>();
         equippedItems = new ArrayList<>();
+        this.observer = null;
     }
 
     /**
@@ -68,19 +67,11 @@ public class Character extends MovingEntity implements Damageable{
     public double getMaxHealth(){
         return this.maxHealth;
     }
-
-    public void addHp(long amount) {
-        this.currentHealth += amount;
-        if (currentHealth > maxHealth) {
-            this.currentHealth = maxHealth;
-        }
-        return;
-    }
-
     
     public int getGold() {
         return this.gold;
     }
+
 
     public int getExperience() {
         return this.experience;
@@ -225,13 +216,7 @@ public class Character extends MovingEntity implements Damageable{
 
             //DO STH ELSE
         }else{
-            currentHealth = currentHealth - health;
-
-            if (observer != null) {
-                observer.updateHealth(this.currentHealth, this.maxHealth);
-            }
-
-            
+            observer.updateHealth(this.currentHealth, this.maxHealth);
         }
     }
 

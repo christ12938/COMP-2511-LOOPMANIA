@@ -80,25 +80,25 @@ enum DRAGGABLE_TYPE{
 
 /**
  * A JavaFX controller for the world.
- * 
+ *
  * All event handlers and the timeline in JavaFX run on the JavaFX application thread:
  *     https://examples.javacodegeeks.com/desktop-java/javafx/javafx-concurrency-example/
  *     Note in https://openjfx.io/javadoc/11/javafx.graphics/javafx/application/Application.html under heading "Threading", it specifies animation timelines are run in the application thread.
  * This means that the starter code does not need locks (mutexes) for resources shared between the timeline KeyFrame, and all of the  event handlers (including between different event handlers).
  * This will make the game easier for you to implement. However, if you add time-consuming processes to this, the game may lag or become choppy.
- * 
+ *
  * If you need to implement time-consuming processes, we recommend:
  *     using Task https://openjfx.io/javadoc/11/javafx.graphics/javafx/concurrent/Task.html by itself or within a Service https://openjfx.io/javadoc/11/javafx.graphics/javafx/concurrent/Service.html
- * 
+ *
  *     Tasks ensure that any changes to public properties, change notifications for errors or cancellation, event handlers, and states occur on the JavaFX Application thread,
  *         so is a better alternative to using a basic Java Thread: https://docs.oracle.com/javafx/2/threads/jfxpub-threads.htm
  *     The Service class is used for executing/reusing tasks. You can run tasks without Service, however, if you don't need to reuse it.
  *
  * If you implement time-consuming processes in a Task or thread, you may need to implement locks on resources shared with the application thread (i.e. Timeline KeyFrame and drag Event handlers).
  * You can check whether code is running on the JavaFX application thread by running the helper method printThreadingNotes in this class.
- * 
+ *
  * NOTE: http://tutorials.jenkov.com/javafx/concurrency.html and https://www.developer.com/design/multithreading-in-javafx/#:~:text=JavaFX%20has%20a%20unique%20set,in%20the%20JavaFX%20Application%20Thread.
- * 
+ *
  * If you need to delay some code but it is not long-running, consider using Platform.runLater https://openjfx.io/javadoc/11/javafx.graphics/javafx/application/Platform.html#runLater(java.lang.Runnable)
  *     This is run on the JavaFX application thread when it has enough time.
  */
@@ -137,7 +137,7 @@ public class LoopManiaWorldController {
      */
     @FXML
     private ImageView helmetCell;
-    
+
     @FXML
     private ImageView weaponCell;
 
@@ -335,7 +335,7 @@ public class LoopManiaWorldController {
     @FXML
     public void initialize() {
         // TODO = load more images/entities during initialization
-        
+
         Image pathTilesImage = new Image((new File("src/images/32x32GrassAndDirtPath.png")).toURI().toString());
         Image inventorySlotImage = new Image((new File("src/images/empty_slot.png")).toURI().toString());
         Rectangle2D imagePart = new Rectangle2D(0, 0, 32, 32);
@@ -354,7 +354,7 @@ public class LoopManiaWorldController {
         for (ImageView entity : entityImages){
             squares.getChildren().add(entity);
         }
-        
+
         // add the ground underneath the cards
         for (int x=0; x<world.getWidth(); x++){
             ImageView cardSlotView = new ImageView(cardSlotImage);
@@ -391,35 +391,37 @@ public class LoopManiaWorldController {
         isPaused = false;
         // trigger adding code to process main game logic to queue. JavaFX will target framerate of 0.3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(0.3), event -> {
+
             world.runTickMoves();
+
+            /**
+             * Progress: 1. Apply Building Debuffs to enemy
+             *           2. Apply Building Buffs to character
+             *           3. Run Battles if character is not on hero castle
+             *           4. Remove Building buffs from character
+             *           5. Remove Building Debuffs from enemy (Not used right now)
+             *           6. Spawn enemies
+             *           P.S. Equipped items buff are in real time, so wont be included in the timeline
+             */
+
+            world.applyBuildingDebuffsToEnemies();
+            world.applyBuildingBuffsToCharacter();
+
             if(world.characterIsOnHeroCastle()){
                 world.nextCycle();
             }else{
-                /**
-                 * Progress: 1. Apply Building Debuffs to enemy
-                 *           2. Apply Building Buffs to character
-                 *           3. Run Battles
-                 *           4. Remove Building buffs from character
-                 *           5. Remove Building Debuffs from enemy (Not used right now)
-                 *           6. Spawn enemies
-                 *           P.S. Equipped items buff are in real time, so wont be included in the timeline
-                 */
-
-                world.applyBuildingDebuffsToEnemies();
-                world.applyBuildingBuffsToCharacter();
-            
                 List<Enemy> defeatedEnemies = world.runBattles();
                 for (Enemy e: defeatedEnemies){
                     reactToEnemyDefeat(e);
                 }
+            }
 
-                world.removeBuildingBuffsFromCharacter();
-                world.removeBuildingDebuffsFromEnemies();
+            world.removeBuildingBuffsFromCharacter();
+            world.removeBuildingDebuffsFromEnemies();
 
-                List<Enemy> newEnemies = world.possiblySpawnEnemies();
-                for (Enemy newEnemy: newEnemies){
-                    onLoad(newEnemy);
-                }
+            List<Enemy> newEnemies = world.possiblySpawnEnemies();
+            for (Enemy newEnemy: newEnemies){
+                onLoad(newEnemy);
             }
             setCharacterImageToFront();
             printThreadingNotes("HANDLED TIMER");
@@ -749,7 +751,7 @@ public class LoopManiaWorldController {
                                 case CAMPFIRE_CARD:
                                     Building newBuilding = convertCardToBuildingByCoordinates(nodeX, nodeY, x, y);
                                     if(newBuilding instanceof Spawner){
-                                        ((Spawner)newBuilding).addSpawningTile(getAdjacentPathTiles(x, y));
+                                        ((Spawner)newBuilding).addSpawningTile(getSpawnablePathTiles(x, y));
                                     }
                                     onLoad(newBuilding);
                                     break;
@@ -775,7 +777,7 @@ public class LoopManiaWorldController {
                                     break;
                                 default:
                                     break;
-                            }    
+                            }
                             printThreadingNotes("DRAG DROPPED ON GRIDPANE HANDLED");
                         }
                         draggedEntity.setVisible(false);
@@ -826,7 +828,7 @@ public class LoopManiaWorldController {
                         draggedEntity.setMouseTransparent(false);
                         // remove drag event handlers before setting currently dragged image to null
                         removeDraggableDragEventHandlers(draggableType, targetGridPane);
-                        
+
                         currentlyDraggedImage = null;
                         currentlyDraggedType = null;
                     }
@@ -887,7 +889,7 @@ public class LoopManiaWorldController {
     private Equipable equip(Equipable equipableItem, int nodeX, int nodeY, int x, int y){
         removeUnequippedInventoryByCoordinates(nodeX, nodeY);
         equipableItem = ItemLoader.loadEquipableItem(equipableItem.getItemType(), x, y);
-        world.EquipEquippableItem(equipableItem);
+        world.equipEquippableItem(equipableItem);
         return equipableItem;
     }
 
@@ -907,7 +909,7 @@ public class LoopManiaWorldController {
                 //Drag was detected, start drap-and-drop gesture
                 //Allow any transfer node
                 Dragboard db = view.startDragAndDrop(TransferMode.MOVE);
-    
+
                 //Put ImageView on dragboard
                 ClipboardContent cbContent = new ClipboardContent();
                 cbContent.putImage(view.getImage());
@@ -966,7 +968,7 @@ public class LoopManiaWorldController {
                     default:
                         break;
                 }
-                
+
                 draggedEntity.setVisible(true);
                 draggedEntity.setMouseTransparent(true);
                 draggedEntity.toFront();
@@ -1003,18 +1005,18 @@ public class LoopManiaWorldController {
                                 n.setOpacity(1);
                                 currentlyHighlightedImage = null;
                             }
-                
+
                             event.consume();
                         }
                     });
                     n.addEventHandler(DragEvent.DRAG_ENTERED, gridPaneNodeSetOnDragEntered.get(draggableType));
                     n.addEventHandler(DragEvent.DRAG_EXITED, gridPaneNodeSetOnDragExited.get(draggableType));
 
-                    
+
                 }
                 event.consume();
             }
-            
+
         });
 
         view.setOnMouseReleased(new EventHandler<MouseEvent>(){
@@ -1037,9 +1039,9 @@ public class LoopManiaWorldController {
                 }
                 event.consume();
             }
-            
+
         });
-       
+
     }
 
     /**
@@ -1119,10 +1121,10 @@ public class LoopManiaWorldController {
      * By connecting the model with the view in this way, the model requires no
      * knowledge of the view and changes to the position of entities in the
      * model will automatically be reflected in the view.
-     * 
+     *
      * note that this is put in the controller rather than the loader because we need to track positions of spawned entities such as enemy
      * or items which might need to be removed should be tracked here
-     * 
+     *
      * NOTE teardown functions setup here also remove nodes from their GridPane. So it is vital this is handled in this Controller class
      * @param entity
      * @param node
@@ -1146,7 +1148,7 @@ public class LoopManiaWorldController {
                 GridPane.setRowIndex(node, newValue.intValue());
             }
         };
-        
+
         // if need to remove items from the equipped inventory, add code to remove from equipped inventory gridpane in the .onDetach part
         ListenerHandle handleX = ListenerHandles.createFor(entity.x(), node)
                                                .onAttach((o, l) -> o.addListener(xListener))
@@ -1230,7 +1232,7 @@ public class LoopManiaWorldController {
         System.out.println("Current system time = "+java.time.LocalDateTime.now().toString().replace('T', ' '));
     }
 
-    
+
     /**
      * Check if the the dragged entity can be placed on the node
      * @param draggableType Entity type
@@ -1242,6 +1244,7 @@ public class LoopManiaWorldController {
         switch(draggableType){
             case VAMPIRECASTLE_CARD:
             case ZOMBIEPIT_CARD:
+                return canSpawnEnemies(column, row);
             case TOWER_CARD:
                 return isAdjacentToPath(column, row);
             case VILLAGE_CARD:
@@ -1291,6 +1294,39 @@ public class LoopManiaWorldController {
         return false;
     }
 
+    private boolean canSpawnEnemies(int column, int row){
+        
+        if(!isAdjacentToPath(column, row)) return false;
+
+        Pair<Integer, Integer> up = new Pair<>(column, row - 1);
+        Pair<Integer, Integer> right = new Pair<>(column + 1, row);
+        Pair<Integer, Integer> down = new Pair<>(column, row + 1);
+        Pair<Integer, Integer> left = new Pair<>(column - 1, row);
+
+        int count = 0;
+
+        if(world.getOrderedPath().contains(up)){
+            count++;
+        }
+        if(world.getOrderedPath().contains(right)){
+            count++;
+        }
+        if(world.getOrderedPath().contains(down)){
+            count++;
+        }
+        if(world.getOrderedPath().contains(left)){
+            count++;
+        }
+        if((up.getValue0() == world.getHerosCastle().getX() && up.getValue1() == world.getHerosCastle().getY())
+            || (right.getValue0() == world.getHerosCastle().getX() && right.getValue1() == world.getHerosCastle().getY())
+            || (down.getValue0() == world.getHerosCastle().getX() && down.getValue1() == world.getHerosCastle().getY())
+            || (left.getValue0() == world.getHerosCastle().getX() && left.getValue1() == world.getHerosCastle().getY())){
+                if(count == 1) return false;
+            }
+
+        return true;
+    }
+
     /**
      * Determine if the target node is on the path
      * @param column column of the node
@@ -1310,23 +1346,27 @@ public class LoopManiaWorldController {
      * @param row row of the node
      * @return
      */
-    private List<Pair<Integer, Integer>> getAdjacentPathTiles(int column, int row){
+    private List<Pair<Integer, Integer>> getSpawnablePathTiles(int column, int row){
         List<Pair<Integer, Integer>> result = new ArrayList<Pair<Integer, Integer>>();
         /* Check if the target surroundings has a path nearby */
         Pair<Integer, Integer> up = new Pair<>(column, row - 1);
         Pair<Integer, Integer> right = new Pair<>(column + 1, row);
         Pair<Integer, Integer> down = new Pair<>(column, row + 1);
         Pair<Integer, Integer> left = new Pair<>(column - 1, row);
-        if(world.getOrderedPath().contains(up)){
+        if(world.getOrderedPath().contains(up)
+            && !(up.getValue0() == world.getHerosCastle().getX() && up.getValue1() == world.getHerosCastle().getY())){
             result.add(up);
         }
-        if(world.getOrderedPath().contains(right)){
+        if(world.getOrderedPath().contains(right)
+            && !(right.getValue0() == world.getHerosCastle().getX() && right.getValue1() == world.getHerosCastle().getY())){
             result.add(right);
         }
-        if(world.getOrderedPath().contains(down)){
+        if(world.getOrderedPath().contains(down)
+            && !(down.getValue0() == world.getHerosCastle().getX() && down.getValue1() == world.getHerosCastle().getY())){
             result.add(down);
         }
-        if(world.getOrderedPath().contains(left)){
+        if(world.getOrderedPath().contains(left)
+            && !(left.getValue0() == world.getHerosCastle().getX() && left.getValue1() == world.getHerosCastle().getY())){
             result.add(left);
         }
         return result;
@@ -1400,17 +1440,6 @@ public class LoopManiaWorldController {
     }
 
     /**
-     * Apply static buffs that would not be reverted after a battle
-     * I.e. health regain is a static buff, would not revert even after battle
-     * non static aka temporary buff: temporal damage increase
-     */
-    public void applyNonBattleBuffToCharacter(){
-        List<Building> buffingBuildings = world.getBuildingsWithinRadiusOfEntity(world.getCharacter());
-        for(Building b : buffingBuildings){
-            
-        }
-    }
-    /**
      * Signal from observable about updating gold (Observer pattern)
      */
     public void updateGold(){
@@ -1457,8 +1486,8 @@ public class LoopManiaWorldController {
      * Font end code for removing allied soldier
      */
     public void removeAlliedSoldier(AlliedSoldier soldierToBeRemoved){
-        List<AlliedSoldier> alliedSoldiers =  world.getAlliedSoldiers();
-        shiftAlliedSoldiersFromXCoordinate(alliedSoldiers, soldierToBeRemoved.getSlotPosition());
+        //List<AlliedSoldier> alliedSoldiers =  world.getAlliedSoldiers();
+        //shiftAlliedSoldiersFromXCoordinate(alliedSoldiers, soldierToBeRemoved.getSlotPosition());
     }
 
     /**

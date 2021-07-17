@@ -22,8 +22,14 @@ Assume no battle will occur during the tick into hero castle
 Assume Progress per time tick is as follow:
     1. Apply Building Debuffs to enemy
     2. Apply Building Buffs to character
-    3. Run Battles
+    3. Run Battles if character is not on hero castle
     4. Remove Building buffs from character
     5. Remove Building Debuffs from enemy (Not used right now)
     6. Spawn enemies
+Assume enemies can spawn on any structures, except Hero's Castle.
+Assume if the no tiles are available for the spawner to spawn enemies, then that tile is not placable for that type of spawner
                  
+When passing through a village player gains 2 HP
+The radius for towers and campfires will be 5
+Enemies will take 30 dmg from traps
+Spawn on traps? 
