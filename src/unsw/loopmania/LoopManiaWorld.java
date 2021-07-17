@@ -8,6 +8,7 @@ import org.javatuples.Pair;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Buildings.Building;
+import unsw.loopmania.Buildings.CampfireBuilding;
 import unsw.loopmania.Buildings.Spawner;
 import unsw.loopmania.Cards.Card;
 import unsw.loopmania.Enemies.Enemy;
@@ -83,7 +84,7 @@ public class LoopManiaWorld {
 
     /**
      * create the world (constructor)
-     * 
+     *
      * @param width width of world in number of cells
      * @param height height of world in number of cells
      * @param orderedPath ordered list of x, y coordinate pairs representing position of path cells in world
@@ -136,9 +137,21 @@ public class LoopManiaWorld {
     public int getCharacterDefense() {
         return this.character.getDefense();
     }
+
     public double getCharacterCurrentHp() {
         return this.character.getCurrentHealth();
     }
+
+    public void decreaseCharacterHp(long amount) {
+        this.character.minusHealth(amount);
+        return;
+    }
+
+    public void increaseCharacterHp(double amount) {
+        this.character.addHealth(amount);
+        return;
+    }
+
     public Character getCharacter(){
         return this.character;
     }
@@ -306,7 +319,7 @@ public class LoopManiaWorld {
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        // now we insert the new sword, as we know we have at least made a slot available...        
+        // now we insert the new sword, as we know we have at least made a slot available...
         Item item = ItemLoader.loadRandomItem(firstAvailableSlot);
         if(item.getItemType() == ItemType.GOLD){
             character.addGold(5);
@@ -356,7 +369,7 @@ public class LoopManiaWorld {
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        
+
         Stake stake = new Stake(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(stake);
         return stake;
@@ -370,7 +383,7 @@ public class LoopManiaWorld {
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        
+
         Staff staff = new Staff(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(staff);
         return staff;
@@ -397,7 +410,7 @@ public class LoopManiaWorld {
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        
+
         Shield shield = new Shield(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(shield);
         return shield;
@@ -410,14 +423,14 @@ public class LoopManiaWorld {
             this.character.addExperience(10);
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
-        }   
-        
+        }
+
         Armour armour = new Armour(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(armour);
         return armour;
     }
 
-    
+
     public Consumables addUnequippedHealthPotion(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -425,8 +438,8 @@ public class LoopManiaWorld {
             this.character.addExperience(10);
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
-        }   
-        
+        }
+
         HealthPotion healthpotion = new HealthPotion(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(healthpotion);
         return healthpotion;
@@ -439,8 +452,8 @@ public class LoopManiaWorld {
             this.character.addExperience(10);
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
-        }   
-        
+        }
+
         TheOneRing theonering = new TheOneRing(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
         unequippedInventoryItems.add(theonering);
         return theonering;
@@ -456,6 +469,15 @@ public class LoopManiaWorld {
         item.destroy();
     }
     
+    public void useHealthPotion() {
+        for (Item item : this.unequippedInventoryItems) {
+            if (item.getItemType() == ItemType.HEALTH_POTION) {
+                increaseCharacterHp(10.0);
+                removeUnequippedInventoryItemByCoordinates(item.getX(), item.getY());
+                return;
+            }
+        }
+    }
 
     /**
      * remove an item by x,y coordinates
@@ -471,7 +493,9 @@ public class LoopManiaWorld {
      * run moves which occur with every tick without needing to spawn anything immediately
      */
     public void runTickMoves(){
+        System.err.println(herosCastle.getX());
         character.moveDownPath();
+
         moveEnemies();
     }
 
@@ -549,7 +573,7 @@ public class LoopManiaWorld {
                 result.destroy();
                 return;
             }
-        }     
+        }
         if(type == OverlappableEntityType.EQUIPPED_ITEM){
             for(Entity e : character.getEquippedItems()){
                 if(e.getX() == x && e.getY() == y){
@@ -709,7 +733,7 @@ public class LoopManiaWorld {
      */
     private Pair<Integer, Integer> possiblyGetSlugSpawnPosition(){
         // TODO = modify this
-        
+
         // has a chance spawning a basic enemy on a tile the character isn't on or immediately before or after (currently space required = 2)...
         Random rand = new Random();
         int choice = rand.nextInt(2); // TODO = change based on spec... currently low value for dev purposes...
@@ -781,7 +805,7 @@ public class LoopManiaWorld {
                 break;
             }
         }
-        
+
         // now spawn building
         Building newBuilding = BuildingLoader.loadBuilding(card.getCardType(), buildingNodeX, buildingNodeY);
         buildingEntities.add(newBuilding);
@@ -839,5 +863,57 @@ public class LoopManiaWorld {
                 ((Spawner)b).setHasSpawned(false);
             }
         }
+    }
+
+    public boolean MovingEntityOnBuilding(MovingEntity e){
+        for (Building b : buildingEntities) {
+            if((b.getX() == e.getX()) && (b.getY() == e.getY())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // DO NOT call when the character is not on a building
+    public Building movingEntityLocationBuilding(MovingEntity e){
+        Building firstb = buildingEntities.get(0);
+        for (Building b : buildingEntities) {
+            if((b.getX() == e.getX()) && (b.getY() == e.getY())){
+                return b;
+            }
+        }
+
+        //returns first building if none is found (note: shouldn't happpen with correct use)
+        return firstb;
+    }
+
+    public void subtractCharacterHP(double amount){
+        this.character.minusHealth(amount);
+    }
+
+    public double getCharacterHP(){
+        return this.character.getCurrentHealth();
+    }
+
+    //use for battle calculation
+    //check at the start of each battle to determine
+    //character atk
+    public Boolean inRangeOfCampfire(int x, int y){
+        for (Building b : getBuildingsWithinRadiusOfEntity(character)) {
+            if(b.getBuildingType()==BuildingType.CAMPFIRE_BUILDING){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //use for battle calculation to determine dmg to enemies
+    public Boolean inRangeOfTower(int x, int y){
+        for (Building b : getBuildingsWithinRadiusOfEntity(character)) {
+            if(b.getBuildingType()==BuildingType.TOWER_BUILDING){
+                return true;
+            }
+        }
+        return false;
     }
 }

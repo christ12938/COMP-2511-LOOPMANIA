@@ -1,4 +1,5 @@
 package unsw.loopmania.Buildings;
+import java.lang.Math;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Character;
@@ -13,7 +14,7 @@ public class TowerBuilding extends Building{
     }
 
     public int getBuildingRadius(){
-        return 0;
+        return 5;
     }
 
     public BuildingType getBuildingType(){

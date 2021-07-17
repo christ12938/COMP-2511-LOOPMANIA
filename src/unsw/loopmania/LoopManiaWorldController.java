@@ -80,25 +80,25 @@ enum DRAGGABLE_TYPE{
 
 /**
  * A JavaFX controller for the world.
- * 
+ *
  * All event handlers and the timeline in JavaFX run on the JavaFX application thread:
  *     https://examples.javacodegeeks.com/desktop-java/javafx/javafx-concurrency-example/
  *     Note in https://openjfx.io/javadoc/11/javafx.graphics/javafx/application/Application.html under heading "Threading", it specifies animation timelines are run in the application thread.
  * This means that the starter code does not need locks (mutexes) for resources shared between the timeline KeyFrame, and all of the  event handlers (including between different event handlers).
  * This will make the game easier for you to implement. However, if you add time-consuming processes to this, the game may lag or become choppy.
- * 
+ *
  * If you need to implement time-consuming processes, we recommend:
  *     using Task https://openjfx.io/javadoc/11/javafx.graphics/javafx/concurrent/Task.html by itself or within a Service https://openjfx.io/javadoc/11/javafx.graphics/javafx/concurrent/Service.html
- * 
+ *
  *     Tasks ensure that any changes to public properties, change notifications for errors or cancellation, event handlers, and states occur on the JavaFX Application thread,
  *         so is a better alternative to using a basic Java Thread: https://docs.oracle.com/javafx/2/threads/jfxpub-threads.htm
  *     The Service class is used for executing/reusing tasks. You can run tasks without Service, however, if you don't need to reuse it.
  *
  * If you implement time-consuming processes in a Task or thread, you may need to implement locks on resources shared with the application thread (i.e. Timeline KeyFrame and drag Event handlers).
  * You can check whether code is running on the JavaFX application thread by running the helper method printThreadingNotes in this class.
- * 
+ *
  * NOTE: http://tutorials.jenkov.com/javafx/concurrency.html and https://www.developer.com/design/multithreading-in-javafx/#:~:text=JavaFX%20has%20a%20unique%20set,in%20the%20JavaFX%20Application%20Thread.
- * 
+ *
  * If you need to delay some code but it is not long-running, consider using Platform.runLater https://openjfx.io/javadoc/11/javafx.graphics/javafx/application/Platform.html#runLater(java.lang.Runnable)
  *     This is run on the JavaFX application thread when it has enough time.
  */
@@ -137,7 +137,7 @@ public class LoopManiaWorldController {
      */
     @FXML
     private ImageView helmetCell;
-    
+
     @FXML
     private ImageView weaponCell;
 
@@ -335,7 +335,7 @@ public class LoopManiaWorldController {
     @FXML
     public void initialize() {
         // TODO = load more images/entities during initialization
-        
+
         Image pathTilesImage = new Image((new File("src/images/32x32GrassAndDirtPath.png")).toURI().toString());
         Image inventorySlotImage = new Image((new File("src/images/empty_slot.png")).toURI().toString());
         Rectangle2D imagePart = new Rectangle2D(0, 0, 32, 32);
@@ -354,7 +354,7 @@ public class LoopManiaWorldController {
         for (ImageView entity : entityImages){
             squares.getChildren().add(entity);
         }
-        
+
         // add the ground underneath the cards
         for (int x=0; x<world.getWidth(); x++){
             ImageView cardSlotView = new ImageView(cardSlotImage);
@@ -777,7 +777,7 @@ public class LoopManiaWorldController {
                                     break;
                                 default:
                                     break;
-                            }    
+                            }
                             printThreadingNotes("DRAG DROPPED ON GRIDPANE HANDLED");
                         }
                         draggedEntity.setVisible(false);
@@ -828,7 +828,7 @@ public class LoopManiaWorldController {
                         draggedEntity.setMouseTransparent(false);
                         // remove drag event handlers before setting currently dragged image to null
                         removeDraggableDragEventHandlers(draggableType, targetGridPane);
-                        
+
                         currentlyDraggedImage = null;
                         currentlyDraggedType = null;
                     }
@@ -909,7 +909,7 @@ public class LoopManiaWorldController {
                 //Drag was detected, start drap-and-drop gesture
                 //Allow any transfer node
                 Dragboard db = view.startDragAndDrop(TransferMode.MOVE);
-    
+
                 //Put ImageView on dragboard
                 ClipboardContent cbContent = new ClipboardContent();
                 cbContent.putImage(view.getImage());
@@ -968,7 +968,7 @@ public class LoopManiaWorldController {
                     default:
                         break;
                 }
-                
+
                 draggedEntity.setVisible(true);
                 draggedEntity.setMouseTransparent(true);
                 draggedEntity.toFront();
@@ -1005,18 +1005,18 @@ public class LoopManiaWorldController {
                                 n.setOpacity(1);
                                 currentlyHighlightedImage = null;
                             }
-                
+
                             event.consume();
                         }
                     });
                     n.addEventHandler(DragEvent.DRAG_ENTERED, gridPaneNodeSetOnDragEntered.get(draggableType));
                     n.addEventHandler(DragEvent.DRAG_EXITED, gridPaneNodeSetOnDragExited.get(draggableType));
 
-                    
+
                 }
                 event.consume();
             }
-            
+
         });
 
         view.setOnMouseReleased(new EventHandler<MouseEvent>(){
@@ -1039,9 +1039,9 @@ public class LoopManiaWorldController {
                 }
                 event.consume();
             }
-            
+
         });
-       
+
     }
 
     /**
@@ -1089,6 +1089,10 @@ public class LoopManiaWorldController {
                 pause();
             }
             break;
+        case H:
+            this.world.useHealthPotion();
+            break;
+            
         default:
             break;
         }
@@ -1117,10 +1121,10 @@ public class LoopManiaWorldController {
      * By connecting the model with the view in this way, the model requires no
      * knowledge of the view and changes to the position of entities in the
      * model will automatically be reflected in the view.
-     * 
+     *
      * note that this is put in the controller rather than the loader because we need to track positions of spawned entities such as enemy
      * or items which might need to be removed should be tracked here
-     * 
+     *
      * NOTE teardown functions setup here also remove nodes from their GridPane. So it is vital this is handled in this Controller class
      * @param entity
      * @param node
@@ -1144,7 +1148,7 @@ public class LoopManiaWorldController {
                 GridPane.setRowIndex(node, newValue.intValue());
             }
         };
-        
+
         // if need to remove items from the equipped inventory, add code to remove from equipped inventory gridpane in the .onDetach part
         ListenerHandle handleX = ListenerHandles.createFor(entity.x(), node)
                                                .onAttach((o, l) -> o.addListener(xListener))
@@ -1228,7 +1232,7 @@ public class LoopManiaWorldController {
         System.out.println("Current system time = "+java.time.LocalDateTime.now().toString().replace('T', ' '));
     }
 
-    
+
     /**
      * Check if the the dragged entity can be placed on the node
      * @param draggableType Entity type
@@ -1455,6 +1459,7 @@ public class LoopManiaWorldController {
      * Signal from observable about updating experience (Observer pattern)
      */
     public void updateHealth(double currentHealth, double maxHealth){
+        System.err.println("test");
         if(currentHealth/maxHealth <= 0.3){
             healthBar.setStyle("-fx-accent: red;");
         }else if(currentHealth/maxHealth <= 0.6){

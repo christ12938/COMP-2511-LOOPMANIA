@@ -14,7 +14,7 @@ public class CampfireBuilding extends Building{
     }
 
     public int getBuildingRadius(){
-        return 0;
+        return 5;
     }
 
     public BuildingType getBuildingType(){

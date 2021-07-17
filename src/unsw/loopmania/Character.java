@@ -48,6 +48,7 @@ public class Character extends MovingEntity {
         battleBuildings = new ArrayList<>();
         alliedSoldiers = new ArrayList<>();
         equippedItems = new ArrayList<>();
+        this.observer = null;
     }
 
     /**
@@ -69,6 +70,7 @@ public class Character extends MovingEntity {
     public int getGold() {
         return this.gold;
     }
+
 
     public int getExperience() {
         return this.experience;
@@ -131,11 +133,15 @@ public class Character extends MovingEntity {
             return false;
         } else if (Long.valueOf(this.gold) + Long.valueOf(amount) >= Integer.MAX_VALUE) {
             this.gold = Integer.MAX_VALUE;
-            observer.updateGold();
+            if (observer != null) {
+                observer.updateGold();
+            }
             return true;
         } else {
             this.gold += amount;
-            observer.updateGold();
+            if (observer != null) {
+                observer.updateGold();
+            }
             return true;
         }
     }
@@ -147,7 +153,9 @@ public class Character extends MovingEntity {
             return false;
         } else {
             this.gold -= amount;
-            observer.updateGold();
+            if (observer != null) {
+                observer.updateGold();
+            }
             return true;
         }
     }
@@ -157,11 +165,15 @@ public class Character extends MovingEntity {
             return false;
         } else if (Long.valueOf(this.experience) + Long.valueOf(amount) >= Integer.MAX_VALUE) {
             this.experience = Integer.MAX_VALUE;
-            observer.updateExperience();
+            if (observer != null) {
+                observer.updateExperience();
+            }
             return true;
         } else {
             this.experience += amount;
-            observer.updateExperience();
+            if (observer != null) {
+                observer.updateExperience();
+            }
             return true;
         }
     }
@@ -178,7 +190,11 @@ public class Character extends MovingEntity {
         currentHealth = currentHealth - health;
         if(currentHealth <= 0){
             currentHealth = 0;
-            observer.updateHealth(this.currentHealth, this.maxHealth);
+
+            if (observer != null) {
+                observer.updateHealth(this.currentHealth, this.maxHealth);
+            }
+
             //DO STH ELSE
         }else{
             observer.updateHealth(this.currentHealth, this.maxHealth);
