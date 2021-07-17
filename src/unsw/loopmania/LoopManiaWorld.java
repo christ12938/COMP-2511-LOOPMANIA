@@ -476,7 +476,7 @@ public class LoopManiaWorld {
     }
 
     
-    public void equipEquippableItem(Equipable item) {
+    public void EquipEquippableItem(Equipable item) {
         for (Equipable items : this.equippedItems) {
             if (item.getItemType() == items.getItemType()) {
                 return;

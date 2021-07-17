@@ -10,12 +10,22 @@ public class AlliedSoldier extends MovingEntity implements Damageable{
 
     private double health;
     private int damage;
+    private boolean allied;
 
     public AlliedSoldier (PathPosition position, Pair<Integer, Integer> slotPosition) {
         super(position);
         this.slotPosition = slotPosition;
         this.health = 30;
         this.damage = 5;
+        this.allied = true;
+    }
+
+    public boolean isAllied() {
+        return allied;
+    }
+
+    public void setAllied(boolean allied) {
+        this.allied = allied;
     }
 
     public int getSlotPosition(){
@@ -27,7 +37,7 @@ public class AlliedSoldier extends MovingEntity implements Damageable{
     }
 
     @Override
-    public void takeDamage(int damage) {
+    public void takeDamage(double damage) {
         health -= damage;
     }
 

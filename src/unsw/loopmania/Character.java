@@ -197,7 +197,7 @@ public class Character extends MovingEntity implements Damageable{
     }
 
     @Override
-    public void takeDamage(int damage) {
+    public void takeDamage(double damage) {
         currentHealth -= damage;
     }
 

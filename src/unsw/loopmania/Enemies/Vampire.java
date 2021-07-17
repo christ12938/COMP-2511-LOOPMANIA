@@ -7,7 +7,7 @@ public class Vampire extends Enemy{
 
     public Vampire(PathPosition position) {
         super(position, 15, 4, 5);
-        setCritStrategy((CritStrategy)new VampireStrategy());
+        setCritStrategy(new VampireStrategy());
     }
 
     public EnemyType getEnemyType(){

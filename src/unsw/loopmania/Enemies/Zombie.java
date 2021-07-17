@@ -7,7 +7,7 @@ public class Zombie extends Enemy{
 
     public Zombie(PathPosition position) {
         super(position, 10, 3, 3);
-        setCritStrategy((CritStrategy)new ZombieStrategy());
+        setCritStrategy(new ZombieStrategy());
     }
 
     public EnemyType getEnemyType(){

@@ -887,7 +887,7 @@ public class LoopManiaWorldController {
     private Equipable equip(Equipable equipableItem, int nodeX, int nodeY, int x, int y){
         removeUnequippedInventoryByCoordinates(nodeX, nodeY);
         equipableItem = ItemLoader.loadEquipableItem(equipableItem.getItemType(), x, y);
-        world.equipEquippableItem(equipableItem);
+        world.EquipEquippableItem(equipableItem);
         return equipableItem;
     }
 
