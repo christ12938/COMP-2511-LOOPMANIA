@@ -118,6 +118,14 @@ public class LoopManiaWorld {
         return character.getGold();
     }
 
+    public void addGold(int amount) {
+        character.addGold(amount);
+    }
+
+    public void minusGold(int amount) {
+        character.minusGold(amount);
+    }
+
     public int getExperience() {
         return character.getExperience();
     }
