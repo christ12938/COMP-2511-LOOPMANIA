@@ -11,9 +11,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.robot.Robot;
 
 import org.javatuples.Pair;
 import unsw.loopmania.LoopManiaWorld;
+import unsw.loopmania.LoopManiaWorldController;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Character;
@@ -165,6 +169,7 @@ public class ItemsTest {
         World.loadRandomUnenquippedInventoryItem();
         World.loadRandomUnenquippedInventoryItem();
         World.loadRandomUnenquippedInventoryItem();
+        
         World.removeUnequippedInventoryItemByCoordinates(0, 0);
         World.removeUnequippedInventoryItemByCoordinates(1, 0);
         World.removeUnequippedInventoryItemByCoordinates(2, 0);
@@ -217,9 +222,76 @@ public class ItemsTest {
         assertEquals(70, World.getExperience());
 
         World.addUnequippedTheOneRing();
-        assertEquals(85, World.getGold());
-        assertEquals(170, World.getExperience());
+        assertEquals(40, World.getGold());
+        assertEquals(80, World.getExperience());
         
     }
+
+    @Test
+    public void TestHealthPotion() {
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
+        World.addUnequippedHealthPotion();
+        World.decreaseCharacterHp(50);
+        World.useHealthPotion();
+        assertEquals(60,World.getCharacterCurrentHp(), "comparing two doubles");
+    }
+
+    @Test
+    public void TestMultipleHealthPotion() {
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
+        World.addUnequippedHealthPotion();
+        World.addUnequippedHealthPotion();
+        World.addUnequippedHealthPotion();
+        World.addUnequippedHealthPotion();
+        World.addUnequippedHealthPotion();
+        
+        World.decreaseCharacterHp(90);
+       
+        World.useHealthPotion();
+        World.useHealthPotion();
+        World.useHealthPotion();
+        World.useHealthPotion();
+        World.useHealthPotion();
+        
+        assertEquals(60,World.getCharacterCurrentHp(), "comparing two doubles");
+    }
     
+    @Test
+    public void TestNoneHealthPotion() {
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+        
+        World.decreaseCharacterHp(90);
+        World.useHealthPotion();
+        
+        assertEquals(10,World.getCharacterCurrentHp(), "comparing two doubles");
+    }
 }

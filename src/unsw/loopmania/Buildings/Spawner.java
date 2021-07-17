@@ -27,6 +27,14 @@ public abstract class Spawner extends Building{
         return tileToSpawn;
     }
 
+    public boolean isBuffingCharacter(){
+        return false;
+    }
+
+    public int getBuildingRadius(){
+        return 0;
+    }
+
     public abstract int getSpawningCycle();
     public abstract void setHasSpawned(boolean hasSpawned);
     public abstract boolean getHasSpawned();

@@ -2,7 +2,9 @@ package unsw.loopmania.Buildings;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.StaticEntity;
+import unsw.loopmania.Enemies.Enemy;
 import unsw.loopmania.Types.BuildingType;
+import unsw.loopmania.Character;
 
 public abstract class Building extends StaticEntity{
 
@@ -10,15 +12,23 @@ public abstract class Building extends StaticEntity{
         super(x, y);
     }
 
-    public boolean inRange(int x, int y){
-        if(x == this.getX() && y == this.getY()){
-            return true;
-        }
-
-        return false;
+    public void applyBuffToCharacter(Character character){
+        return;
     }
 
+    public void removeBuffFromCharacter(Character character){
+        return;
+    }
+
+    public void applyDeBuffToEnemy(Enemy enemy){
+        return;
+    }
+
+    public void removeDeBuffFromEnemy(Enemy enemy){
+        return;
+    }
+
+    public abstract int getBuildingRadius();
     public abstract BuildingType getBuildingType();
-
-
+    public abstract boolean isBuffingCharacter();
 }

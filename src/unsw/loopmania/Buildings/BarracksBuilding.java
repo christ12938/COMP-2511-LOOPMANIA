@@ -1,6 +1,7 @@
 package unsw.loopmania.Buildings;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import unsw.loopmania.Character;
 import unsw.loopmania.Types.BuildingType;
 
 public class BarracksBuilding extends Building{
@@ -9,10 +10,20 @@ public class BarracksBuilding extends Building{
         super(x, y);
     }
 
+    public int getBuildingRadius(){
+        return 1;
+    }
+
     public BuildingType getBuildingType(){
         return BuildingType.BARRACKS_BUILDING;
     }
 
+    public void applyBuffToCharacter(Character character){
+        character.addAlliedSoldier();
+    }
 
+    public boolean isBuffingCharacter(){
+        return false;
+    }
 
 }
