@@ -202,7 +202,9 @@ public class Character extends MovingEntity implements Damageable{
         if(currentHealth >= maxHealth){
             currentHealth = maxHealth;
         }
-        observer.updateHealth(this.currentHealth, this.maxHealth);
+        if (observer != null) {
+            observer.updateHealth(this.currentHealth, this.maxHealth);
+        }
     }
 
     public void minusHealth(double health){
@@ -216,7 +218,9 @@ public class Character extends MovingEntity implements Damageable{
 
             //DO STH ELSE
         }else{
-            observer.updateHealth(this.currentHealth, this.maxHealth);
+            if (observer != null) {
+                observer.updateHealth(this.currentHealth, this.maxHealth);
+            }
         }
     }
 
