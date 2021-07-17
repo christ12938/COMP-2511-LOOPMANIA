@@ -949,4 +949,24 @@ public class LoopManiaWorld {
         }
         return false;
     }
+
+    //for testing trap
+    public Enemy getFirstEnemy(){
+        return enemies.get(0);
+    }
+    public Building getFirstB(){
+        return buildingEntities.get(0);
+    }
+    public boolean enemiesAlive(){
+        return !enemies.isEmpty();
+    }
+    public boolean trapsCleared(){
+        for (Building b : buildingEntities) {
+            if((b.getBuildingType() == BuildingType.TRAP_BUILDING)){
+                return false;
+            }
+        }
+        return true;
+    }
 }
+

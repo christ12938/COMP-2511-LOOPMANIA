@@ -13,5 +13,5 @@ public class Zombie extends Enemy{
     public EnemyType getEnemyType(){
         return EnemyType.ZOMBIE;
     }
-    
+
 }
