@@ -125,7 +125,7 @@ public class LoopManiaShopController {
             vbox.getChildren().add(buyButton);
             setBuyButtonHandler(item.getItemType(), buyButton);
             shopSlot.add(vbox, item.getX(), item.getY());
-            
+
             /* Found on stack overflow. Request focus later */
             Platform.runLater(() -> anchorPaneRoot.requestFocus());
         }

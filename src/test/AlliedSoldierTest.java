@@ -19,7 +19,7 @@ public class AlliedSoldierTest {
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
 
-        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), new Pair<Integer, Integer>(0, 0));
+        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), 0);
 
         assertTrue(soldier.getHealth() == 30);
     }
@@ -30,7 +30,8 @@ public class AlliedSoldierTest {
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
 
-        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), new Pair<Integer, Integer>(0, 0));
+        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), 0);
+        //TODO: I changed the parameters so the second value is the position of heros castle
         Slug slug = new Slug(new PathPosition(0, orderedPath));
         double health = slug.getHealth();
 
@@ -45,7 +46,7 @@ public class AlliedSoldierTest {
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
 
-        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), new Pair<Integer, Integer>(0, 0));
+        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), 0);
         double health = soldier.getHealth();
 
         soldier.takeDamage(5);
@@ -59,9 +60,9 @@ public class AlliedSoldierTest {
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
 
-        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), new Pair<Integer, Integer>(0, 0));
+        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), 0);
 
-        int pos = soldier.getSlotPosition();
+        int pos = soldier.getSlotPosition().get();
 
         assertTrue(pos == 0);
     }
@@ -72,10 +73,10 @@ public class AlliedSoldierTest {
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
 
-        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), new Pair<Integer, Integer>(0, 0));
+        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), 0);
 
         soldier.setSlotPosition(1);
 
-        assertTrue(soldier.getSlotPosition() == 1);
+        assertTrue(soldier.getSlotPosition().get() == 1);
     }
 }

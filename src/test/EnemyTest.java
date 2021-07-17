@@ -168,7 +168,7 @@ public class EnemyTest {
         orderedPath.add(pair1);
 
         Character character = new Character(new PathPosition(0, orderedPath));
-        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), new Pair<Integer, Integer>(0, 0));
+        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), 0);
 
         assertTrue(soldier.isAllied());
         CritStrategy crit = new ZombieStrategy();

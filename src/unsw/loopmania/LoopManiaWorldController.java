@@ -402,8 +402,6 @@ public class LoopManiaWorldController {
         // trigger adding code to process main game logic to queue. JavaFX will target framerate of 0.3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(0.3), event -> {
 
-            System.out.println("START");
-
             world.runTickMoves();
 
             /**
@@ -436,7 +434,6 @@ public class LoopManiaWorldController {
 
             world.removeBuildingBuffsFromCharacter();
             world.removeBuildingDebuffsFromEnemies();
-            System.out.println("END");
 
             setCharacterImageToFront();
             printThreadingNotes("HANDLED TIMER");
@@ -1245,6 +1242,7 @@ public class LoopManiaWorldController {
      */
     private void printThreadingNotes(String currentMethodLabel){
         System.out.println("\n###########################################");
+        System.out.println("Current Cycle = " + Integer.toString(world.getCycle()));
         System.out.println("current method = "+currentMethodLabel);
         System.out.println("In application thread? = "+Platform.isFxApplicationThread());
         System.out.println("Current system time = "+java.time.LocalDateTime.now().toString().replace('T', ' '));
@@ -1583,7 +1581,7 @@ public class LoopManiaWorldController {
             });
 
             shopStage.show();
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }

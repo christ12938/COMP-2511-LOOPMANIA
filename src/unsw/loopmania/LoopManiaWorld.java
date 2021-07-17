@@ -968,6 +968,10 @@ public class LoopManiaWorld {
         }
     }
 
+    public int getCycle(){
+        return this.cycle;
+    }
+
     public boolean MovingEntityOnBuilding(MovingEntity e){
         for (Building b : buildingEntities) {
             if((b.getX() == e.getX()) && (b.getY() == e.getY())){
