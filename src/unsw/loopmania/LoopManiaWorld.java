@@ -68,6 +68,9 @@ public class LoopManiaWorld {
     // TODO = expand the range of cards
     private List<Card> cardEntities;
 
+    // List of equipped items
+    private List<Equipable> equippedItems;
+
     // TODO = expand the range of items
     private List<Item> unequippedInventoryItems;
 
@@ -263,12 +266,30 @@ public class LoopManiaWorld {
     public List<Enemy> runBattles() {
         // TODO- = modify this - currently the character automatically wins all battles without any damage!
         List<Enemy> defeatedEnemies = new ArrayList<Enemy>();
+        List<Enemy> battleEnemies = new ArrayList<Enemy>();
         for (Enemy e: enemies){
             // Pythagoras: a^2+b^2 < radius^2 to see if within radius
             // TODO = you should implement different RHS on this inequality, based on influence radii and battle radii
-            if (Math.pow((character.getX()-e.getX()), 2) +  Math.pow((character.getY()-e.getY()), 2) < 4){
+            if (e.inBattleRadius(character)){
+                // add enemy in battle radius
+                battleEnemies.add(e);
+                // add all enemies in support radius
+                for (Enemy s: enemies) {
+                    if (s != e && s.inSupportRadius(character)) {
+                        battleEnemies.add(s);
+                    }
+                }
+
+                while (!battleEnemies.isEmpty() || character.getHealth() < 0) {
+                    int choice = new Random().nextInt(battleEnemies.size());
+                    Enemy attacked = battleEnemies.get(choice);
+                    character.dealDamage(attacked);
+                    if (attacked.getHealth() <= 0) {
+                        defeatedEnemies.add(attacked);
+                        battleEnemies.remove(attacked);
+                    }
+                }
                 // fight...
-                defeatedEnemies.add(e);
             }
         }
         for (Enemy e: defeatedEnemies){
