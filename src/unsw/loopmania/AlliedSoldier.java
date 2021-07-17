@@ -1,20 +1,21 @@
 package unsw.loopmania;
 
-import org.javatuples.Pair;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 public class AlliedSoldier extends MovingEntity implements Damageable{
     /**
      * The position of the soldier on the slot
      */
-    private Pair<Integer, Integer> slotPosition;
+    private IntegerProperty slotPosition;
 
     private double health;
     private int damage;
     private boolean allied;
 
-    public AlliedSoldier (PathPosition position, Pair<Integer, Integer> slotPosition) {
+    public AlliedSoldier (PathPosition position, int slotPosition) {
         super(position);
-        this.slotPosition = slotPosition;
+        this.slotPosition = new SimpleIntegerProperty(slotPosition);
         this.health = 30;
         this.damage = 5;
         this.allied = true;
@@ -28,12 +29,12 @@ public class AlliedSoldier extends MovingEntity implements Damageable{
         this.allied = allied;
     }
 
-    public int getSlotPosition(){
-        return slotPosition.getValue0();
+    public IntegerProperty getSlotPosition(){
+        return slotPosition;
     }
 
     public void setSlotPosition(int slotPosition){
-        this.slotPosition = new Pair<Integer, Integer>(slotPosition, 0);
+        this.slotPosition.set(slotPosition);
     }
 
     @Override

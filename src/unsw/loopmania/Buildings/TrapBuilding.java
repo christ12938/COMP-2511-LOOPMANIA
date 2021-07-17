@@ -19,11 +19,9 @@ public class TrapBuilding extends Building{
     }
 
     public void applyDeBuffToEnemy(Enemy enemy){
-        //DO STH
+        enemy.takeDamage(30);
+        if(enemy.getHealth() <= 0) enemy.destroy();
         destroy();
     }
-    
-    public boolean isBuffingCharacter(){
-        return false;
-    }
+
 }

@@ -22,7 +22,4 @@ public class VillageBuilding extends Building{
         character.addHealth(2.0);
     }
     
-    public boolean isBuffingCharacter(){
-        return false;
-    }
 }

@@ -27,10 +27,6 @@ public abstract class Spawner extends Building{
         return tileToSpawn;
     }
 
-    public boolean isBuffingCharacter(){
-        return false;
-    }
-
     public int getBuildingRadius(){
         return 0;
     }

@@ -11,7 +11,6 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -36,7 +35,6 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import unsw.loopmania.Cards.*;
 import unsw.loopmania.Enemies.Enemy;
@@ -242,6 +240,12 @@ public class LoopManiaWorldController {
      * added for refining the GUI
      */
     private Node currentlyHighlightedImage;
+
+    /**
+     * the target grid pane of the image currently dragged
+     * added for refining the GUI 
+     */
+    private GridPane currentlyDraggedTargetGridPane;
     
     /**
      * null if nothing being dragged, or the type of item being dragged
@@ -323,11 +327,12 @@ public class LoopManiaWorldController {
         healthPotionImage = new Image((new File("src/images/brilliant_blue_new.png")).toURI().toString());
 
         /* Initialize allied soldier image */
-        alliedSoldierImage = new Image((new File("src/images/brilliant_blue_new.png")).toURI().toString());
+        alliedSoldierImage = new Image((new File("src/images/deep_elf_master_archer.png")).toURI().toString());
 
         currentlyDraggedImage = null;
         currentlyHighlightedImage = null;
         currentlyDraggedType = null;
+        currentlyDraggedTargetGridPane = null;
 
         // initialize them all...
         gridPaneSetOnDragDropped = new EnumMap<DRAGGABLE_TYPE, EventHandler<DragEvent>>(DRAGGABLE_TYPE.class);
@@ -376,7 +381,7 @@ public class LoopManiaWorldController {
 
         // add the empty slot images for the allied soldier slot
         for (int x=0; x<LoopManiaWorld.alliedSoldierNumber; x++){
-            ImageView emptySlotView = new ImageView(inventorySlotImage);
+            ImageView emptySlotView = new ImageView(cardSlotImage);
             alliedSoldierSlot.add(emptySlotView, x, 0);
         }
 
@@ -400,18 +405,23 @@ public class LoopManiaWorldController {
             world.runTickMoves();
 
             /**
-             * Progress: 1. Apply Building Debuffs to enemy
-             *           2. Apply Building Buffs to character
-             *           3. Run Battles if character is not on hero castle
-             *           4. Remove Building buffs from character
-             *           5. Remove Building Debuffs from enemy (Not used right now)
-             *           6. Spawn enemies
+             * Progress: 1. Spawn enemies
+             *           2. Apply Building Debuffs to enemy
+             *           3. Apply Building Buffs to character
+             *           4. Run Battles if character is not on hero castle
+             *           5. Remove Building buffs from character
+             *           6x. Remove Building Debuffs from enemy (Not used right now)
              *           P.S. Equipped items buff are in real time, so wont be included in the timeline
              */
 
+            List<Enemy> newEnemies = world.possiblySpawnEnemies();
+            for (Enemy newEnemy: newEnemies){
+                onLoad(newEnemy);
+            }
             world.applyBuildingDebuffsToEnemies();
             world.applyBuildingBuffsToCharacter();
 
+            
             if(world.characterIsOnHeroCastle()){
                 world.nextCycle();
                 openShop();
@@ -425,10 +435,6 @@ public class LoopManiaWorldController {
             world.removeBuildingBuffsFromCharacter();
             world.removeBuildingDebuffsFromEnemies();
 
-            List<Enemy> newEnemies = world.possiblySpawnEnemies();
-            for (Enemy newEnemy: newEnemies){
-                onLoad(newEnemy);
-            }
             setCharacterImageToFront();
             printThreadingNotes("HANDLED TIMER");
         }));
@@ -694,7 +700,7 @@ public class LoopManiaWorldController {
         ImageView view = new ImageView(alliedSoldierImage);
         trackAlliedSoldierSlotPosition(alliedSoldier, view);
         entityImages.add(view); //Redundant
-        alliedSoldierSlot.add(view, alliedSoldier.getSlotPosition(), 0);
+        alliedSoldierSlot.add(view, alliedSoldier.getSlotPosition().get(), 0);
     }
 
     /**
@@ -743,6 +749,7 @@ public class LoopManiaWorldController {
                             /**
                              * At this point everything dropped is valid and should destroy
                              * any overlapped entities
+                             * Single Threaded? if no add a pause
                              */
                             checkAndDestroyOverlappedEntity(x, y, targetGridPane);
 
@@ -911,6 +918,7 @@ public class LoopManiaWorldController {
 
                 currentlyDraggedImage = view; // set image currently being dragged, so squares setOnDragEntered can detect it...
                 currentlyDraggedType = draggableType;
+                currentlyDraggedTargetGridPane = targetGridPane;
                 //Drag was detected, start drap-and-drop gesture
                 //Allow any transfer node
                 Dragboard db = view.startDragAndDrop(TransferMode.MOVE);
@@ -1191,10 +1199,12 @@ public class LoopManiaWorldController {
         });
     }
 
+    /**
+     * Track the allied soldier in the slot position
+     * @param alliedSoldier
+     * @param node
+     */
     public void trackAlliedSoldierSlotPosition(AlliedSoldier alliedSoldier, Node node){
-
-        GridPane.setColumnIndex(node, alliedSoldier.getSlotPosition());
-        GridPane.setRowIndex(node, 0);
 
         ChangeListener<Number> listener = new ChangeListener<Number>() {
             @Override
@@ -1204,7 +1214,7 @@ public class LoopManiaWorldController {
             }
         };
 
-        ListenerHandle handle = ListenerHandles.createFor(new SimpleIntegerProperty(alliedSoldier.getSlotPosition()), node)
+        ListenerHandle handle = ListenerHandles.createFor(alliedSoldier.getSlotPosition(), node)
                                                .onAttach((o, l) -> o.addListener(listener))
                                                .onDetach((o, l) -> {
                                                     o.removeListener(listener);
@@ -1232,6 +1242,7 @@ public class LoopManiaWorldController {
      */
     private void printThreadingNotes(String currentMethodLabel){
         System.out.println("\n###########################################");
+        System.out.println("Current Cycle = " + Integer.toString(world.getCycle()));
         System.out.println("current method = "+currentMethodLabel);
         System.out.println("In application thread? = "+Platform.isFxApplicationThread());
         System.out.println("Current system time = "+java.time.LocalDateTime.now().toString().replace('T', ' '));
@@ -1255,6 +1266,8 @@ public class LoopManiaWorldController {
             case VILLAGE_CARD:
             case BARRACKS_CARD:
             case TRAP_CARD:
+                /* If is on hero castle return false */
+                if(world.getHerosCastle().getX() == column && world.getHerosCastle().getY() == row) return false;
                 return isOnPath(column, row);
             case CAMPFIRE_CARD:
                 return !isOnPath(column, row);
@@ -1489,9 +1502,9 @@ public class LoopManiaWorldController {
     /**
      * Font end code for removing allied soldier
      */
-    public void removeAlliedSoldier(AlliedSoldier soldierToBeRemoved){
-        //List<AlliedSoldier> alliedSoldiers =  world.getAlliedSoldiers();
-        //shiftAlliedSoldiersFromXCoordinate(alliedSoldiers, soldierToBeRemoved.getSlotPosition());
+    public void removeAlliedSoldier(){
+        List<AlliedSoldier> alliedSoldiers =  world.getCharacter().getAlliedSoldiers();
+        shiftAlliedSoldiersFromXCoordinate(alliedSoldiers);
     }
 
     /**
@@ -1500,12 +1513,9 @@ public class LoopManiaWorldController {
      * @param alliedSoldiers
      * @param x
      */
-    private void shiftAlliedSoldiersFromXCoordinate(List<AlliedSoldier> alliedSoldiers, int x){
-        for (AlliedSoldier alliedSoldier : alliedSoldiers){
-            if (alliedSoldier.getSlotPosition() >= x){
-                alliedSoldier.setSlotPosition(alliedSoldier.getSlotPosition() - 1);
-                GridPane.setColumnIndex(alliedSoldierSlot, alliedSoldier.getSlotPosition());
-            }
+    private void shiftAlliedSoldiersFromXCoordinate(List<AlliedSoldier> alliedSoldiers){
+        for(int i = 0; i < alliedSoldiers.size(); i++){
+            alliedSoldiers.get(i).setSlotPosition(i);
         }
     }
 
@@ -1524,6 +1534,20 @@ public class LoopManiaWorldController {
         /* Pause the game first */
         if(!isPaused) pause();
 
+        /**
+         * Cleanse left over dragging event
+         */
+        if(currentlyDraggedImage != null){
+            currentlyDraggedImage.setVisible(true);
+            draggedEntity.setVisible(false);
+            draggedEntity.setMouseTransparent(false);
+            // remove drag event handlers before setting currently dragged image to null
+            removeDraggableDragEventHandlers(currentlyDraggedType, currentlyDraggedTargetGridPane);
+            currentlyDraggedImage = null;
+            currentlyDraggedType = null;
+            currentlyDraggedTargetGridPane = null;
+        }
+        
         try {
             Stage shopStage = new Stage();
             FXMLLoader shopLoader = new FXMLLoader(getClass().getResource("LoopManiaShop.fxml"));
@@ -1557,8 +1581,8 @@ public class LoopManiaWorldController {
             });
 
             shopStage.show();
+
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

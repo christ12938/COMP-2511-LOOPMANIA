@@ -20,12 +20,12 @@ Character's max health is set to 100
 Assume no enemies can enter hero castle
 Assume no battle will occur during the tick into hero castle
 Assume Progress per time tick is as follow:
-    1. Apply Building Debuffs to enemy
-    2. Apply Building Buffs to character
-    3. Run Battles if character is not on hero castle
-    4. Remove Building buffs from character
-    5. Remove Building Debuffs from enemy (Not used right now)
-    6. Spawn enemies
+    1. Spawn enemies
+    2. Apply Building Debuffs to enemy
+    3. Apply Building Buffs to character
+    4. Run Battles if character is not on hero castle
+    5. Remove Building buffs from character
+    6. Remove Building Debuffs from enemy (Not used right now)
 Assume enemies can spawn on any structures, except Hero's Castle.
 Assume if the no tiles are available for the spawner to spawn enemies, then that tile is not placable for that type of spawner
                  
@@ -34,4 +34,6 @@ The radius for towers and campfires will be 5
 Enemies will take 30 dmg from traps
 When the shop is opened, player is forced to exit the shop manually in order for the game to continue
 Assume all shop items are $10 for now
-Spawn on traps? 
+Assume buildings will not spawn enemies on top of character
+Zombies are spawned when cycle%1 == 0 (except for cycle 0)
+Vampires are spawned when cycle%5 == 0 (except for cycle 0)

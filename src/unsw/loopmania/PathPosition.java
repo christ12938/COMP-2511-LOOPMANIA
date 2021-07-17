@@ -51,6 +51,23 @@ public class PathPosition{
         resetCoordinatesBasedOnPositionInPath();
     }
 
+
+    /**
+     * Get the downwards move path
+     * @return
+     */
+    public Pair<Integer, Integer> getDownPath(){
+        return orderedPath.get((currentPositionInPath + 1)%orderedPath.size());
+    }
+
+    /**
+     * Get the upwards move path
+     * @return
+     */
+    public Pair<Integer, Integer> getUpPath(){
+        return orderedPath.get((currentPositionInPath - 1 + orderedPath.size())%orderedPath.size());
+    }
+
     /**
      * change the x and y SimpleIntegerProperties to reflect the current values of
      * the current position in the path, and the ordered path.

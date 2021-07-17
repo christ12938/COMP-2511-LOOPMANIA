@@ -5,6 +5,7 @@ import java.util.EnumMap;
 
 import org.javatuples.Pair;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -16,7 +17,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import unsw.loopmania.Items.Item;
@@ -125,6 +125,9 @@ public class LoopManiaShopController {
             vbox.getChildren().add(buyButton);
             setBuyButtonHandler(item.getItemType(), buyButton);
             shopSlot.add(vbox, item.getX(), item.getY());
+
+            /* Found on stack overflow. Request focus later */
+            Platform.runLater(() -> anchorPaneRoot.requestFocus());
         }
     }
 

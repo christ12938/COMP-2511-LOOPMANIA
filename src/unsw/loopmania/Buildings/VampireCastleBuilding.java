@@ -8,7 +8,7 @@ import unsw.loopmania.Types.BuildingType;
  */
 public class VampireCastleBuilding extends Spawner{
 
-    private boolean hasSpawned = true;
+    private boolean hasSpawned = false;
 
     public VampireCastleBuilding(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
