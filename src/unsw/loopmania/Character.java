@@ -11,7 +11,7 @@ import unsw.loopmania.Items.OffensiveItems;
 /**
  * represents the main character in the backend of the game world
  */
-public class Character extends MovingEntity {
+public class Character extends MovingEntity implements Damageable{
 
     private final double maxHealth = 100;
     private double currentHealth;
@@ -43,6 +43,7 @@ public class Character extends MovingEntity {
         this.currentHealth = this.maxHealth;
         this.gold = 0;
         this.experience = 0;
+        // just putting random health value for now for testing
         this.attack = 5;
         this.defense = 5;
         battleBuildings = new ArrayList<>();
@@ -76,6 +77,14 @@ public class Character extends MovingEntity {
         return this.experience;
     }
 
+    public double getHealth() {
+        return currentHealth;
+    }
+
+    public void setHealth(double health) {
+        this.currentHealth = health;
+
+    }
     public int getAttack() {
         return this.attack;
     }
@@ -178,12 +187,24 @@ public class Character extends MovingEntity {
         }
     }
 
+    @Override
+    public void takeDamage(double damage) {
+        currentHealth -= damage;
+    }
+
+    @Override
+    public void dealDamage(Damageable damageable) {
+        damageable.takeDamage(attack);
+    }
+    
     public void addHealth(double health){
         currentHealth = currentHealth + health;
         if(currentHealth >= maxHealth){
             currentHealth = maxHealth;
         }
-        observer.updateHealth(this.currentHealth, this.maxHealth);
+        if (observer != null) {
+            observer.updateHealth(this.currentHealth, this.maxHealth);
+        }
     }
 
     public void minusHealth(double health){
@@ -197,7 +218,9 @@ public class Character extends MovingEntity {
 
             //DO STH ELSE
         }else{
-            observer.updateHealth(this.currentHealth, this.maxHealth);
+            if (observer != null) {
+                observer.updateHealth(this.currentHealth, this.maxHealth);
+            }
         }
     }
 
