@@ -32,4 +32,6 @@ Assume if the no tiles are available for the spawner to spawn enemies, then that
 When passing through a village player gains 2 HP
 The radius for towers and campfires will be 5
 Enemies will take 30 dmg from traps
+When the shop is opened, player is forced to exit the shop manually in order for the game to continue
+Assume all shop items are $10 for now
 Spawn on traps? 
