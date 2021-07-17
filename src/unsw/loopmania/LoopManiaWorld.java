@@ -67,17 +67,11 @@ public class LoopManiaWorld {
     // TODO = expand the range of cards
     private List<Card> cardEntities;
 
-    // List of equipped items
-    private List<Equipable> equippedItems;
-
     // TODO = expand the range of items
     private List<Item> unequippedInventoryItems;
 
     // TODO = expand the range of buildings
     private List<Building> buildingEntities;
-
-    //TODO = REDUNDANT CAN REMOVE
-    private List<AlliedSoldier> alliedSoldiers;
 
     /**
      * list of x,y coordinate pairs in the order by which moving entities traverse them
@@ -101,7 +95,6 @@ public class LoopManiaWorld {
         unequippedInventoryItems = new ArrayList<>();
         this.orderedPath = orderedPath;
         buildingEntities = new ArrayList<>();
-        alliedSoldiers = new ArrayList<>();
     }
 
     public int getWidth() {
@@ -162,24 +155,18 @@ public class LoopManiaWorld {
         return this.herosCastle;
     }
 
-    public List<AlliedSoldier> getAlliedSoldiers(){
-        return alliedSoldiers;
-    }
-
 
     /**
      * Add allied Soldier in the backend and return to the front end
      * @return
      */
     public AlliedSoldier addAlliedSoldier(){
-        if(alliedSoldiers.size() < alliedSoldierNumber){
-            Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForAlliedSoldier();
-            if(firstAvailableSlot == null) return null;
+        int firstAvailableSlot = getFirstAvailableSlotForAlliedSoldier();
+        if(firstAvailableSlot < alliedSoldierNumber){
             /**
              * Get a reference to the character since allied soldiers always move with character
              */
             AlliedSoldier alliedSoldier = new AlliedSoldier(character.getPathPosition(), firstAvailableSlot);
-            alliedSoldiers.add(alliedSoldier);
             return alliedSoldier;
         }
         return null;
@@ -191,9 +178,15 @@ public class LoopManiaWorld {
      */
     public void removeAlliedSoldier(AlliedSoldier alliedSoldier){
         if(alliedSoldier == null) return;
-        alliedSoldiers.remove(alliedSoldier);
-        alliedSoldier.destroy();
         character.removeAlliedSoldier(alliedSoldier);
+    }
+
+    /**
+     * backend code for getting a list of allied soldiers
+     * @return
+     */
+    private List<AlliedSoldier> getAlliedSoldiers(){
+        return character.getAlliedSoldiers();
     }
 
     /**
@@ -219,11 +212,12 @@ public class LoopManiaWorld {
      */
     public List<Enemy> possiblySpawnEnemies(){
         List<Enemy> spawningEnemies = new ArrayList<>();
+        Pair<Integer, Integer> herosCastlePos = new Pair<Integer, Integer>(herosCastle.getX(), herosCastle.getY());
         /* Get Slug Spawn Position */
         Pair<Integer, Integer> slugPos = possiblyGetSlugSpawnPosition();
         if (slugPos != null){
             int indexInPath = orderedPath.indexOf(slugPos);
-            Enemy enemy = new Slug(new PathPosition(indexInPath, orderedPath));
+            Enemy enemy = new Slug(new PathPosition(indexInPath, orderedPath), herosCastlePos);
             enemies.add(enemy);
             spawningEnemies.add(enemy);
         }
@@ -232,7 +226,7 @@ public class LoopManiaWorld {
         List<Pair<Integer, Integer>> zombiePos = possiblyGetSpawnerSpawnPositions(BuildingType.ZOMBIEPIT_BUILDING);
         for(Pair<Integer, Integer> i : zombiePos){
             int indexInPath = orderedPath.indexOf(i);
-            Enemy enemy = new Zombie(new PathPosition(indexInPath, orderedPath));
+            Enemy enemy = new Zombie(new PathPosition(indexInPath, orderedPath), herosCastlePos);
             enemies.add(enemy);
             spawningEnemies.add(enemy);
         }
@@ -241,7 +235,7 @@ public class LoopManiaWorld {
         List<Pair<Integer, Integer>> vampirePos = possiblyGetSpawnerSpawnPositions(BuildingType.VAMPIRECASTLE_BUILDING);
         for(Pair<Integer, Integer> i : vampirePos){
             int indexInPath = orderedPath.indexOf(i);
-            Enemy enemy = new Vampire(new PathPosition(indexInPath, orderedPath));
+            Enemy enemy = new Vampire(new PathPosition(indexInPath, orderedPath), herosCastlePos);
             enemies.add(enemy);
             spawningEnemies.add(enemy);
         }
@@ -599,9 +593,6 @@ public class LoopManiaWorld {
             if(result != null){
                 //TODO: Should also add removeDebuffFromEnemy, but at this stage not required
                 //DEBUG??? MIGHT CAUSE ERROR? ADD FLAG
-                if(((Building)result).isBuffingCharacter()){
-                    ((Building)result).removeBuffFromCharacter(character);
-                }
                 buildingEntities.remove(result);
                 result.destroy();
                 return;
@@ -702,20 +693,8 @@ public class LoopManiaWorld {
      * get the first available slot for allied soldier
      * @return
      */
-    private Pair<Integer, Integer> getFirstAvailableSlotForAlliedSoldier(){
-        for(int i = 0; i < alliedSoldierNumber; i++){
-            if(getAlliedSoldierByCoordinate(i) == null){
-                return new Pair<Integer, Integer>(i, 0);
-            }
-        }
-        return null;
-    }
-
-    private AlliedSoldier getAlliedSoldierByCoordinate(int x){
-        for(AlliedSoldier soldier : alliedSoldiers){
-            if(soldier.getSlotPosition() == x) return soldier;
-        }
-        return null;
+    private int getFirstAvailableSlotForAlliedSoldier(){
+        return character.getAlliedSoldiers().size();
     }
 
     /**
@@ -779,23 +758,16 @@ public class LoopManiaWorld {
             int endNotAllowed = (indexPosition + 3)%orderedPath.size();
             // note terminating condition has to be != rather than < since wrap around...
             for (int i=endNotAllowed; i!=startNotAllowed; i=(i+1)%orderedPath.size()){
+                // If on hero castle, dont spawn
+                if(orderedPath.get(i).getValue0() == herosCastle.getX()
+                    && orderedPath.get(i).getValue1() == herosCastle.getY()){
+                        continue;
+                }
                 orderedPathSpawnCandidates.add(orderedPath.get(i));
             }
 
             // choose random choice
-            // If on hero castle, dont spawn
             Pair<Integer, Integer> spawnPosition = null;
-            int index = -1;
-            for(int i = 0; i < orderedPathSpawnCandidates.size(); i++){
-                if(orderedPathSpawnCandidates.get(i).getValue0() == herosCastle.getX() 
-                    && orderedPathSpawnCandidates.get(i).getValue1() == herosCastle.getY()){
-                    index = i;
-                    break;
-                }
-            }
-            if(index != -1){
-                orderedPathSpawnCandidates.remove(index);
-            }
             if(orderedPathSpawnCandidates.size() != 0){
                 spawnPosition = orderedPathSpawnCandidates.get(rand.nextInt(orderedPathSpawnCandidates.size()));
             }
@@ -814,8 +786,14 @@ public class LoopManiaWorld {
         for(Building b : buildingEntities){
             if(cycle != 0 && b.getBuildingType() == type
                 && !((Spawner)b).getHasSpawned() && cycle%((Spawner)b).getSpawningCycle() == 0){
-                List<Pair<Integer, Integer>> temp = ((Spawner)b).getSpawningTiles();
-                result.add(temp.get(new Random().nextInt(temp.size())));
+                List<Pair<Integer, Integer>> spawningTiles = ((Spawner)b).getSpawningTiles();
+                for(Pair<Integer, Integer> i : spawningTiles){
+                    if(i.getValue0() == character.getX() && i.getValue1() == character.getY()){
+                        spawningTiles.remove(i);
+                    }
+                }
+                if(spawningTiles.size() == 0) continue;
+                result.add(spawningTiles.get(new Random().nextInt(spawningTiles.size())));
                 ((Spawner)b).setHasSpawned(true);
             }
         }
@@ -859,12 +837,21 @@ public class LoopManiaWorld {
     }
 
     public void applyBuildingDebuffsToEnemies(){
+        List<Enemy> enemiesToBeRemoved = new ArrayList<>();
         for(Enemy enemy : enemies){
             List<Building> debuffBuildings = getBuildingsWithinRadiusOfEntity(enemy);
+            List<Building> buildingsToBeRemoved = new ArrayList<>();
             for(Building b : debuffBuildings){
                 b.applyDeBuffToEnemy(enemy);
-                if(b.getBuildingType() == BuildingType.TRAP_BUILDING) buildingEntities.remove(b);
+                if(!b.shouldExist().get()) buildingsToBeRemoved.add(b);
             }
+            for(Building b : buildingsToBeRemoved){
+                buildingEntities.remove(b);
+            }
+            if(!enemy.shouldExist().get()) enemiesToBeRemoved.remove(enemy);
+        }
+        for(Enemy e : enemiesToBeRemoved){
+            enemies.remove(e);
         }
     }
 

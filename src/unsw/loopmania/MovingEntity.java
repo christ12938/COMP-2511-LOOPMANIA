@@ -1,5 +1,7 @@
 package unsw.loopmania;
 
+import org.javatuples.Pair;
+
 import javafx.beans.property.SimpleIntegerProperty;
 
 /**
@@ -33,6 +35,22 @@ public abstract class MovingEntity extends Entity {
      */
     public void moveUpPath() {
         position.moveUpPath();
+    }
+
+    /**
+     * Get the downwards move path
+     * @return
+     */
+    public Pair<Integer, Integer> getDownPath(){
+        return position.getDownPath();
+    }
+
+    /**
+     * Get the upwards move path
+     * @return
+     */
+    public Pair<Integer, Integer> getUpPath(){
+        return position.getUpPath();
     }
 
     public SimpleIntegerProperty x() {

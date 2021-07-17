@@ -81,6 +81,10 @@ public class Character extends MovingEntity implements Damageable{
         return currentHealth;
     }
 
+    public List<AlliedSoldier> getAlliedSoldiers(){
+        return this.alliedSoldiers;
+    }
+
     public void setHealth(double health) {
         this.currentHealth = health;
 
@@ -134,7 +138,8 @@ public class Character extends MovingEntity implements Damageable{
 
     public void removeAlliedSoldier(AlliedSoldier alliedSoldier){
         alliedSoldiers.remove(alliedSoldier);
-        observer.removeAlliedSoldier(alliedSoldier);
+        alliedSoldier.destroy();
+        observer.removeAlliedSoldier();
     }
 
     public boolean addGold(int amount){

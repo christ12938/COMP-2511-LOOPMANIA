@@ -34,4 +34,6 @@ The radius for towers and campfires will be 5
 Enemies will take 30 dmg from traps
 When the shop is opened, player is forced to exit the shop manually in order for the game to continue
 Assume all shop items are $10 for now
-Spawn on traps? 
+Assume buildings will not spawn enemies on top of character
+Zombies are spawned when cycle%1 == 0 (except for cycle 0)
+Vampires are spawned when cycle%5 == 0 (except for cycle 0)

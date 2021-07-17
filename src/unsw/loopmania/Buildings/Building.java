@@ -30,5 +30,4 @@ public abstract class Building extends StaticEntity{
 
     public abstract int getBuildingRadius();
     public abstract BuildingType getBuildingType();
-    public abstract boolean isBuffingCharacter();
 }

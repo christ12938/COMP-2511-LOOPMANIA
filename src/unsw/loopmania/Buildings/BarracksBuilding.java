@@ -21,9 +21,5 @@ public class BarracksBuilding extends Building{
     public void applyBuffToCharacter(Character character){
         character.addAlliedSoldier();
     }
-
-    public boolean isBuffingCharacter(){
-        return false;
-    }
     
 }

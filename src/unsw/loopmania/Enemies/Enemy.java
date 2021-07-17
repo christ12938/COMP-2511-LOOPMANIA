@@ -2,6 +2,8 @@ package unsw.loopmania.Enemies;
 
 import java.util.Random;
 
+import org.javatuples.Pair;
+
 import unsw.loopmania.MovingEntity;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Character;
@@ -20,15 +22,17 @@ public abstract class Enemy extends MovingEntity implements Damageable{
     private double critRate;
     private int damage;
     private CritStrategy critStrategy;
+    private Pair<Integer, Integer> herosCastlePos;
 
     // TODO = modify this, and add additional forms of enemy
-    public Enemy(PathPosition position, int health, int battleRadius, int supportRadius) {
+    public Enemy(PathPosition position, Pair<Integer, Integer> herosCastlePos,int health, int battleRadius, int supportRadius) {
         super(position);
         this.health = health;
         this.battleRadius = battleRadius;
         this.supportRadius = supportRadius;
         this.critRate = 0.05;
         this.damage = 5;
+        this.herosCastlePos = herosCastlePos;
     }
 
     public double getHealth() {
@@ -45,12 +49,27 @@ public abstract class Enemy extends MovingEntity implements Damageable{
     public void move(){
         // TODO = modify this, since this implementation doesn't provide the expected enemy behaviour
         // this basic enemy moves in a random direction... 25% chance up or down, 50% chance not at all...
+
+        //New: if the selected path contains hero castle, select the oppsite path
+
         int directionChoice = (new Random()).nextInt(3);
         if (directionChoice == 0){
-            moveUpPath();
+            if(getUpPath().equals(herosCastlePos)){
+                if(!getDownPath().equals(herosCastlePos)){
+                    moveDownPath();
+                }
+            }else{
+                moveUpPath();
+            }
         }
         else if (directionChoice == 1){
-            moveDownPath();
+            if(getDownPath().equals(herosCastlePos)){
+                if(!getUpPath().equals(herosCastlePos)){
+                    moveUpPath();
+                }
+            }else{
+                moveDownPath();
+            }
         }
     }
 
