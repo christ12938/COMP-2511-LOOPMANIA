@@ -136,9 +136,21 @@ public class LoopManiaWorld {
     public int getCharacterDefense() {
         return this.character.getDefense();
     }
+
     public double getCharacterCurrentHp() {
         return this.character.getCurrentHealth();
     }
+
+    public void decreaseCharacterHp(long amount) {
+        this.character.minusHealth(amount);
+        return;
+    }
+
+    public void increaseCharacterHp(long amount) {
+        this.character.addHp(amount);
+        return;
+    }
+
     public Character getCharacter(){
         return this.character;
     }
@@ -423,7 +435,7 @@ public class LoopManiaWorld {
                 this.character.addAttack(5);
                 break;
             case STAKE:
-                this.character.addAttack(2);
+                this.character.addAttack(3);
                 break;
             case STAFF:
                 this.character.addAttack(1);
@@ -438,6 +450,7 @@ public class LoopManiaWorld {
                 this.character.addDefense(3);
             break;
         }
+        this.unequippedInventoryItems.remove(item);
         this.equippedItems.add(item);  
     }
 
@@ -447,7 +460,7 @@ public class LoopManiaWorld {
                 this.character.addAttack(-5);
                 break;
             case STAKE:
-                this.character.addAttack(-2);
+                this.character.addAttack(-3);
                 break;
             case STAFF:
                 this.character.addAttack(-1);
@@ -462,9 +475,19 @@ public class LoopManiaWorld {
                 this.character.addDefense(-3);
             break;
         }
+        this.unequippedInventoryItems.add(item);
         this.equippedItems.remove(item);  
     }
     
+    public void useHealthPotion() {
+        for (Item item : this.unequippedInventoryItems) {
+            if (item.getItemType() == ItemType.HEALTH_POTION) {
+                increaseCharacterHp(10);
+                removeUnequippedInventoryItemByCoordinates(item.getX(), item.getY());
+                return;
+            }
+        }
+    }
 
     /**
      * remove an item by x,y coordinates
