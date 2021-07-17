@@ -190,7 +190,8 @@ public class EnemyTest {
 
         CritStrategy crit = new VampireStrategy();
         crit.applyCrit(character);
-        for (int i = 0; i < 5; i++) {
+
+        for (int i = 0; i < 6; i++) {
             crit.processCrit();
         }
 

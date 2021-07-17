@@ -26,7 +26,7 @@ public class VampireStrategy implements CritStrategy {
         List<Damageable> rem = new ArrayList<Damageable>();
         critEnemies.forEach((k, v) -> {
             k.takeDamage(damage);
-            v--;
+            v = Integer.valueOf(v.intValue() - 1);
             if (v <= 0) {
                 rem.add(k);
             }
