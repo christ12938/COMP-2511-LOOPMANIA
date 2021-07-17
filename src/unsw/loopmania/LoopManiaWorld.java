@@ -8,7 +8,6 @@ import org.javatuples.Pair;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Buildings.Building;
-import unsw.loopmania.Buildings.CampfireBuilding;
 import unsw.loopmania.Buildings.Spawner;
 import unsw.loopmania.Cards.Card;
 import unsw.loopmania.Enemies.Enemy;
@@ -344,19 +343,25 @@ public class LoopManiaWorld {
     public Item loadRandomUnenquippedInventoryItem(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
+            Item item = ItemLoader.loadRandomItem(new Pair<Integer, Integer>(unequippedInventoryItems.get(0).getX(), unequippedInventoryItems.get(0).getY()));
+            if(item.getItemType() == ItemType.GOLD){
+                character.addGold(5);
+                return null;
+            }
             removeItemByPositionInUnequippedInventoryItems(0);
             this.character.addExperience(10);
             this.character.addGold(5);
-            firstAvailableSlot = getFirstAvailableSlotForItem();
+            unequippedInventoryItems.add(item);
+            return item;
+        }else{
+            Item item = ItemLoader.loadRandomItem(firstAvailableSlot);
+            if(item.getItemType() == ItemType.GOLD){
+                character.addGold(5);
+                return null;
+            }
+            unequippedInventoryItems.add(item);
+            return item;
         }
-        // now we insert the new sword, as we know we have at least made a slot available...
-        Item item = ItemLoader.loadRandomItem(firstAvailableSlot);
-        if(item.getItemType() == ItemType.GOLD){
-            character.addGold(5);
-            return null;
-        }
-        unequippedInventoryItems.add(item);
-        return item;
     }
 
     /**
@@ -597,9 +602,7 @@ public class LoopManiaWorld {
      * run moves which occur with every tick without needing to spawn anything immediately
      */
     public void runTickMoves(){
-        System.err.println(herosCastle.getX());
         character.moveDownPath();
-
         moveEnemies();
     }
 
@@ -611,6 +614,15 @@ public class LoopManiaWorld {
         if(character.getX() == herosCastle.getX() && character.getY() == herosCastle.getY()){
             return true;
         }
+        return false;
+    }
+
+    /**
+     * Check if inventory is full
+     * @return
+     */
+    public boolean isUnequippedInventoryFull(){
+        if(getFirstAvailableSlotForItem() == null) return true;
         return false;
     }
 
@@ -630,7 +642,7 @@ public class LoopManiaWorld {
      * Add unequipped item to list
      * @param item unequipped item
      */
-    public void addUnequippedItem(Equipable item){
+    public void addUnequippedItem(Item item){
         unequippedInventoryItems.add(item);
     }
 
@@ -756,7 +768,7 @@ public class LoopManiaWorld {
      * get the first pair of x,y coordinates which don't have any items in it in the unequipped inventory
      * @return x,y coordinate pair
      */
-    private Pair<Integer, Integer> getFirstAvailableSlotForItem(){
+    public Pair<Integer, Integer> getFirstAvailableSlotForItem(){
         // first available slot for an item...
         // IMPORTANT - have to check by y then x, since trying to find first available slot defined by looking row by row
         for (int y=0; y<unequippedInventoryHeight; y++){
