@@ -30,5 +30,5 @@ public abstract class Spawner extends Building{
     public abstract int getSpawningCycle();
     public abstract void setHasSpawned(boolean hasSpawned);
     public abstract boolean getHasSpawned();
-    
+
 }

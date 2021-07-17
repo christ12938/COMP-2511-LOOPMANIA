@@ -12,5 +12,6 @@ public class BarracksBuilding extends Building{
     public BuildingType getBuildingType(){
         return BuildingType.BARRACKS_BUILDING;
     }
-    
+
+
 }

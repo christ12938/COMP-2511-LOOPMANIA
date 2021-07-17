@@ -12,5 +12,5 @@ public class TrapBuilding extends Building{
     public BuildingType getBuildingType(){
         return BuildingType.TRAP_BUILDING;
     }
-    
+
 }
