@@ -53,6 +53,7 @@ public class LoopManiaWorld {
 
     private Character character;
     private HerosCastle herosCastle;
+    private Shop shop;
 
     /**
      * Cycle of the world
@@ -118,6 +119,14 @@ public class LoopManiaWorld {
 
     public int getGold() {
         return character.getGold();
+    }
+
+    public void addGold(int amount) {
+        character.addGold(amount);
+    }
+
+    public void minusGold(int amount) {
+        character.minusGold(amount);
     }
 
     public int getExperience() {
@@ -502,6 +511,80 @@ public class LoopManiaWorld {
                 removeUnequippedInventoryItemByCoordinates(item.getX(), item.getY());
                 return;
             }
+        }
+    }
+
+    public void loadShop() {
+        Shop shop = new Shop(this.character, this.unequippedInventoryItems);
+        this.shop = shop;
+    }
+
+    public int getBuyPrice(ItemType item) {
+        return this.shop.getShopBuyPrice(item);
+    }
+
+    public int getSellPrice(ItemType item) {
+        return this.shop.getShopSellPrice(item);
+    }
+
+    public ItemType getSaleItem(int index) {
+        return this.shop.getSaleItem(index);
+    }
+
+    public boolean buyItem(int index) {
+        if (this.shop.isItemBuyable(index) == false) {
+            return false;
+        } else {
+            ItemType item = this.shop.getSaleItem(index);
+            this.minusGold(this.shop.getShopBuyPrice(item));
+            
+            switch(item){
+                case SWORD:
+                    addUnequippedSword();
+                    break;
+    
+                case STAKE:
+                    addUnequippedStake();
+                    break;
+
+                case STAFF:
+                    addUnequippedStaff();
+                    break;
+    
+                case SHIELD:
+                    addUnequippedShield();
+                    break;
+    
+                case ARMOUR:
+                    addUnequippedArmour();
+                    break;
+    
+                case HELMET:
+                    addUnequippedHelmet();
+                    break;
+    
+                case HEALTH_POTION:
+                    addUnequippedHealthPotion();
+                    break;
+    
+                case THE_ONE_RING:
+                    addUnequippedTheOneRing();
+                    break;
+    
+                default:
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    public boolean sellItem(Item item) {
+        if (!(this.unequippedInventoryItems.contains(item))) {
+            return false;
+        } else {
+            removeUnequippedInventoryItem(item);
+            addGold(this.shop.getShopSellPrice(item.getItemType()));
+            return true;
         }
     }
 
