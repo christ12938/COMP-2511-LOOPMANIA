@@ -11,13 +11,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.robot.Robot;
+
 
 import org.javatuples.Pair;
 import unsw.loopmania.LoopManiaWorld;
-import unsw.loopmania.LoopManiaWorldController;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Character;
