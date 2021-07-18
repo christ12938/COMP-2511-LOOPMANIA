@@ -3,9 +3,12 @@ package unsw.loopmania;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -19,6 +22,8 @@ public class LoopManiaApplication extends Application {
      * the controller for the game. Stored as a field so can terminate it when click exit button
      */
     private LoopManiaWorldController mainController;
+    
+    private boolean hasStarted = false;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -43,38 +48,104 @@ public class LoopManiaApplication extends Application {
         menuLoader.setController(mainMenuController);
         Parent mainMenuRoot = menuLoader.load();
 
+        // load the difficulty menu
+        DifficultyMenuController difficultyMenuController = new DifficultyMenuController(primaryStage);
+        FXMLLoader difficultyMenuLoader = new FXMLLoader(getClass().getResource("DifficultyMenuView.fxml"));
+        difficultyMenuLoader.setController(difficultyMenuController);
+        Parent difficultyMenuRoot = difficultyMenuLoader.load();
+
         // create new scene with the main menu (so we start with the main menu)
         Scene scene = new Scene(mainMenuRoot);
         
         // set functions which are activated when button click to switch menu is pressed
         // e.g. from main menu to start the game, or from the game to return to main menu
-        mainController.setMainMenuSwitcher(() -> {switchToRoot(scene, mainMenuRoot, primaryStage);});
+        primaryStage.setOnCloseRequest(event -> {
+            Platform.exit();
+        });
+        mainController.setMainMenuSwitcher(() -> {
+            mainMenuController.setButtonToResume();
+            switchToRoot(scene, mainMenuRoot, primaryStage);
+        });
         mainMenuController.setGameSwitcher(() -> {
+            if(hasStarted){
+                switchToRoot(scene, gameRoot, primaryStage);
+                mainController.startTimer();
+            }else{
+                switchToRoot(scene, difficultyMenuRoot, primaryStage);
+            }
+        });
+        mainMenuController.setQuitSwitcher(() ->{
+            primaryStage.close();
+        });
+        difficultyMenuController.setBackSwitcher(()->{
+            switchToRoot(scene, mainMenuRoot, primaryStage);
+        });
+        difficultyMenuController.setConfirmSwitcher(()->{
             switchToRoot(scene, gameRoot, primaryStage);
+            mainController.setDifficulty(difficultyMenuController.getSelectedDifficulty());
             mainController.startTimer();
+            hasStarted = true;
         });
         
+
+
         // deploy the main onto the stage
         gameRoot.requestFocus();
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        //Hide and show again to make it center
+        primaryStage.hide();
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        primaryStage.setX((screenBounds.getWidth() - primaryStage.getWidth()) / 2); 
+        primaryStage.setY((screenBounds.getHeight() - primaryStage.getHeight()) / 2);
+        primaryStage.show();
+
     }
 
     @Override
     public void stop(){
         // wrap up activities when exit program
-        mainController.terminate();
+        if(mainController.isTimelineRunning()) mainController.terminate();
     }
 
     /**
      * switch to a different Root
      */
     private void switchToRoot(Scene scene, Parent root, Stage stage){
+        /*
+        double xPos = stage.getX();
+        double yPos = stage.getY();
+        double stageWidth = stage.getWidth();
+        double stageHeight = stage.getHeight();*/
         scene.setRoot(root);
         root.requestFocus();
         stage.setScene(scene);
         stage.sizeToScene();
+        //centerScene(stage, xPos, yPos, stageWidth, stageHeight);
         stage.show();
+    }
+    
+    private void centerScene(Stage stage, double xPos, double yPos, double stageWidth, double stageHeight){
+        /**
+         * Found on stack overflow
+         * cannot find the poisition of shop until it is rendered
+         * thus show stage first then hide, relocate and show again does the trick
+         */
+
+        stage.setOnShowing(event -> stage.hide());
+            
+        stage.setOnShown(event -> {
+            /**
+             * Set the shop position to the center
+             */
+            System.out.println("HERE");
+            double centerXPosition = xPos + stageWidth/2d;
+            double centerYPosition = yPos + stageHeight/2d;
+            stage.setX(centerXPosition - stage.getWidth()/2d);
+            stage.setY(centerYPosition - stage.getHeight()/2d);
+            stage.show();
+        });
     }
 
     public static void main(String[] args) {

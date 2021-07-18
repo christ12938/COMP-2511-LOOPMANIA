@@ -18,9 +18,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import unsw.loopmania.Items.Item;
 import unsw.loopmania.Loaders.ItemLoader;
+import unsw.loopmania.Loaders.ShopLoader;
 import unsw.loopmania.Types.ItemType;
 
 public class LoopManiaShopController {
@@ -49,7 +51,6 @@ public class LoopManiaShopController {
     private Image healthPotionImage;
 
     private EnumMap<ItemType, Pair<Integer, Integer>> itemPositions;
-    private EnumMap<ItemType, Integer> itemPrices;
 
     private LoopManiaWorldController parent;
     private LoopManiaWorld world;
@@ -58,7 +59,12 @@ public class LoopManiaShopController {
     private double xOffset;
     private double yOffset;
 
+    private LoopManiaShop shop;
+
     public LoopManiaShopController(LoopManiaWorldController parent, LoopManiaWorld world, Stage shopStage) {
+
+        shop = new LoopManiaShop(world, parent, this);
+
         /**
          * Initialize shop items
          */
@@ -70,8 +76,7 @@ public class LoopManiaShopController {
         helmetImage = new Image((new File("src/images/helmet.png")).toURI().toString());
         healthPotionImage = new Image((new File("src/images/brilliant_blue_new.png")).toURI().toString());
 
-        itemPositions = new EnumMap<ItemType, Pair<Integer, Integer>>(ItemType.class);
-        itemPrices = new EnumMap<ItemType, Integer>(ItemType.class);
+        itemPositions = ShopLoader.loadItemPositions();
 
         this.parent = parent;
         this.world = world;
@@ -81,8 +86,6 @@ public class LoopManiaShopController {
     @FXML
     public void initialize(){
 
-        setItemPositions();
-        setItemPrices();
         setWindowDragBehaviour();
 
         shopSlot.setHgap(5.0);
@@ -121,7 +124,7 @@ public class LoopManiaShopController {
             VBox vbox = new VBox();
             vbox.setAlignment(Pos.CENTER);
             vbox.getChildren().add(view);
-            vbox.getChildren().add(new Label("$" + Integer.toString(itemPrices.get(item.getItemType()))));
+            vbox.getChildren().add(new Label("$" + shop.getItemPrice(item.getItemType())));
             vbox.getChildren().add(buyButton);
             setBuyButtonHandler(item.getItemType(), buyButton);
             shopSlot.add(vbox, item.getX(), item.getY());
@@ -131,58 +134,25 @@ public class LoopManiaShopController {
         }
     }
 
-    
-    /**
-     * Define a map of item positions on shop
-     */
-    private void setItemPositions(){
-        itemPositions.put(ItemType.SWORD, new Pair<Integer, Integer>(0, 0));
-        itemPositions.put(ItemType.STAKE, new Pair<Integer, Integer>(1, 0));
-        itemPositions.put(ItemType.STAFF, new Pair<Integer, Integer>(2, 0));
-        itemPositions.put(ItemType.ARMOUR, new Pair<Integer, Integer>(0, 1));
-        itemPositions.put(ItemType.SHIELD, new Pair<Integer, Integer>(1, 1));
-        itemPositions.put(ItemType.HELMET, new Pair<Integer, Integer>(2, 1));
-        itemPositions.put(ItemType.HEALTH_POTION, new Pair<Integer, Integer>(1, 2));
-    }
-
-    /**
-     * Set prices of items
-     */
-    private void setItemPrices(){
-        itemPrices.put(ItemType.SWORD, 10);
-        itemPrices.put(ItemType.STAKE, 10);
-        itemPrices.put(ItemType.STAFF, 10);
-        itemPrices.put(ItemType.ARMOUR, 10);
-        itemPrices.put(ItemType.SHIELD, 10);
-        itemPrices.put(ItemType.HELMET, 10);
-        itemPrices.put(ItemType.HEALTH_POTION, 10);
-    }
-
     /**
      * Set Buy button actions
      */
     private void setBuyButtonHandler(ItemType type, Button buyButton){
         buyButton.setOnAction(new EventHandler<ActionEvent>(){
-            //TODO ADD GOLD VALUE
             @Override
             public void handle(ActionEvent event) {
-                if(world.getCharacter().getGold() < itemPrices.get(type)){
-                    //DOSTH NOT enough money
-                    event.consume();
-                    return;
-                }else if(world.isUnequippedInventoryFull()){
-                    //DOSTH
-                    event.consume();
-                    return;
+                String returnedMessage = shop.buyItem(type);
+                Color color = null;
+                if(returnedMessage.equals(shop.getSuccessMessage())){
+                    color = Color.GREEN;
                 }else{
-                    world.getCharacter().minusGold(itemPrices.get(type));
-                    updateShopGold();
-                    Item boughtItem = ItemLoader.loadBoughtItem(type, world.getFirstAvailableSlotForItem().getValue0(), world.getFirstAvailableSlotForItem().getValue1());
-                    world.addUnequippedItem(boughtItem);
-                    parent.onLoadUnequippedItem(boughtItem);
+                    color = Color.RED;
                 }
-           }
-            
+                PopUpMessageController popUpMessageController = parent.openPopUpMessageWindow(shopStage, returnedMessage, color, "Back");
+                popUpMessageController.setQuitSwitcher(()->{
+                    popUpMessageController.getStage().close();
+                });
+           }     
         });
     }
 
@@ -214,7 +184,7 @@ public class LoopManiaShopController {
     /**
      * Update the shop gold
      */
-    private void updateShopGold(){
+    public void updateShopGold(){
         goldValue.setText(Integer.toString(world.getCharacter().getGold()));
         shopStage.sizeToScene();
     }

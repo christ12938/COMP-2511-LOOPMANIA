@@ -81,6 +81,11 @@ public class LoopManiaWorld {
     // TODO = expand the range of buildings
     private List<Building> buildingEntities;
 
+    /**
+     * Items that spawned on tiles
+     */
+    private List<Item> spawnedItems;
+
     //Rare items that specified in json
     private List <ItemType> rareItemsAvailable;
 
@@ -107,10 +112,13 @@ public class LoopManiaWorld {
         this.orderedPath = orderedPath;
         buildingEntities = new ArrayList<>();
         rareItemsAvailable = new ArrayList<>();
+        spawnedItems = new ArrayList<>();
     }
 
     public void setController(LoopManiaWorldController controller){
         this.controller = controller;
+        character.setObserver(controller);
+        humanPlayer.setController(controller);
     }
 
     public int getWidth() {
@@ -187,6 +195,14 @@ public class LoopManiaWorld {
         return this.herosCastle;
     }
 
+    public void notifyHumanPlayer(){
+        humanPlayer.updateGoalState();
+    }
+
+    public boolean hasHumanPlayerWon(){
+        return humanPlayer.hasWon();
+    }
+
     public void addRareItemsAvailable(String rareItem){
         //Add more rare items in milestone 3
         switch(rareItem){
@@ -247,6 +263,30 @@ public class LoopManiaWorld {
         // for adding non-specific entities (ones without another dedicated list)
         // TODO = if more specialised types being added from main menu, add more methods like this with specific input types...
         nonSpecifiedEntities.add(entity);
+    }
+
+    /**
+     * Get Location of spawning items
+     * @return
+     */
+    public List<Item> possiblySpawnItems(){
+        if(new Random().nextDouble() < 0.1) return null;
+        List<Item> spawningItems = new ArrayList<>();
+        /* Get gold spawn position */
+        Pair<Integer, Integer> goldPos = possiblyGetItemSpawnPosition();
+        if (goldPos != null){
+            Item gold = new Gold(new SimpleIntegerProperty(goldPos.getValue0()), new SimpleIntegerProperty(goldPos.getValue1()));
+            spawnedItems.add(gold);
+            spawningItems.add(gold);
+        }
+        /* Get health Potion spawn position */
+        Pair<Integer, Integer> healthPotionPos = possiblyGetItemSpawnPosition();
+        if (healthPotionPos != null){
+            Item healthPotion = new HealthPotion(new SimpleIntegerProperty(healthPotionPos.getValue0()), new SimpleIntegerProperty(healthPotionPos.getValue1()));
+            spawnedItems.add(healthPotion);
+            spawningItems.add(healthPotion);
+        }
+        return spawningItems;
     }
 
     /**
@@ -963,6 +1003,48 @@ public class LoopManiaWorld {
         }
     }
 
+    private Pair<Integer, Integer> possiblyGetItemSpawnPosition(){
+        List<Pair<Integer, Integer>> orderedPathSpawnCandidates = new ArrayList<>();
+        int indexPosition = orderedPath.indexOf(new Pair<Integer, Integer>(character.getX(), character.getY()));
+        // inclusive start and exclusive end of range of positions not allowed
+        int startNotAllowed = (indexPosition - 2 + orderedPath.size())%orderedPath.size();
+        int endNotAllowed = (indexPosition + 3)%orderedPath.size();
+        // note terminating condition has to be != rather than < since wrap around...
+        for (int i=endNotAllowed; i!=startNotAllowed; i=(i+1)%orderedPath.size()){
+            // If on hero castle, dont spawn
+            if(orderedPath.get(i).getValue0() == herosCastle.getX()
+                && orderedPath.get(i).getValue1() == herosCastle.getY()){
+                    continue;
+            }else{
+                // If on other building entities or items, dont spawn
+                boolean flag = false;
+                for(Building building : buildingEntities){
+                    if(orderedPath.get(i).getValue0() == building.getX()
+                        && orderedPath.get(i).getValue1() == building.getY()){
+                            flag = true;
+                            break;
+                    }
+                }
+                for(Item item : spawnedItems){
+                    if(orderedPath.get(i).getValue0() == item.getX()
+                        && orderedPath.get(i).getValue1() == item.getY()){
+                            flag = true;
+                            break;
+                    }
+                }
+                if(flag) continue;
+            }
+            orderedPathSpawnCandidates.add(orderedPath.get(i));
+        }
+
+        // choose random choice
+        Pair<Integer, Integer> spawnPosition = null;
+        if(orderedPathSpawnCandidates.size() != 0){
+            spawnPosition = orderedPathSpawnCandidates.get(new Random().nextInt(orderedPathSpawnCandidates.size()));
+        }
+        return spawnPosition;
+    }
+
     /**
      * get a randomly generated position which could be used to spawn a slug
      * @return null if random choice is that wont be spawning an enemy or it isn't possible, or random coordinate pair if should go ahead
@@ -1108,6 +1190,7 @@ public class LoopManiaWorld {
      */
     public void nextCycle(){
         this.cycle++;
+        notifyHumanPlayer();
         /* Reset all spawner spawning behaviour */
         /* Kind of observer pattern (DEBUG) */
         for(Building b : buildingEntities){
