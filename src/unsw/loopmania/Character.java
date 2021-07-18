@@ -6,6 +6,7 @@ import java.util.List;
 import unsw.loopmania.Buildings.Building;
 import unsw.loopmania.Items.DefensiveItems;
 import unsw.loopmania.Items.Equipable;
+import unsw.loopmania.Items.Item;
 import unsw.loopmania.Items.OffensiveItems;
 import unsw.loopmania.Items.RareItem;
 import unsw.loopmania.Types.ItemType;
@@ -22,6 +23,7 @@ public class Character extends MovingEntity implements Damageable{
     private int gold;
     private int experience;
     private LoopManiaWorldController observer;
+    private LoopManiaWorld world;
     private PathPosition position;
 
     /**
@@ -41,8 +43,6 @@ public class Character extends MovingEntity implements Damageable{
      */
     private List<Equipable> equippedItems;
 
-    private List<RareItem> rareItems;
-
     public Character(PathPosition position) {
         super(position);
         this.position = position;
@@ -54,8 +54,8 @@ public class Character extends MovingEntity implements Damageable{
         battleBuildings = new ArrayList<>();
         alliedSoldiers = new ArrayList<>();
         equippedItems = new ArrayList<>();
-        rareItems = new ArrayList<>();
         this.observer = null;
+        this.world = null;
     }
 
     /**
@@ -90,6 +90,10 @@ public class Character extends MovingEntity implements Damageable{
         return this.alliedSoldiers;
     }
 
+    public void setWorld(LoopManiaWorld world){
+        this.world = world;
+    }
+
     public void setHealth(double health) {
         this.currentHealth = health;
 
@@ -116,14 +120,6 @@ public class Character extends MovingEntity implements Damageable{
 
     public void addDefense(int defense) {
         this.defense += defense;
-    }
-
-    public void addRareItem(RareItem rareItem){
-        rareItems.add(rareItem);
-    }
-    
-    public void removeRareItem(RareItem rareItem){
-        rareItems.remove(rareItem);
     }
 
     /**
@@ -264,19 +260,17 @@ public class Character extends MovingEntity implements Damageable{
         currentHealth = currentHealth - health;
         if(currentHealth <= 0){
             currentHealth = 0;
-            System.out.println("HERE");
             /* Apply effect of the one ring */
-            RareItem destroyedRareItem = null;
-            for(RareItem rareItem : rareItems){
-                if(rareItem.getItemType() == ItemType.THE_ONE_RING){
+            Item destroyedRareItem = null;
+            for(Item i : world.getUnequippedInventoryItems()){
+                if(i.getItemType() == ItemType.THE_ONE_RING){
                     currentHealth = maxHealth;
-                    destroyedRareItem = rareItem;
+                    destroyedRareItem = i;
                     break;
                 }
             }
             if(destroyedRareItem != null){
-
-                observer.removeRareItem(destroyedRareItem);
+                world.removeUnequippedInventoryItem(destroyedRareItem);
             }
 
             if (observer != null) {
