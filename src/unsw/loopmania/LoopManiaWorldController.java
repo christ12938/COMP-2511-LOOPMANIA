@@ -1458,7 +1458,7 @@ public class LoopManiaWorldController {
         }else{
             return;
         }
-        world.RemoveOverlappedEntityByCoordinates(x, y, type);
+        world.removeOverlappedEntityByCoordinates(x, y, type);
     }
 
     /**
@@ -1591,7 +1591,4 @@ public class LoopManiaWorldController {
         }
     }
 
-    public void removeRareItem(RareItem rareItem){
-        world.removeUnequippedInventoryItem(rareItem);
-    }
 }

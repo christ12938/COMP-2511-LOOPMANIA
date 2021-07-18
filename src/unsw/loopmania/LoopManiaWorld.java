@@ -53,6 +53,7 @@ public class LoopManiaWorld {
 
     private LoopManiaWorldController controller = null;
 
+    private HumanPlayer humanPlayer;
     private Character character;
     private HerosCastle herosCastle;
     private Shop shop;
@@ -142,6 +143,14 @@ public class LoopManiaWorld {
      */
     public void setCharacter(Character character) {
         this.character = character;
+    }
+
+    /**
+     * Set human player in world as an observer
+     * @param humanPlayer
+     */
+    public void setHumanPlayer(HumanPlayer humanPlayer){
+        this.humanPlayer = humanPlayer;
     }
 
     public int getCharacterAttack() {
@@ -751,9 +760,7 @@ public class LoopManiaWorld {
         int x = item.getX();
         int y = item.getY();
         item.destroy();
-        System.out.println("DESTROYED");
         unequippedInventoryItems.remove(item);
-        if(item instanceof RareItem) character.removeRareItem((RareItem)item);
         //shiftUnequippedInventoryItemsFromXYCoordinate(x, y);
     }
 
@@ -763,7 +770,6 @@ public class LoopManiaWorld {
      */
     public void addUnequippedItem(Item item){
         unequippedInventoryItems.add(item);
-        if(item instanceof RareItem) character.addRareItem((RareItem)item);
     }
 
     /**
@@ -790,7 +796,7 @@ public class LoopManiaWorld {
      * @param type type of entity being overlapped
      */
     //DEBUG
-    public void RemoveOverlappedEntityByCoordinates(int x, int y, OverlappableEntityType type){
+    public void removeOverlappedEntityByCoordinates(int x, int y, OverlappableEntityType type){
         Entity result = null;
         if(type == OverlappableEntityType.BUILDING){
             for(Entity e : buildingEntities){
@@ -878,7 +884,6 @@ public class LoopManiaWorld {
         Item item = unequippedInventoryItems.get(index);
         item.destroy();
         unequippedInventoryItems.remove(index);
-        if(item instanceof RareItem) character.removeRareItem((RareItem)item);
     }
 
     /**
@@ -1148,5 +1153,9 @@ public class LoopManiaWorld {
             }
         }
         return false;
+    }
+
+    public List<Item> getUnequippedInventoryItems(){
+        return this.unequippedInventoryItems;
     }
 }

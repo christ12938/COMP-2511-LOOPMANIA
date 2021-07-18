@@ -45,4 +45,6 @@ A Zombie will have an attack of 10, battle radius of 3 and support radius of 3
 A vampire will have an attack of 15, battle radius of 4 and support radius of 5  
 A vampire's crit will deal damage for a random number between 2 and 4 turns
 Assume rare items has a 5% chance of spawning and normal items has a 95% chance of spawning, and the number of chances of obtaining any specific type of rare items would be uniformly random among those chances
+Assume only basic goals in milestone 2
+Assume quantity of goal condition is smaller than Integer.MAX_VALUE
 
