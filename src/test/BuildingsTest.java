@@ -182,7 +182,6 @@ public class BuildingsTest{
         d.applyBuildingBuffsToCharacter();
 
         //assumes base attack is 5
-        System.err.println(d.getCharacterAttack());
         assertTrue(d.getCharacterAttack() == 10);
     }
 

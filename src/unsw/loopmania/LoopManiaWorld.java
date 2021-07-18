@@ -349,7 +349,7 @@ public class LoopManiaWorld {
      */
     public Card loadRandomCard(){
         // if adding more cards than have, remove the first card...
-        if (cardEntities.size() >= getWidth()){
+        if (cardEntities.size() >= getWidth() && controller != null){
             // TODO- = give some cash/experience/item rewards for the discarding of the oldest card
             controller.loadRandomItem();
             this.character.addExperience(10);
