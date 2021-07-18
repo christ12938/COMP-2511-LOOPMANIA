@@ -18,7 +18,7 @@ public class VampireStrategy implements CritStrategy {
 
     @Override
     public void applyCrit(Damageable damageable) {
-        critEnemies.put(damageable, Integer.valueOf(new Random().nextInt(5)));
+        critEnemies.put(damageable, Integer.valueOf(2 + new Random().nextInt(3)));
     }
 
     @Override
