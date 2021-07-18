@@ -390,6 +390,10 @@ public class LoopManiaWorld {
         return sword;
     }
 
+    /**
+     * spawn a stake in the world and return the stake entity
+     * @return a stake to be spawned in the controller as a JavaFX node
+     */
     public Stake addUnequippedStake(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -404,6 +408,10 @@ public class LoopManiaWorld {
         return stake;
     }
 
+    /**
+     * spawn a staff in the world and return the staff entity
+     * @return a staff to be spawned in the controller as a JavaFX node
+     */
     public Staff addUnequippedStaff(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -418,6 +426,10 @@ public class LoopManiaWorld {
         return staff;
     }
 
+    /**
+     * spawn a helmet in the world and return the helmet entity
+     * @return a helmet to be spawned in the controller as a JavaFX node
+     */
     public Helmet addUnequippedHelmet(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -431,6 +443,10 @@ public class LoopManiaWorld {
         return Helmet;
     }
 
+    /**
+     * spawn a shield in the world and return the shield entity
+     * @return a shield to be spawned in the controller as a JavaFX node
+     */
     public Shield addUnequippedShield(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -445,6 +461,10 @@ public class LoopManiaWorld {
         return shield;
     }
 
+    /**
+     * spawn a armour in the world and return the armour entity
+     * @return a armour to be spawned in the controller as a JavaFX node
+     */
     public Armour addUnequippedArmour(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -459,7 +479,10 @@ public class LoopManiaWorld {
         return armour;
     }
 
-
+    /**
+     * spawn a health potion in the world and return the health potion entity
+     * @return a health potion to be spawned in the controller as a JavaFX node
+     */
     public Consumables addUnequippedHealthPotion(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -474,6 +497,10 @@ public class LoopManiaWorld {
         return healthpotion;
     }
 
+    /**
+     * spawn a shield in the world and return the shield entity
+     * @return a shield to be spawned in the controller as a JavaFX node
+     */
     public TheOneRing addUnequippedTheOneRing(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
@@ -488,16 +515,24 @@ public class LoopManiaWorld {
         return theonering;
     }
 
-    
+    /**
+     * equip an equippable item
+     */
     public void equipEquippableItem(Equipable item) {
         character.equip(item);
     }
 
+    /**
+     * unequip an equippable item
+     */
     public void unequipEquippableItem(Equipable item) {
         character.unequip(item);
         item.destroy();
     }
     
+    /**
+     * increase character health if character has a health potion
+     */
     public void useHealthPotion() {
         for (Item item : this.unequippedInventoryItems) {
             if (item.getItemType() == ItemType.HEALTH_POTION) {
@@ -513,73 +548,136 @@ public class LoopManiaWorld {
         this.shop = shop;
     }
 
+    /**
+     * get buy price of item
+     * @param item item whose buy price is going to be returned
+     * @return buy price
+     */
     public int getBuyPrice(ItemType item) {
         return this.shop.getShopBuyPrice(item);
     }
 
+     /**
+     * get sell price of item
+     * @param item item whose sell price is going to be returned
+     * @return sell price
+     */
     public int getSellPrice(ItemType item) {
         return this.shop.getShopSellPrice(item);
     }
 
-    public ItemType getSaleItem(int index) {
-        return this.shop.getSaleItem(index);
-    }
-
-    public boolean buyItem(int index) {
-        if (this.shop.isItemBuyable(index) == false) {
+    /**
+     * buy a sword from the shop, added to unequipinventory
+     * @return false if couldn't be bought, else true
+     */
+    public boolean buySword() {
+        if (this.shop.isItemBuyable(ItemType.SWORD) == false) {
             return false;
         } else {
-            ItemType item = this.shop.getSaleItem(index);
-            this.minusGold(this.shop.getShopBuyPrice(item));
-            
-            switch(item){
-                case SWORD:
-                    addUnequippedSword();
-                    break;
-    
-                case STAKE:
-                    addUnequippedStake();
-                    break;
+            minusGold(this.shop.getShopBuyPrice(ItemType.SWORD));
+            addUnequippedSword();
+            return true;
+        }
+    }
 
-                case STAFF:
-                    addUnequippedStaff();
-                    break;
-    
-                case SHIELD:
-                    addUnequippedShield();
-                    break;
-    
-                case ARMOUR:
-                    addUnequippedArmour();
-                    break;
-    
-                case HELMET:
-                    addUnequippedHelmet();
-                    break;
-    
-                case HEALTH_POTION:
-                    addUnequippedHealthPotion();
-                    break;
-    
-                case THE_ONE_RING:
-                    addUnequippedTheOneRing();
-                    break;
-    
-                default:
-                    return false;
+    /**
+     * buy a stake from the shop, added to unequipinventory
+     * @return false if couldn't be bought, else true
+     */
+    public boolean buyStake() {
+        if (this.shop.isItemBuyable(ItemType.STAKE) == false) {
+            return false;
+        } else {
+            minusGold(this.shop.getShopBuyPrice(ItemType.STAKE));
+            addUnequippedStake();
+            return true;
+        }
+    }
+
+    /**
+     * buy a staff from the shop, added to unequipinventory
+     * @return false if couldn't be bought, else true
+     */
+    public boolean buyStaff() {
+        if (this.shop.isItemBuyable(ItemType.STAFF) == false) {
+            return false;
+        } else {
+            minusGold(this.shop.getShopBuyPrice(ItemType.STAFF));
+            addUnequippedStaff();
+            return true;
+        }
+    }
+
+    /**
+     * buy a armour from the shop, added to unequipinventory
+     * @return false if couldn't be bought, else true
+     */
+    public boolean buyArmour() {
+        if (this.shop.isItemBuyable(ItemType.ARMOUR) == false) {
+            return false;
+        } else {
+            minusGold(this.shop.getShopBuyPrice(ItemType.ARMOUR));
+            addUnequippedArmour();
+            return true;
+        }
+    }
+
+    /**
+     * buy a shield from the shop, added to unequipinventory
+     * @return false if couldn't be bought, else true
+     */
+    public boolean buyShield() {
+        if (this.shop.isItemBuyable(ItemType.SHIELD) == false) {
+            return false;
+        } else {
+            minusGold(this.shop.getShopBuyPrice(ItemType.SHIELD));
+            addUnequippedShield();
+            return true;
+        }
+    }
+
+    /**
+     * buy a helmet from the shop, added to unequipinventory
+     * @return false if couldn't be bought, else true
+     */
+    public boolean buyHelmet() {
+        if (this.shop.isItemBuyable(ItemType.HELMET) == false) {
+            return false;
+        } else {
+            minusGold(this.shop.getShopBuyPrice(ItemType.HELMET));
+            addUnequippedHelmet();
+            return true;
+        }
+    }
+
+    /**
+     * buy a healthpotion from the shop, added to unequipinventory
+     * @return false if couldn't be bought, else true
+     */
+    public boolean buyHealthPotion() {
+        if (this.shop.isItemBuyable(ItemType.HEALTH_POTION) == false) {
+            return false;
+        } else {
+            minusGold(this.shop.getShopBuyPrice(ItemType.HEALTH_POTION));
+            addUnequippedHealthPotion();
+            return true;
+        }
+    }
+
+    /**
+     * sell an item from unequipinventory
+     * @return false if couldn't be bought, else true
+     */
+    public boolean sellItem(ItemType item) {
+        
+        for(Item inventoryItem : this.unequippedInventoryItems) {
+            if (inventoryItem.getItemType().equals(item)) {
+                removeUnequippedInventoryItem(inventoryItem);
+                addGold(this.shop.getShopSellPrice(item));
+                return true;
             }
-            return true;
         }
-    }
-
-    public boolean sellItem(Item item) {
-        if (!(this.unequippedInventoryItems.contains(item))) {
-            return false;
-        } else {
-            removeUnequippedInventoryItem(item);
-            addGold(this.shop.getShopSellPrice(item.getItemType()));
-            return true;
-        }
+        return false;
     }
 
     /**
