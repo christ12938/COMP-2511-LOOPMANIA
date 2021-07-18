@@ -20,9 +20,10 @@ public class TrapBuilding extends Building{
 
     public void applyDeBuffToEnemy(Enemy enemy){
         //DO STH
+        enemy.takeDamage(5);
         destroy();
     }
-    
+
     public boolean isBuffingCharacter(){
         return false;
     }
