@@ -2,7 +2,7 @@
   "width": 8,
   "height": 14,
   "rare_items": ["the_one_ring"],
-  "goal-condition": {"goal": "experience", "quantity": 123456 },
+  "goal-condition": {"goal": "gold", "quantity": 123456 },
   "entities": [
     {"x": 2, "y": 0, "type": "hero_castle"}
   ],

@@ -44,7 +44,8 @@ public abstract class LoopManiaWorldLoader {
 
         // load goal-condition
         JSONObject jsonGoal = json.getJSONObject("goal-condition");
-        HumanPlayer humanPlayer = new HumanPlayer(jsonGoal.getString("goal"), jsonGoal.getInt("quantity"));
+        HumanPlayer humanPlayer = new HumanPlayer(jsonGoal.getString("goal"), jsonGoal.getInt("quantity"), world);
+        world.setHumanPlayer(humanPlayer);
 
         JSONArray jsonEntities = json.getJSONArray("entities");
 

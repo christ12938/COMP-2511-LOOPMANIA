@@ -32,6 +32,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -40,9 +41,9 @@ import unsw.loopmania.Cards.*;
 import unsw.loopmania.Enemies.Enemy;
 import unsw.loopmania.Items.Equipable;
 import unsw.loopmania.Items.Item;
-import unsw.loopmania.Items.RareItem;
 import unsw.loopmania.Loaders.ItemLoader;
 import unsw.loopmania.Types.OverlappableEntityType;
+import unsw.loopmania.Types.DifficultyType;
 import unsw.loopmania.Buildings.*;
 
 
@@ -285,15 +286,21 @@ public class LoopManiaWorldController {
      */
     private Stage primaryStage;
 
+
+    private DifficultyType difficulty;
+
+    private volatile boolean isTimelineRunning = false;
+
     /**
      * @param world world object loaded from file
      * @param initialEntities the initial JavaFX nodes (ImageViews) which should be loaded into the GUI
      */
     public LoopManiaWorldController(LoopManiaWorld world, List<ImageView> initialEntities) {
         this.world = world;
-        this.world.getCharacter().setObserver(this);
-        world.setController(this);
+        this.world.setController(this);
         entityImages = new ArrayList<>(initialEntities);
+
+        difficulty = null;
 
         /* Initialize all card images */
         vampireCastleCardImage = new Image((new File("src/images/vampire_castle_card.png")).toURI().toString());
@@ -401,10 +408,13 @@ public class LoopManiaWorldController {
      */
     public void startTimer(){
         // TODO = handle more aspects of the behaviour required by the specification
+        System.out.println(primaryStage.getWidth() + " " + primaryStage.getHeight());
         System.out.println("starting timer");
         isPaused = false;
         // trigger adding code to process main game logic to queue. JavaFX will target framerate of 0.3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(0.3), event -> {
+
+            isTimelineRunning = true;
 
             world.runTickMoves();
 
@@ -417,6 +427,11 @@ public class LoopManiaWorldController {
              *           6x. Remove Building Debuffs from enemy (Not used right now)
              *           P.S. Equipped items buff are in real time, so wont be included in the timeline
              */
+            /*
+            List<Item> newSpawnedItems = world.possiblySpawnItems();
+            for (Item item : newSpawnedItems){
+                onLoadSpawnedItem(item);
+            }*/
 
             List<Enemy> newEnemies = world.possiblySpawnEnemies();
             for (Enemy newEnemy: newEnemies){
@@ -497,6 +512,21 @@ public class LoopManiaWorldController {
         // TODO = provide different benefits to defeating the enemy based on the type of enemy
         loadRandomItem();
         loadRandomCard();
+    }
+
+    private void onLoadSpawnedItem(Item item){
+        ImageView view = null;
+        switch(item.getItemType()){
+            case GOLD:
+                view = new ImageView(goldImage);
+                break;
+            case HEALTH_POTION:
+                view = new ImageView(healthPotionImage);
+                break;
+            default:
+                return; /* Should never happen */
+        }
+        addEntity(item, view);
     }
 
     /**
@@ -1045,15 +1075,7 @@ public class LoopManiaWorldController {
                  * meaning out of bounds dropping
                  * perform action when it is null else just consume the event as it is valid
                  */
-                if(currentlyDraggedImage != null){
-                    currentlyDraggedImage.setVisible(true);
-                    draggedEntity.setVisible(false);
-                    draggedEntity.setMouseTransparent(false);
-                    // remove drag event handlers before setting currently dragged image to null
-                    removeDraggableDragEventHandlers(draggableType, targetGridPane);
-                    currentlyDraggedImage = null;
-                    currentlyDraggedType = null;
-                }
+                cleanseDragInput();
                 event.consume();
             }
 
@@ -1589,6 +1611,109 @@ public class LoopManiaWorldController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void displayVictoryMessage(){
+        PopUpMessageController popUpMessageController = openPopUpMessageWindow(primaryStage, "You Won!", Color.GREEN, "Quit Game");
+        popUpMessageController.setQuitSwitcher(() ->{
+            popUpMessageController.getStage().close();
+            primaryStage.close();
+        });
+    }
+
+    public void displayDefeatMessage(){
+        if(world.hasHumanPlayerWon()) return;
+        PopUpMessageController popUpMessageController = openPopUpMessageWindow(primaryStage, "You Lost!", Color.RED, "Quit Game");
+        popUpMessageController.setQuitSwitcher(() ->{
+            popUpMessageController.getStage().close();
+            primaryStage.close();
+        });
+    }
+
+    public void cleanseDragInput(){
+        /**
+         * Cleanse left over dragging event
+         */
+        if(currentlyDraggedImage != null){
+            currentlyDraggedImage.setVisible(true);
+            draggedEntity.setVisible(false);
+            draggedEntity.setMouseTransparent(false);
+            // remove drag event handlers before setting currently dragged image to null
+            removeDraggableDragEventHandlers(currentlyDraggedType, currentlyDraggedTargetGridPane);
+            currentlyDraggedImage = null;
+            currentlyDraggedType = null;
+            currentlyDraggedTargetGridPane = null;
+        }
+    }
+
+    public void setDifficulty(DifficultyType difficulty){
+        this.difficulty = difficulty;
+    }
+
+    public DifficultyType getDifficulty(){
+        return difficulty;
+    }
+
+    public boolean isTimelineRunning(){
+        return isTimelineRunning;
+    }
+
+    /**
+     * Open a message box
+     * @param parentStage
+     * @param message
+     * @param color
+     * @return
+     */
+    public PopUpMessageController openPopUpMessageWindow(Stage parentStage, String message, Color color, String buttonText){
+
+        /* Pause the game first */
+        if(!isPaused) pause();
+        
+        cleanseDragInput();
+
+        try {
+            Stage popUpMessageStage = new Stage();
+            FXMLLoader popUpMessageLoader = new FXMLLoader(getClass().getResource("PopUpMessageView.fxml"));
+            PopUpMessageController popUpMessageController = new PopUpMessageController(popUpMessageStage, message, color, buttonText);
+            popUpMessageLoader.setController(popUpMessageController);
+            popUpMessageStage.setScene(new Scene(popUpMessageLoader.load()));
+            popUpMessageStage.initStyle(StageStyle.UNDECORATED);
+            popUpMessageStage.setResizable(false);
+
+            /**
+             * Set Stage modality and owner to block all controls to owner
+             */
+            popUpMessageStage.initModality(Modality.WINDOW_MODAL);
+            popUpMessageStage.initOwner(parentStage);
+            
+            
+            /**
+             * Found on stack overflow
+             * cannot find the poisition of shop until it is rendered
+             * thus show stage first then hide, relocate and show again does the trick
+             */
+            popUpMessageStage.setOnShowing(event -> popUpMessageStage.hide());
+            
+            popUpMessageStage.setOnShown(event -> {
+                /**
+                 * Set the shop position to the center
+                 */
+                double centerXPosition = parentStage.getX() + parentStage.getWidth()/2d;
+                double centerYPosition = parentStage.getY() + parentStage.getHeight()/2d;
+                popUpMessageStage.setX(centerXPosition - popUpMessageStage.getWidth()/2d);
+                popUpMessageStage.setY(centerYPosition - popUpMessageStage.getHeight()/2d);
+                popUpMessageStage.show();
+            });
+
+            popUpMessageStage.show();
+
+            return popUpMessageController;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

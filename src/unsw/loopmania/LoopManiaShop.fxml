@@ -37,7 +37,7 @@
                               
                </children>
             </GridPane>
-            <VBox alignment="CENTER" spacing="15">
+            <VBox alignment="CENTER" spacing="20">
                <children>
                   <HBox alignment="CENTER">
                      <children>
@@ -55,11 +55,6 @@
                         </Label>
                      </children>
                   </HBox>
-                  <Label fx:id="numberOfItemsAllowed" text="I\n0">
-                     <font>
-                        <Font name="System Bold" size="25" />
-                     </font>
-                  </Label>
                   <Button fx:id="resumeButton" text="Resume" onAction="#resumeButtonAction"/>
                </children>
             </VBox>

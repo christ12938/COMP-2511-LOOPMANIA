@@ -8,7 +8,6 @@ import unsw.loopmania.Items.DefensiveItems;
 import unsw.loopmania.Items.Equipable;
 import unsw.loopmania.Items.Item;
 import unsw.loopmania.Items.OffensiveItems;
-import unsw.loopmania.Items.RareItem;
 import unsw.loopmania.Types.ItemType;
 
 /**
@@ -168,12 +167,14 @@ public class Character extends MovingEntity implements Damageable{
             this.gold = Integer.MAX_VALUE;
             if (observer != null) {
                 observer.updateGold();
+                world.notifyHumanPlayer();
             }
             return true;
         } else {
             this.gold += amount;
             if (observer != null) {
                 observer.updateGold();
+                world.notifyHumanPlayer();
             }
             return true;
         }
@@ -208,12 +209,14 @@ public class Character extends MovingEntity implements Damageable{
             this.experience = Integer.MAX_VALUE;
             if (observer != null) {
                 observer.updateExperience();
+                world.notifyHumanPlayer();
             }
             return true;
         } else {
             this.experience += amount;
             if (observer != null) {
                 observer.updateExperience();
+                world.notifyHumanPlayer();
             }
             return true;
         }
@@ -269,15 +272,16 @@ public class Character extends MovingEntity implements Damageable{
                     break;
                 }
             }
-            if(destroyedRareItem != null){
-                world.removeUnequippedInventoryItem(destroyedRareItem);
-            }
 
             if (observer != null) {
                 observer.updateHealth(this.currentHealth, this.maxHealth);
             }
 
-            //DO STH ELSE
+            if(destroyedRareItem != null){
+                world.removeUnequippedInventoryItem(destroyedRareItem);
+            }else{
+                observer.displayDefeatMessage();
+            }
         }else{
             if (observer != null) {
                 observer.updateHealth(this.currentHealth, this.maxHealth);
