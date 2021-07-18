@@ -19,6 +19,7 @@ import unsw.loopmania.Loaders.BuildingLoader;
 import unsw.loopmania.Loaders.CardLoader;
 import unsw.loopmania.Loaders.ItemLoader;
 import unsw.loopmania.Types.BuildingType;
+import unsw.loopmania.Types.CardType;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Types.OverlappableEntityType;
 
@@ -57,6 +58,9 @@ public class LoopManiaWorld {
     private Character character;
     private HerosCastle herosCastle;
     private Shop shop;
+
+    //for testing
+    private boolean toweractivated = false;
 
     /**
      * Cycle of the world
@@ -315,6 +319,11 @@ public class LoopManiaWorld {
                 while (!battleEnemies.isEmpty() || character.getHealth() < 0) {
                     int choice = new Random().nextInt(battleEnemies.size());
                     Enemy attacked = battleEnemies.get(choice);
+                    // account for tower
+                    if(inRangeOfTower(character.getX(), character.getY())){
+                            attacked.takeDamage(5);
+                            toweractivated = true;
+                    }
                     character.dealDamage(attacked);
                     if (attacked.getHealth() <= 0) {
                         defeatedEnemies.add(attacked);
@@ -322,6 +331,7 @@ public class LoopManiaWorld {
                     }
                 }
                 // fight...
+
             }
         }
         for (Enemy e: defeatedEnemies){
@@ -563,7 +573,7 @@ public class LoopManiaWorld {
         character.unequip(item);
         item.destroy();
     }
-    
+
     /**
      * increase character health if character has a health potion
      */
@@ -703,7 +713,7 @@ public class LoopManiaWorld {
      * @return false if couldn't be bought, else true
      */
     public boolean sellItem(ItemType item) {
-        
+
         for(Item inventoryItem : this.unequippedInventoryItems) {
             if (inventoryItem.getItemType().equals(item)) {
                 removeUnequippedInventoryItem(inventoryItem);
@@ -1043,6 +1053,14 @@ public class LoopManiaWorld {
         return newBuilding;
     }
 
+    //added for testing
+    public Building spawnBuilding(CardType cardType, int buildingNodeX, int buildingNodeY){
+        Building newBuilding = BuildingLoader.loadBuilding(cardType, buildingNodeX, buildingNodeY);
+        buildingEntities.add(newBuilding);
+
+        return newBuilding;
+   }
+
     public void applyBuildingBuffsToCharacter(){
         List<Building> buffingBuildings = getBuildingsWithinRadiusOfEntity(character);
         for(Building b : buffingBuildings){
@@ -1155,7 +1173,36 @@ public class LoopManiaWorld {
         return false;
     }
 
-    public List<Item> getUnequippedInventoryItems(){
-        return this.unequippedInventoryItems;
-    }
-}
+<<<<<<< src/unsw/loopmania/LoopManiaWorld.java
+        //for testing trap
+        public Enemy getFirstEnemy(){
+            return enemies.get(0);
+        }
+        public Building getFirstB(){
+            return buildingEntities.get(0);
+        }
+        public boolean enemiesAlive(){
+            return !enemies.isEmpty();
+        }
+        public boolean trapsCleared(){
+            for (Building b : buildingEntities) {
+                if((b.getBuildingType() == BuildingType.TRAP_BUILDING)){
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        //for testing tower
+        public boolean towerUsed(){
+            return toweractivated;
+        }
+        
+        public List<Item> getUnequippedInventoryItems(){
+            return this.unequippedInventoryItems;
+        }
+ }
+
+    
+
+
