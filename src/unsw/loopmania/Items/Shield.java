@@ -3,6 +3,9 @@ package unsw.loopmania.Items;
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Types.ItemType;
 
+/**
+ * represents an equipped or unequipped shield in the backend world
+ */
 public class Shield extends DefensiveItems{
     private int defense;
     public Shield(SimpleIntegerProperty x, SimpleIntegerProperty y) {
