@@ -13,7 +13,7 @@ public class VampireStrategy implements CritStrategy {
     
     public VampireStrategy() {
         critEnemies = new Hashtable<Damageable, Integer>();
-        damage = 5;
+        damage = 6;
     }
 
     @Override
