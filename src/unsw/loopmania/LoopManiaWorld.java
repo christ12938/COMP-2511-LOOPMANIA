@@ -521,65 +521,88 @@ public class LoopManiaWorld {
         return this.shop.getShopSellPrice(item);
     }
 
-    public ItemType getSaleItem(int index) {
-        return this.shop.getSaleItem(index);
-    }
-
-    public boolean buyItem(int index) {
-        if (this.shop.isItemBuyable(index) == false) {
+    public boolean buySword() {
+        if (this.shop.isItemBuyable(ItemType.SWORD) == false) {
             return false;
         } else {
-            ItemType item = this.shop.getSaleItem(index);
-            this.minusGold(this.shop.getShopBuyPrice(item));
-            
-            switch(item){
-                case SWORD:
-                    addUnequippedSword();
-                    break;
-    
-                case STAKE:
-                    addUnequippedStake();
-                    break;
+            minusGold(this.shop.getShopBuyPrice(ItemType.SWORD));
+            addUnequippedSword();
+            return true;
+        }
+    }
 
-                case STAFF:
-                    addUnequippedStaff();
-                    break;
+    public boolean buyStake() {
+        if (this.shop.isItemBuyable(ItemType.STAKE) == false) {
+            return false;
+        } else {
+            minusGold(this.shop.getShopBuyPrice(ItemType.STAKE));
+            addUnequippedStake();
+            return true;
+        }
+    }
+
+    public boolean buyStaff() {
+        if (this.shop.isItemBuyable(ItemType.STAFF) == false) {
+            return false;
+        } else {
+            minusGold(this.shop.getShopBuyPrice(ItemType.STAFF));
+            addUnequippedStaff();
+            return true;
+        }
+    }
+
+    public boolean buyArmour() {
+        if (this.shop.isItemBuyable(ItemType.ARMOUR) == false) {
+            return false;
+        } else {
+            minusGold(this.shop.getShopBuyPrice(ItemType.ARMOUR));
+            addUnequippedArmour();
+            return true;
+        }
+    }
+
+    public boolean buyShield() {
+        if (this.shop.isItemBuyable(ItemType.SHIELD) == false) {
+            return false;
+        } else {
+            minusGold(this.shop.getShopBuyPrice(ItemType.SHIELD));
+            addUnequippedShield();
+            return true;
+        }
+    }
+
+    public boolean buyHelmet() {
+        if (this.shop.isItemBuyable(ItemType.HELMET) == false) {
+            return false;
+        } else {
+            minusGold(this.shop.getShopBuyPrice(ItemType.HELMET));
+            addUnequippedHelmet();
+            return true;
+        }
+    }
+
+    public boolean buyHealthPotion() {
+        if (this.shop.isItemBuyable(ItemType.HEALTH_POTION) == false) {
+            return false;
+        } else {
+            minusGold(this.shop.getShopBuyPrice(ItemType.HEALTH_POTION));
+            addUnequippedHealthPotion();
+            return true;
+        }
+    }
+
     
-                case SHIELD:
-                    addUnequippedShield();
-                    break;
-    
-                case ARMOUR:
-                    addUnequippedArmour();
-                    break;
-    
-                case HELMET:
-                    addUnequippedHelmet();
-                    break;
-    
-                case HEALTH_POTION:
-                    addUnequippedHealthPotion();
-                    break;
-    
-                case THE_ONE_RING:
-                    addUnequippedTheOneRing();
-                    break;
-    
-                default:
-                    return false;
+
+    public boolean sellItem(ItemType item) {
+        
+        for(Item inventoryItem : this.unequippedInventoryItems) {
+            if (inventoryItem.getItemType().equals(item)) {
+                removeUnequippedInventoryItem(inventoryItem);
+                addGold(this.shop.getShopSellPrice(item));
+                return true;
             }
-            return true;
         }
-    }
-
-    public boolean sellItem(Item item) {
-        if (!(this.unequippedInventoryItems.contains(item))) {
-            return false;
-        } else {
-            removeUnequippedInventoryItem(item);
-            addGold(this.shop.getShopSellPrice(item.getItemType()));
-            return true;
-        }
+        return false;
     }
 
     /**

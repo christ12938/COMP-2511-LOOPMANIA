@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -18,15 +19,8 @@ import unsw.loopmania.PathPosition;
 
 import static unsw.loopmania.Types.ItemType.*;
 import unsw.loopmania.Character;
-import unsw.loopmania.Items.Armour;
-import unsw.loopmania.Items.Consumables;
-import unsw.loopmania.Items.Helmet;
-import unsw.loopmania.Items.Shield;
-import unsw.loopmania.Items.Staff;
-import unsw.loopmania.Items.Stake;
 import unsw.loopmania.Items.Sword;
-import unsw.loopmania.Items.TheOneRing;
-import unsw.loopmania.Types.ItemType;
+
 
 
 public class ShopTest {
@@ -45,16 +39,13 @@ public class ShopTest {
         
         World.loadShop();
 
-        // when shop is initialised, 3 items are automatiicaly generated to 
-        // for user to buy, however for this test case 
-
-        assertEquals(20, World.getBuyPrice(SWORD));
-        assertEquals(20, World.getBuyPrice(STAKE));
-        assertEquals(20, World.getBuyPrice(STAFF));
-        assertEquals(20, World.getBuyPrice(ARMOUR));
-        assertEquals(20, World.getBuyPrice(HELMET));
-        assertEquals(20, World.getBuyPrice(SHIELD));
-        assertEquals(20, World.getBuyPrice(HEALTH_POTION));
+        assertEquals(10, World.getBuyPrice(SWORD));
+        assertEquals(10, World.getBuyPrice(STAKE));
+        assertEquals(10, World.getBuyPrice(STAFF));
+        assertEquals(10, World.getBuyPrice(ARMOUR));
+        assertEquals(10, World.getBuyPrice(HELMET));
+        assertEquals(10, World.getBuyPrice(SHIELD));
+        assertEquals(10, World.getBuyPrice(HEALTH_POTION));
 
     }
 
@@ -82,8 +73,227 @@ public class ShopTest {
         assertEquals(5, World.getSellPrice(HEALTH_POTION));
         assertEquals(20, World.getSellPrice(THE_ONE_RING));
 
-        
+    }
 
+    @Test
+    public void TestShopBuyingAndSellingSword(){
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
+        World.addGold(100);
+        int amount = 100;
+
+        World.loadShop();
+       
+        World.buySword();
+        amount -= World.getBuyPrice(SWORD);
+        assertEquals(World.getGold(), amount); 
+        assertSame(World.getUnequippedItemByCoordinates(0, 0).getItemType(), SWORD);
+        
+        World.sellItem(SWORD);
+        amount += World.getSellPrice(SWORD);
+        assertEquals(World.getGold(), amount);
+        assertNull(World.getUnequippedItemByCoordinates(0, 0));
+    }
+
+    @Test
+    public void TestShopBuyingAndSellingStake(){
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
+        World.addGold(100);
+        int amount = 100;
+
+        World.loadShop();
+       
+        World.buyStake();
+        amount -= World.getBuyPrice(STAKE);
+        assertEquals(World.getGold(), amount); 
+        assertSame(World.getUnequippedItemByCoordinates(0, 0).getItemType(), STAKE);
+        
+        World.sellItem(STAKE);
+        amount += World.getSellPrice(STAKE);
+        assertEquals(World.getGold(), amount);
+        assertNull(World.getUnequippedItemByCoordinates(0, 0));
+    }
+
+    @Test
+    public void TestShopBuyingAndSellingStaff(){
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
+        World.addGold(100);
+        int amount = 100;
+
+        World.loadShop();
+       
+        World.buyStaff();
+        amount -= World.getBuyPrice(STAFF);
+        assertEquals(World.getGold(), amount); 
+        assertSame(World.getUnequippedItemByCoordinates(0, 0).getItemType(), STAFF);
+        
+        World.sellItem(STAFF);
+        amount += World.getSellPrice(STAFF);
+        assertEquals(World.getGold(), amount);
+        assertNull(World.getUnequippedItemByCoordinates(0, 0));
+    }
+
+    @Test
+    public void TestShopBuyingAndSellingArmour(){
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
+        World.addGold(100);
+        int amount = 100;
+
+        World.loadShop();
+       
+        World.buyArmour();
+        amount -= World.getBuyPrice(ARMOUR);
+        assertEquals(World.getGold(), amount); 
+        assertSame(World.getUnequippedItemByCoordinates(0, 0).getItemType(), ARMOUR);
+        
+        World.sellItem(ARMOUR);
+        amount += World.getSellPrice(ARMOUR);
+        assertEquals(World.getGold(), amount);
+        assertNull(World.getUnequippedItemByCoordinates(0, 0));
+    }
+
+    @Test
+    public void TestShopBuyingAndSellingHelmet(){
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
+        World.addGold(100);
+        int amount = 100;
+
+        World.loadShop();
+       
+        World.buyHelmet();
+        amount -= World.getBuyPrice(HELMET);
+        assertEquals(World.getGold(), amount); 
+        assertSame(World.getUnequippedItemByCoordinates(0, 0).getItemType(), HELMET);
+        
+        World.sellItem(HELMET);
+        amount += World.getSellPrice(HELMET);
+        assertEquals(World.getGold(), amount);
+        assertNull(World.getUnequippedItemByCoordinates(0, 0));
+    }
+
+    @Test
+    public void TestShopBuyingAndSellingShield(){
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
+        World.addGold(100);
+        int amount = 100;
+
+        World.loadShop();
+       
+        World.buyShield();
+        amount -= World.getBuyPrice(SHIELD);
+        assertEquals(World.getGold(), amount); 
+        assertSame(World.getUnequippedItemByCoordinates(0, 0).getItemType(), SHIELD);
+        
+        World.sellItem(SHIELD);
+        amount += World.getSellPrice(SHIELD);
+        assertEquals(World.getGold(), amount);
+        assertNull(World.getUnequippedItemByCoordinates(0, 0));
+    }
+
+    @Test
+    public void TestShopBuyingAndSellingHealthPotion(){
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
+        World.addGold(100);
+        int amount = 100;
+
+        World.loadShop();
+       
+        World.buyHealthPotion();
+        amount -= World.getBuyPrice(HEALTH_POTION);
+        assertEquals(World.getGold(), amount); 
+        
+        
+        World.sellItem(HEALTH_POTION);
+        amount += World.getSellPrice(HEALTH_POTION);
+        assertEquals(World.getGold(), amount);
+        assertNull(World.getUnequippedItemByCoordinates(0, 0));
+    }
+
+    @Test
+    public void TestShopSellingRing(){
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
+        World.addGold(100);
+        int amount = 100;
+
+        World.loadShop();
+       
+        World.addUnequippedTheOneRing();
+        
+        World.sellItem(THE_ONE_RING);
+        amount += World.getSellPrice(THE_ONE_RING);
+        assertEquals(World.getGold(), amount);
+        assertNull(World.getUnequippedItemByCoordinates(0, 0));
     }
 
 
@@ -104,40 +314,64 @@ public class ShopTest {
 
         World.loadShop();
 
-        ItemType item1 = World.getSaleItem(1);
-        ItemType item2 = World.getSaleItem(2);
-        ItemType item3 = World.getSaleItem(3);
-
-        
-        World.buyItem(1);
-        amount -= World.getBuyPrice(item1);
+        World.buySword();
+        amount -= World.getBuyPrice(SWORD);
         assertEquals(World.getGold(), amount); 
-        // note for these test this if statment is needed as getUnequippedItemByCoordinates
-        // doesn't return equipables
-        if (item1 != HEALTH_POTION) {
-            assertSame(World.getUnequippedItemByCoordinates(0, 0).getItemType(), item1);
-        }
-
-        World.buyItem(2);
-        amount -= World.getBuyPrice(item2);
-        assertEquals(World.getGold(), amount);
-        if (item2 != HEALTH_POTION) {
-            assertSame(World.getUnequippedItemByCoordinates(1, 0).getItemType(), item2);
-        }
+        assertSame(World.getUnequippedItemByCoordinates(0, 0).getItemType(), SWORD);
         
-        World.buyItem(3);
-        amount -= World.getBuyPrice(item3);
+
+        World.buyShield();
+        amount -= World.getBuyPrice(SHIELD);
         assertEquals(World.getGold(), amount);
-        if (item3 != HEALTH_POTION) {
-            assertSame(World.getUnequippedItemByCoordinates(2, 0).getItemType(), item3);
-        }
+        assertSame(World.getUnequippedItemByCoordinates(1, 0).getItemType(), SHIELD);
+        
+        
+        World.buyHelmet();
+        amount -= World.getBuyPrice(HELMET);
+        assertEquals(World.getGold(), amount);
+        assertSame(World.getUnequippedItemByCoordinates(2, 0).getItemType(), HELMET);
 
        
 
-        assertEquals(amount, 100 - World.getBuyPrice(item1) - 
-                                World.getBuyPrice(item1) - 
-                                World.getBuyPrice(item1));
+        assertEquals(amount, 100 - World.getBuyPrice(SWORD) - 
+                                World.getBuyPrice(SHIELD) - 
+                                World.getBuyPrice(HELMET));
     }
+
+    @Test
+    public void TestShopBuyingMultipleSameItem(){
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld d = new LoopManiaWorld(1, 2, orderedPath);
+        LoopManiaWorld World = d;
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+        World.addGold(1000);
+
+        World.loadShop();
+        
+        assertTrue(World.buyArmour());
+        assertTrue(World.buyArmour());
+        assertTrue(World.buyShield());
+        assertTrue(World.buyShield());
+        assertTrue(World.buyHelmet());
+        assertTrue(World.buyHelmet());
+        assertTrue(World.buyStaff());
+        assertTrue(World.buyStaff());
+        assertTrue(World.buySword());
+        assertTrue(World.buySword());
+        assertTrue(World.buyStake());
+        assertTrue(World.buyStake());
+        assertTrue(World.buyHealthPotion());
+        assertTrue(World.buyHealthPotion());
+        
+        assertEquals(World.getGold(), 860);
+    }
+
+    
 
     @Test
     public void TestShopSellingItems(){
@@ -154,50 +388,53 @@ public class ShopTest {
 
         World.loadShop();
 
-        Helmet helmet = World.addUnequippedHelmet();
-        Armour armour = World.addUnequippedArmour();
-        Consumables pot = World.addUnequippedHealthPotion();
-        Shield shield = World.addUnequippedShield();
-        Staff staff = World.addUnequippedStaff();
-        Stake stake = World.addUnequippedStake();
-        Sword sword = World.addUnequippedSword();
-        TheOneRing ring = World.addUnequippedTheOneRing();
+        World.addUnequippedHelmet();
+        World.addUnequippedArmour();
+        World.addUnequippedHealthPotion();
+        World.addUnequippedShield();
+        World.addUnequippedStaff();
+        World.addUnequippedStake();
+        World.addUnequippedSword();
+        World.addUnequippedTheOneRing();
         
         int amount = 0;
 
-        assertTrue(World.sellItem(helmet));
+        assertTrue(World.sellItem(HELMET));
         amount += World.getSellPrice(HELMET);
         assertEquals(World.getGold(), amount);
 
-        assertTrue(World.sellItem(armour));
+        assertTrue(World.sellItem(ARMOUR));
         amount += World.getSellPrice(ARMOUR);
         assertEquals(World.getGold(), amount);
 
-        assertTrue(World.sellItem(shield));
+
+        assertTrue(World.sellItem(SHIELD));
         amount += World.getSellPrice(SHIELD);
         assertEquals(World.getGold(), amount);
 
-        assertTrue(World.sellItem(sword));
+
+        assertTrue(World.sellItem(SWORD));
         amount += World.getSellPrice(SWORD);
         assertEquals(World.getGold(), amount);
 
-        assertTrue(World.sellItem(stake));
+        assertTrue(World.sellItem(STAKE));
         amount += World.getSellPrice(STAKE);
         assertEquals(World.getGold(), amount);
 
-        assertTrue(World.sellItem(staff));
+
+        assertTrue(World.sellItem(STAFF));
         amount += World.getSellPrice(STAFF);
         assertEquals(World.getGold(), amount);
 
-        assertTrue(World.sellItem(ring));
+
+        assertTrue(World.sellItem(THE_ONE_RING));
         amount += World.getSellPrice(THE_ONE_RING);
         assertEquals(World.getGold(), amount);
 
-        assertTrue(World.sellItem(pot));
+
+        assertTrue(World.sellItem(HEALTH_POTION));
         amount += World.getSellPrice(HEALTH_POTION);
         assertEquals(World.getGold(), amount);
-        
-
         
     }
 
@@ -215,10 +452,10 @@ public class ShopTest {
 
 
         World.loadShop();
-        Sword sword = World.addUnequippedSword();
+        World.addUnequippedSword();
         World.removeUnequippedInventoryItemByCoordinates(0, 0);
 
-        assertFalse(World.sellItem(sword));
+        assertFalse(World.sellItem(SWORD));
         assertEquals(0, World.getGold());        
     }
 
@@ -236,9 +473,9 @@ public class ShopTest {
 
 
         World.loadShop();
-        assertFalse(World.buyItem(1));
-        assertFalse(World.buyItem(2));
-        assertFalse(World.buyItem(3));    
+        assertFalse(World.buySword());
+        assertFalse(World.buyStaff());
+        assertFalse(World.buyShield());    
 
         assertEquals(0, World.getGold());
     }
@@ -261,9 +498,9 @@ public class ShopTest {
             World.addUnequippedHelmet();
         }
 
-        assertFalse(World.buyItem(1));
-        assertFalse(World.buyItem(2));
-        assertFalse(World.buyItem(3));   
+        assertFalse(World.buyHealthPotion());
+        assertFalse(World.buyHelmet());
+        assertFalse(World.buyStake());   
     }
 
     @Test
@@ -280,33 +517,27 @@ public class ShopTest {
 
 
         World.loadShop();
-        Sword sword = World.addUnequippedSword();
-        Sword sword2 = World.addUnequippedSword();
-        Shield shield = World.addUnequippedShield();
-        Helmet helmet = World.addUnequippedHelmet();
-        TheOneRing ring = World.addUnequippedTheOneRing();
+        World.addUnequippedSword();
+        World.addUnequippedSword();
+        World.addUnequippedShield();
+        World.addUnequippedHelmet();
+        World.addUnequippedTheOneRing();
 
-        assertTrue(World.sellItem(sword));
-        assertTrue(World.sellItem(sword2));
-        assertTrue(World.sellItem(shield));
-        assertTrue(World.sellItem(helmet));
-        assertTrue(World.sellItem(ring));
+        assertTrue(World.sellItem(SWORD));
+        assertTrue(World.sellItem(SWORD));
+        assertTrue(World.sellItem(SHIELD));
+        assertTrue(World.sellItem(HELMET));
+        assertTrue(World.sellItem(THE_ONE_RING));
         assertEquals(40, World.getGold());  
         
-        ItemType item1 = World.getSaleItem(1);
-        ItemType item2 = World.getSaleItem(2);
-        
 
-        assertTrue(World.buyItem(1));
-        assertTrue(World.buyItem(2));
+        assertTrue(World.buySword());
+        assertTrue(World.buyShield());
         
-        assertEquals(World.getGold(), 0);
-        if (item1 != HEALTH_POTION) {
-            assertSame(item1, World.getUnequippedItemByCoordinates(0, 0).getItemType());
-        }
-        
-        if (item2 != HEALTH_POTION) {
-            assertSame(item2, World.getUnequippedItemByCoordinates(1, 0).getItemType());
-        }
+        assertEquals(World.getGold(), 20);
+        assertSame(SWORD, World.getUnequippedItemByCoordinates(0, 0).getItemType());
+
+        assertSame(SHIELD, World.getUnequippedItemByCoordinates(1, 0).getItemType());
+
     }
 }
