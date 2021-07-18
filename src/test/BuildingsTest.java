@@ -39,20 +39,18 @@ public class BuildingsTest{
         LoopManiaWorld d = new LoopManiaWorld(1, 3, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
-        d.setCharacter(testCharacter);
-        d.spawnBuilding(CardType.ZOMBIEPIT_CARD, 1, 99);
         HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
         d.setHerosCastle(hc);
         d.setCharacter(testCharacter);
+        d.spawnBuilding(CardType.ZOMBIEPIT_CARD, 19, 2);
+        d.spawnBuilding(CardType.TRAP_CARD,20,1);
         d.possiblySpawnEnemies();
-        //d.spawnBuilding(CardType.TOWER_CARD,2,2);
-        //d.runTickMoves();
-        //d.applyBuildingDebuffsToEnemies();
-
-        //assumes base attack is 5
-        System.err.print(d.getFirstEnemy().getHealth());
-        assertTrue(d.getCharacterAttack() == 10);
-
+        d.runTickMoves();
+        //d.applyBuildingBuffsToCharacter();
+        d.applyBuildingDebuffsToEnemies();
+        //assumes player hp starts at 100 and vilage adds 2
+        assertTrue(!d.enemiesAlive());
+        assertTrue(d.trapsCleared());
     }
 
     @Test
@@ -160,6 +158,7 @@ public class BuildingsTest{
         d.spawnBuilding(CardType.TRAP_CARD,20,1);
         d.possiblySpawnEnemies();
         d.runTickMoves();
+        assertTrue(!d.enemiesAlive());
         //d.applyBuildingBuffsToCharacter();
         d.applyBuildingDebuffsToEnemies();
         //assumes player hp starts at 100 and vilage adds 2
