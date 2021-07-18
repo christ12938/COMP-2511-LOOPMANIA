@@ -27,7 +27,7 @@ public class Character extends MovingEntity implements Damageable{
 
     /**
      * List of buildings that could help in battle
-     * Set type to Building just in case in milestone 3 
+     * Set type to Building just in case in milestone 3
      * different types of buildings can help in battle
      */
     private List<Building> battleBuildings;
@@ -72,7 +72,7 @@ public class Character extends MovingEntity implements Damageable{
     public double getMaxHealth(){
         return this.maxHealth;
     }
-    
+
     public int getGold() {
         return this.gold;
     }
@@ -108,7 +108,7 @@ public class Character extends MovingEntity implements Damageable{
     public PathPosition getPathPosition(){
         return this.position;
     }
-    
+
     public List<Equipable> getEquippedItems(){
         return this.equippedItems;
     }
@@ -240,7 +240,7 @@ public class Character extends MovingEntity implements Damageable{
     public void dealDamage(Damageable damageable) {
         damageable.takeDamage(attack);
     }
-    
+
     /**
      * add health to current health of character
      * @param health amount of health to be added
@@ -308,7 +308,7 @@ public class Character extends MovingEntity implements Damageable{
 
     /**
      * unequip item from character
-     * @param item item to be unequipped    
+     * @param item item to be unequipped
      */
     public void unequip(Equipable item){
         if(item instanceof OffensiveItems){
@@ -318,5 +318,5 @@ public class Character extends MovingEntity implements Damageable{
         }
         equippedItems.remove(item);
     }
-    
+
 }

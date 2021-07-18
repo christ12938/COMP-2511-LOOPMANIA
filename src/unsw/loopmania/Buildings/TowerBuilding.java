@@ -2,6 +2,7 @@ package unsw.loopmania.Buildings;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Character;
+import unsw.loopmania.Damageable;
 import unsw.loopmania.Types.BuildingType;
 
 public class TowerBuilding extends Building{
@@ -25,5 +26,4 @@ public class TowerBuilding extends Building{
     public void removeBuffFromCharacter(Character character){
         character.removeBattleBuildings(this);
     }
-    
 }
