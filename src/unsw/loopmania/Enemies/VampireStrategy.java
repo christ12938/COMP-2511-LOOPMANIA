@@ -13,12 +13,12 @@ public class VampireStrategy implements CritStrategy {
     
     public VampireStrategy() {
         critEnemies = new Hashtable<Damageable, Integer>();
-        damage = 5;
+        damage = 6;
     }
 
     @Override
     public void applyCrit(Damageable damageable) {
-        critEnemies.put(damageable, Integer.valueOf(new Random().nextInt(5)));
+        critEnemies.put(damageable, Integer.valueOf(2 + new Random().nextInt(3)));
     }
 
     @Override

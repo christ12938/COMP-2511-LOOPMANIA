@@ -28,10 +28,11 @@ Assume Progress per time tick is as follow:
     6. Remove Building Debuffs from enemy (Not used right now)
 Assume enemies can spawn on any structures, except Hero's Castle.
 Assume if the no tiles are available for the spawner to spawn enemies, then that tile is not placable for that type of spawner
-
 When passing through a village player gains 2 HP
 The radius for towers and campfires will be 5
-Enemies will take 5 dmg from traps
+Towers don't stack
+Towers do 5 damage
+Enemies will take 30 dmg from traps
 When the shop is opened, player is forced to exit the shop manually in order for the game to continue
 All shop items are $10.
 All basic items sell for $5
@@ -41,3 +42,8 @@ Assume buildings will not spawn enemies on top of character
 Zombies are spawned when cycle%1 == 0 (except for cycle 0)
 Vampires are spawned when cycle%5 == 0 (except for cycle 0)
 Items in equipped inventory cannot be sold at the shop
+A slug will have an attack of 5, battle radius of 2 and support radius of 2
+A Zombie will have an attack of 10, battle radius of 3 and support radius of 3
+A vampire will have an attack of 15, battle radius of 4 and support radius of 5
+A vampire's crit will deal damage for a random number between 2 and 4 turns
+

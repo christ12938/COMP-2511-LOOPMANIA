@@ -32,7 +32,7 @@ public class AlliedSoldierTest {
 
         AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), 0);
         //TODO: I changed the parameters so the second value is the position of heros castle
-        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
         double health = slug.getHealth();
 
         soldier.dealDamage(slug);

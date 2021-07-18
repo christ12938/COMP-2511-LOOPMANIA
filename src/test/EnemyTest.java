@@ -34,7 +34,7 @@ public class EnemyTest {
         orderedPath.add(pair2);
         
         Character character = new Character(new PathPosition(0, orderedPath));
-        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
         assertTrue(slug.inBattleRadius(character));
     }
 
@@ -50,7 +50,7 @@ public class EnemyTest {
         orderedPath.add(pair3);
         
         Character character = new Character(new PathPosition(0, orderedPath));
-        Slug slug = new Slug(new PathPosition(2, orderedPath));
+        Slug slug = new Slug(new PathPosition(2, orderedPath), pair1);
         assertFalse(slug.inBattleRadius(character));
     }
 
@@ -64,7 +64,7 @@ public class EnemyTest {
         orderedPath.add(pair2);
         
         Character character = new Character(new PathPosition(0, orderedPath));
-        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
         assertTrue(slug.inSupportRadius(character));
     }
 
@@ -80,7 +80,7 @@ public class EnemyTest {
         orderedPath.add(pair3);
         
         Character character = new Character(new PathPosition(0, orderedPath));
-        Slug slug = new Slug(new PathPosition(2, orderedPath));
+        Slug slug = new Slug(new PathPosition(2, orderedPath), pair1);
         assertFalse(slug.inSupportRadius(character));
     }
 
@@ -91,7 +91,7 @@ public class EnemyTest {
         orderedPath.add(pair1);
         Character character = new Character(new PathPosition(0, orderedPath));
         character.setHealth(99999999);
-        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
         double health = character.getHealth();
 
         for (int i = 0; i < 100; i++) {
@@ -106,7 +106,7 @@ public class EnemyTest {
         Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
-        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
         double health = slug.getHealth();
 
         slug.takeDamage(5);
@@ -119,9 +119,9 @@ public class EnemyTest {
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
 
-        Slug slug = new Slug(new PathPosition(0, orderedPath));
-        Vampire vampire = new Vampire(new PathPosition(0, orderedPath));
-        Zombie zombie = new Zombie(new PathPosition(0, orderedPath));
+        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
+        Vampire vampire = new Vampire(new PathPosition(0, orderedPath), pair1);
+        Zombie zombie = new Zombie(new PathPosition(0, orderedPath), pair1);
 
         assertTrue(slug.getEnemyType().equals(EnemyType.SLUG));
         assertTrue(vampire.getEnemyType().equals(EnemyType.VAMPIRE));
@@ -139,7 +139,7 @@ public class EnemyTest {
         orderedPath.add(pair2);
         orderedPath.add(pair3);
 
-        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
         for (int i = 0; i < 100; i++) {
             slug.move();
         }

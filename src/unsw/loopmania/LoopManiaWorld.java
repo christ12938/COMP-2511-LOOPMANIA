@@ -56,6 +56,9 @@ public class LoopManiaWorld {
     private HerosCastle herosCastle;
     private Shop shop;
 
+    //for testing
+    private boolean toweractivated = false;
+
     /**
      * Cycle of the world
      */
@@ -286,6 +289,11 @@ public class LoopManiaWorld {
                 while (!battleEnemies.isEmpty() || character.getHealth() < 0) {
                     int choice = new Random().nextInt(battleEnemies.size());
                     Enemy attacked = battleEnemies.get(choice);
+                    // account for tower
+                    if(inRangeOfTower(character.getX(), character.getY())){
+                            attacked.takeDamage(5);
+                            toweractivated = true;
+                    }
                     character.dealDamage(attacked);
                     if (attacked.getHealth() <= 0) {
                         defeatedEnemies.add(attacked);
@@ -293,6 +301,7 @@ public class LoopManiaWorld {
                     }
                 }
                 // fight...
+
             }
         }
         for (Enemy e: defeatedEnemies){
@@ -1148,6 +1157,11 @@ public class LoopManiaWorld {
                 }
             }
             return true;
+        }
+
+        //for testing tower
+        public boolean towerUsed(){
+            return toweractivated;
         }
  }
 

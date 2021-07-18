@@ -10,6 +10,7 @@ import unsw.loopmania.Buildings.Building;
 import unsw.loopmania.Buildings.Spawner;
 import unsw.loopmania.Buildings.VillageBuilding;
 import unsw.loopmania.Cards.Card;
+import unsw.loopmania.Enemies.Enemy;
 import unsw.loopmania.Types.BuildingType;
 import unsw.loopmania.Types.CardType;
 
@@ -30,47 +31,33 @@ import unsw.loopmania.HerosCastle;
  * A clickable "Run Test" link should appear if you have installed the Java Extension Pack properly.
  */
 public class BuildingsTest{
-    //only works half the time
     @Test
     public void TowerRadiusTrue() {
         Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
         Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
 
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
-        List<Pair<Integer, Integer>> spawnArea = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(test1);
         orderedPath.add(test2);
-        spawnArea.add(test2);
 
 
         LoopManiaWorld d = new LoopManiaWorld(4, 5, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
-        testCharacter.setAttack(0);
         HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
         d.setHerosCastle(hc);
         d.setCharacter(testCharacter);
 
-        Spawner spawnB = (Spawner) d.spawnBuilding(CardType.VAMPIRECASTLE_CARD, 2, 1);
-        spawnB.addSpawningTile(spawnArea);
         d.spawnBuilding(CardType.TOWER_CARD,2,1);
 
-
-        System.err.println(d.enemiesAlive());
-        System.err.println(d.possiblySpawnEnemies());
-        d.runTickMoves();
-        d.nextCycle();
-        d.nextCycle();
-        d.nextCycle();
-        d.nextCycle();
-        d.nextCycle();
-
-        System.err.println(d.enemiesAlive());
-        System.err.println(d.possiblySpawnEnemies());
-        d.runTickMoves();
-        d.applyBuildingDebuffsToEnemies();
-        System.err.println(d.getFirstEnemy().getHealth());
-        assertTrue(d.getFirstEnemy().getHealth()== 5);
+        List<Enemy> enemies;
+        do{
+            d.nextCycle();
+            d.runTickMoves();
+            enemies = d.possiblySpawnEnemies();
+        }while(enemies.isEmpty());
+        d.runBattles();
+        assertTrue(d.towerUsed());
     }
 
     @Test
@@ -79,60 +66,28 @@ public class BuildingsTest{
         Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
 
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
-        List<Pair<Integer, Integer>> spawnArea = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(test1);
         orderedPath.add(test2);
-        spawnArea.add(test2);
+
 
 
         LoopManiaWorld d = new LoopManiaWorld(4, 5, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
-        testCharacter.setAttack(0);
         HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
         d.setHerosCastle(hc);
         d.setCharacter(testCharacter);
+        d.spawnBuilding(CardType.TOWER_CARD,100,1);
 
-        Spawner spawnB = (Spawner) d.spawnBuilding(CardType.VAMPIRECASTLE_CARD, 2, 1);
-        spawnB.addSpawningTile(spawnArea);
-        //d.spawnBuilding(CardType.TOWER_CARD,10,1);
-        System.err.println(testCharacter.getAttack());
-        System.err.println(d.enemiesAlive());
-        System.err.println(d.possiblySpawnEnemies());
-        d.runTickMoves();
-        d.nextCycle();
-        d.nextCycle();
-        d.nextCycle();
-        d.nextCycle();
-        d.nextCycle();
+        List<Enemy> enemies;
+        do{
+            d.nextCycle();
+            d.runTickMoves();
+            enemies = d.possiblySpawnEnemies();
+        }while(enemies.isEmpty());
 
-        System.err.println(d.enemiesAlive());
-        System.err.println(d.possiblySpawnEnemies());
-        d.runTickMoves();
         d.applyBuildingDebuffsToEnemies();
-        System.err.println(d.getFirstEnemy().getHealth());
-        assertTrue(d.getFirstEnemy().getHealth()== 10);
-    }
-
-    @Test
-    public void TestBarracks(){
-        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
-        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
-        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
-        orderedPath.add(test1);
-        orderedPath.add(test2);
-
-        LoopManiaWorld d = new LoopManiaWorld(1, 3, orderedPath);
-
-        Character testCharacter = new Character(new PathPosition(1,orderedPath));
-        HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
-        d.setHerosCastle(hc);
-        d.setCharacter(testCharacter);
-        d.spawnBuilding(CardType.BARRACKS_CARD,1,1);
-        d.runTickMoves();
-        d.applyBuildingBuffsToCharacter();
-        assertTrue(!testCharacter.getAlliedSoldiers().isEmpty());
-
+        assertTrue(!d.towerUsed());
     }
 
     @Test
