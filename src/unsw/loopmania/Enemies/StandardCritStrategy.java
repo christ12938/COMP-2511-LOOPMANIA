@@ -5,7 +5,7 @@ import unsw.loopmania.Damageable;
 public class StandardCritStrategy implements CritStrategy {
     private double damage;
     public  StandardCritStrategy() {
-        this.damage = 5;
+        this.damage = 7;
     }
 
     @Override
