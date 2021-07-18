@@ -49,6 +49,13 @@ public abstract class LoopManiaWorldLoader {
             loadEntity(world, jsonEntities.getJSONObject(i), orderedPath);
         }
 
+        // load rare items into the backend
+        JSONArray jsonRareItems = json.getJSONArray("rare_items");
+
+        for (int i = 0; i < jsonRareItems.length(); i++) {
+            world.addRareItemsAvailable(jsonRareItems.getString(i));
+        }
+
         return world;
     }
 

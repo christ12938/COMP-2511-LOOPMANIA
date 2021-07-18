@@ -40,6 +40,7 @@ import unsw.loopmania.Cards.*;
 import unsw.loopmania.Enemies.Enemy;
 import unsw.loopmania.Items.Equipable;
 import unsw.loopmania.Items.Item;
+import unsw.loopmania.Items.RareItem;
 import unsw.loopmania.Loaders.ItemLoader;
 import unsw.loopmania.Types.OverlappableEntityType;
 import unsw.loopmania.Buildings.*;
@@ -215,6 +216,7 @@ public class LoopManiaWorldController {
     private Image helmetImage;
     private Image goldImage;
     private Image healthPotionImage;
+    private Image theOneRingImage;
 
 
     /**
@@ -290,6 +292,7 @@ public class LoopManiaWorldController {
     public LoopManiaWorldController(LoopManiaWorld world, List<ImageView> initialEntities) {
         this.world = world;
         this.world.getCharacter().setObserver(this);
+        world.setController(this);
         entityImages = new ArrayList<>(initialEntities);
 
         /* Initialize all card images */
@@ -325,6 +328,7 @@ public class LoopManiaWorldController {
         helmetImage = new Image((new File("src/images/helmet.png")).toURI().toString());
         goldImage = new Image((new File("src/images/gold_pile.png")).toURI().toString());
         healthPotionImage = new Image((new File("src/images/brilliant_blue_new.png")).toURI().toString());
+        theOneRingImage = new Image((new File("src/images/the_one_ring.png")).toURI().toString());
 
         /* Initialize allied soldier image */
         alliedSoldierImage = new Image((new File("src/images/deep_elf_master_archer.png")).toURI().toString());
@@ -477,7 +481,7 @@ public class LoopManiaWorldController {
     /**
      * load a random item from the world, and pair it with an image in the GUI
      */
-    private void loadRandomItem(){
+    public void loadRandomItem(){
         // start by getting first available coordinates
         Item item = world.loadRandomUnenquippedInventoryItem();
         if(item != null) onLoadUnequippedItem(item);
@@ -579,11 +583,11 @@ public class LoopManiaWorldController {
                 view = new ImageView(helmetImage);
                 draggableType = DRAGGABLE_TYPE.HELMET_UNEQUIPPED;
                 break;
-            case GOLD:
-                view = new ImageView(goldImage);
-                break;
             case HEALTH_POTION:
                 view = new ImageView(healthPotionImage);
+                break;
+            case THE_ONE_RING:
+                view = new ImageView(theOneRingImage);
                 break;
             default:
                 return;
@@ -869,7 +873,7 @@ public class LoopManiaWorldController {
      * @param nodeX x coordinate from 0 to unequippedInventoryWidth-1
      * @param nodeY y coordinate from 0 to unequippedInventoryHeight-1
      */
-    private void removeUnequippedInventoryByCoordinates(int nodeX, int nodeY) {
+    public void removeUnequippedInventoryByCoordinates(int nodeX, int nodeY) {
         world.removeUnequippedInventoryItemByCoordinates(nodeX, nodeY);
     }
 
@@ -1585,5 +1589,9 @@ public class LoopManiaWorldController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void removeRareItem(RareItem rareItem){
+        world.removeUnequippedInventoryItem(rareItem);
     }
 }

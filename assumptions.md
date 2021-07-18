@@ -41,3 +41,4 @@ Assume buildings will not spawn enemies on top of character
 Zombies are spawned when cycle%1 == 0 (except for cycle 0)
 Vampires are spawned when cycle%5 == 0 (except for cycle 0)
 Items in equipped inventory cannot be sold at the shop
+Assume rare items has a 5% chance of spawning and normal items has a 95% chance of spawning, and the number of chances of obtaining any specific type of rare items would be uniformly random among those chances.x
