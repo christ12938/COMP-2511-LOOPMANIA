@@ -34,7 +34,9 @@ public class Character extends MovingEntity implements Damageable{
      */
     private List<AlliedSoldier> alliedSoldiers;
 
-    // List of equipped items
+    /**
+     * // List of equipped items
+     */
     private List<Equipable> equippedItems;
 
     public Character(PathPosition position) {
@@ -43,7 +45,6 @@ public class Character extends MovingEntity implements Damageable{
         this.currentHealth = this.maxHealth;
         this.gold = 0;
         this.experience = 0;
-        // just putting random health value for now for testing
         this.attack = 5;
         this.defense = 5;
         battleBuildings = new ArrayList<>();
@@ -71,7 +72,6 @@ public class Character extends MovingEntity implements Damageable{
     public int getGold() {
         return this.gold;
     }
-
 
     public int getExperience() {
         return this.experience;
@@ -129,6 +129,9 @@ public class Character extends MovingEntity implements Damageable{
         this.battleBuildings.remove(building);
     }
 
+    /**
+     * add allied soldier
+     */
     public void addAlliedSoldier(){
         AlliedSoldier alliedSoldier = observer.addAlliedSoldier();
         if(alliedSoldier != null){
@@ -136,12 +139,19 @@ public class Character extends MovingEntity implements Damageable{
         }
     }
 
+    /**
+     * remove allied soldier
+     */
     public void removeAlliedSoldier(AlliedSoldier alliedSoldier){
         alliedSoldiers.remove(alliedSoldier);
         alliedSoldier.destroy();
         observer.removeAlliedSoldier();
     }
 
+    /**
+     * add gold to character
+     * @param amount amount too be added
+     */
     public boolean addGold(int amount){
         if (this.gold == Integer.MAX_VALUE) {
             return false;
@@ -160,6 +170,10 @@ public class Character extends MovingEntity implements Damageable{
         }
     }
 
+    /**
+     * decrease gold to character
+     * @param amount amount too be decrease
+     */
     public boolean minusGold(int amount){
         if (this.gold == 0) {
             return false;
@@ -174,6 +188,10 @@ public class Character extends MovingEntity implements Damageable{
         }
     }
 
+    /**
+     * add experience to character
+     * @param amount amount too be added
+     */
     public boolean addExperience(int amount){
         if (this.experience == Integer.MAX_VALUE) {
             return false;
@@ -192,16 +210,28 @@ public class Character extends MovingEntity implements Damageable{
         }
     }
 
+    /**
+     * decrease hp based on damage taken by character
+     * @param damage amount of hp too be decreased
+     */
     @Override
     public void takeDamage(double damage) {
         currentHealth -= damage;
     }
 
+    /**
+     * deal damage too an damageable entity
+     * @param damageable entity to be damaged
+     */
     @Override
     public void dealDamage(Damageable damageable) {
         damageable.takeDamage(attack);
     }
     
+    /**
+     * add health to current health of character
+     * @param health amount of health to be added
+     */
     public void addHealth(double health){
         currentHealth = currentHealth + health;
         if(currentHealth >= maxHealth){
@@ -212,6 +242,10 @@ public class Character extends MovingEntity implements Damageable{
         }
     }
 
+    /**
+     * decrease health of current health of character
+     * @param health amount of health to be deacreased
+     */
     public void minusHealth(double health){
         currentHealth = currentHealth - health;
         if(currentHealth <= 0){
@@ -233,6 +267,10 @@ public class Character extends MovingEntity implements Damageable{
         this.attack = attack;
     }
 
+    /**
+     * equip the character with an equipable item
+     * @param item equipable item to be equipped
+     */
     public void equip(Equipable item){
         if(item instanceof OffensiveItems){
             addAttack(((OffensiveItems)item).getAttack());
@@ -242,6 +280,10 @@ public class Character extends MovingEntity implements Damageable{
         equippedItems.add(item);
     }
 
+    /**
+     * unequip item from character
+     * @param item item to be unequipped    
+     */
     public void unequip(Equipable item){
         if(item instanceof OffensiveItems){
             addAttack(((OffensiveItems)item).getAttack()*(-1));
