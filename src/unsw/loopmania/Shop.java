@@ -29,6 +29,11 @@ public class Shop {
         
     }
 
+    /**
+    * returns the buy buy price of an item
+    * @param item the item whose buy price is returned
+    * @return the buy price of the item
+    */
     public int getShopBuyPrice(ItemType item) {
         switch(item){
             case SWORD:
@@ -57,6 +62,11 @@ public class Shop {
         }
     }
 
+    /**
+    * returns the sell price of an item
+    * @param item the item whose sell price is returned
+    * @return the sell price of the item
+    */
     public int getShopSellPrice(ItemType item) {
         switch(item){
             case SWORD:
@@ -87,6 +97,11 @@ public class Shop {
         }
     }
 
+    /**
+    * determines if an item is able to be bought from the shop
+    * @param item the item being bought
+    * @return returns true if item can be otherwise return false
+    */
     public boolean isItemBuyable(ItemType item) {
         if (character.getGold() < getShopBuyPrice(item) || 
             this.unequippedItems.size() >= 16) {
