@@ -1,13 +1,13 @@
-Battle will be turn-based.  
-Character attacks before allied soldiers in order of top to bottom. 
-Enemies will attack a random opponent each turn via an even uniform distribution.  
-Enemies will spawn randomly via an even uniform distribution, amount of spawn enemies will be relative to path size.  
-Enemies can exist on the same tile as a building.  
-A tile can only hold one building.  
-A potion can be consumed by pressing the "H" key.  
-The player can hold a maximum of 8 cards before the cards are destroyed.  
-The player can hold a maximum of 16 items before the items are destroyed.  
-The player can have a maximum of 3 allied soldiers.  
+Battle will be turn-based.
+Character attacks before allied soldiers in order of top to bottom.
+Enemies will attack a random opponent each turn via an even uniform distribution.
+Enemies will spawn randomly via an even uniform distribution, amount of spawn enemies will be relative to path size.
+Enemies can exist on the same tile as a building.
+A tile can only hold one building.
+A potion can be consumed by pressing the "H" key.
+The player can hold a maximum of 8 cards before the cards are destroyed.
+The player can hold a maximum of 16 items before the items are destroyed.
+The player can have a maximum of 3 allied soldiers.
 The maximum amount of gold and experience is Integer.MAX_VALUE from java.math.
 When dropping an entity onto an already occupied pane, the overlapped entity will be destroyed.
 If player is given an amount of gold that makes them exceed the gold limit, their gold is set to gold limit
@@ -28,10 +28,10 @@ Assume Progress per time tick is as follow:
     6. Remove Building Debuffs from enemy (Not used right now)
 Assume enemies can spawn on any structures, except Hero's Castle.
 Assume if the no tiles are available for the spawner to spawn enemies, then that tile is not placable for that type of spawner
-                 
+
 When passing through a village player gains 2 HP
 The radius for towers and campfires will be 5
-Enemies will take 30 dmg from traps
+Enemies will take 5 dmg from traps
 When the shop is opened, player is forced to exit the shop manually in order for the game to continue
 All shop items are $10.
 All basic items sell for $5

@@ -19,7 +19,7 @@ public class TrapBuilding extends Building{
     }
 
     public void applyDeBuffToEnemy(Enemy enemy){
-        enemy.takeDamage(30);
+        enemy.takeDamage(5);
         if(enemy.getHealth() <= 0) enemy.destroy();
         destroy();
     }
