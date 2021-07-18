@@ -13,27 +13,42 @@ import unsw.loopmania.Types.ItemType;
 
 public class ItemLoader{
 
+    /* Single thread, so no need to worry */
+    public static Random random = new Random();
     /**
      * Creating and returning a random item object (Factory pattern)
      * @return A random item object
      */
-    public static Item loadRandomItem(Pair<Integer, Integer> firstAvailableSlot){
+    public static Item loadRandomItem(Pair<Integer, Integer> firstAvailableSlot, List<ItemType> rareItemsAvailable){
         /* Initialize a list of items */
-        List<Item> items = new ArrayList<>();
+        List<Item> normalItems = new ArrayList<>();
+        List<Item> rareItems = new ArrayList<>();
         SimpleIntegerProperty x = new SimpleIntegerProperty(firstAvailableSlot.getValue0());
         SimpleIntegerProperty y = new SimpleIntegerProperty(firstAvailableSlot.getValue1());
+        /* Add rare items */
+        for(ItemType type : rareItemsAvailable){
+            switch(type){
+                case THE_ONE_RING:
+                    rareItems.add(new TheOneRing(x, y));
+                    break;
+                default:
+                    continue;
+            }
+        }
         /* Now add all types of items into the list */
         /* TODO: Destroy all non used objects? */
-        items.add(new Sword(x, y));
-        items.add(new Stake(x, y));
-        items.add(new Staff(x, y));
-        items.add(new Shield(x, y));
-        items.add(new Armour(x, y));
-        items.add(new Helmet(x, y));
-        items.add(new Gold(x, y));  //??????
-        items.add(new HealthPotion(x, y));
+        normalItems.add(new Sword(x, y));
+        normalItems.add(new Stake(x, y));
+        normalItems.add(new Staff(x, y));
+        normalItems.add(new Shield(x, y));
+        normalItems.add(new Armour(x, y));
+        normalItems.add(new Helmet(x, y));
+        normalItems.add(new Gold(x, y));
+        normalItems.add(new HealthPotion(x, y));
         /* Now randomly choose a item */
-        return items.get(new Random().nextInt(items.size()));
+        /* If chance < 5% get random item */
+        if(rareItems.size() == 0 || random.nextDouble() >= 0.05) return normalItems.get(random.nextInt(normalItems.size()));
+        return rareItems.get(random.nextInt(rareItems.size()));
     }
 
     public static Item loadBoughtItem(ItemType type, int nodeX, int nodeY){

@@ -7,6 +7,8 @@ import unsw.loopmania.Buildings.Building;
 import unsw.loopmania.Items.DefensiveItems;
 import unsw.loopmania.Items.Equipable;
 import unsw.loopmania.Items.OffensiveItems;
+import unsw.loopmania.Items.RareItem;
+import unsw.loopmania.Types.ItemType;
 
 /**
  * represents the main character in the backend of the game world
@@ -39,6 +41,8 @@ public class Character extends MovingEntity implements Damageable{
      */
     private List<Equipable> equippedItems;
 
+    private List<RareItem> rareItems;
+
     public Character(PathPosition position) {
         super(position);
         this.position = position;
@@ -50,6 +54,7 @@ public class Character extends MovingEntity implements Damageable{
         battleBuildings = new ArrayList<>();
         alliedSoldiers = new ArrayList<>();
         equippedItems = new ArrayList<>();
+        rareItems = new ArrayList<>();
         this.observer = null;
     }
 
@@ -111,6 +116,14 @@ public class Character extends MovingEntity implements Damageable{
 
     public void addDefense(int defense) {
         this.defense += defense;
+    }
+
+    public void addRareItem(RareItem rareItem){
+        rareItems.add(rareItem);
+    }
+    
+    public void removeRareItem(RareItem rareItem){
+        rareItems.remove(rareItem);
     }
 
     /**
@@ -251,6 +264,20 @@ public class Character extends MovingEntity implements Damageable{
         currentHealth = currentHealth - health;
         if(currentHealth <= 0){
             currentHealth = 0;
+            System.out.println("HERE");
+            /* Apply effect of the one ring */
+            RareItem destroyedRareItem = null;
+            for(RareItem rareItem : rareItems){
+                if(rareItem.getItemType() == ItemType.THE_ONE_RING){
+                    currentHealth = maxHealth;
+                    destroyedRareItem = rareItem;
+                    break;
+                }
+            }
+            if(destroyedRareItem != null){
+
+                observer.removeRareItem(destroyedRareItem);
+            }
 
             if (observer != null) {
                 observer.updateHealth(this.currentHealth, this.maxHealth);

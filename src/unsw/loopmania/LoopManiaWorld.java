@@ -51,6 +51,8 @@ public class LoopManiaWorld {
      */
     private List<Entity> nonSpecifiedEntities;
 
+    private LoopManiaWorldController controller = null;
+
     private Character character;
     private HerosCastle herosCastle;
     private Shop shop;
@@ -74,6 +76,9 @@ public class LoopManiaWorld {
     // TODO = expand the range of buildings
     private List<Building> buildingEntities;
 
+    //Rare items that specified in json
+    private List <ItemType> rareItemsAvailable;
+
     /**
      * list of x,y coordinate pairs in the order by which moving entities traverse them
      */
@@ -96,6 +101,11 @@ public class LoopManiaWorld {
         unequippedInventoryItems = new ArrayList<>();
         this.orderedPath = orderedPath;
         buildingEntities = new ArrayList<>();
+        rareItemsAvailable = new ArrayList<>();
+    }
+
+    public void setController(LoopManiaWorldController controller){
+        this.controller = controller;
     }
 
     public int getWidth() {
@@ -162,6 +172,17 @@ public class LoopManiaWorld {
 
     public HerosCastle getHerosCastle(){
         return this.herosCastle;
+    }
+
+    public void addRareItemsAvailable(String rareItem){
+        //Add more rare items in milestone 3
+        switch(rareItem){
+            case "the_one_ring":
+                rareItemsAvailable.add(ItemType.THE_ONE_RING);
+                break;
+            default:
+                return;
+        }
     }
 
 
@@ -311,7 +332,11 @@ public class LoopManiaWorld {
         // if adding more cards than have, remove the first card...
         if (cardEntities.size() >= getWidth()){
             // TODO- = give some cash/experience/item rewards for the discarding of the oldest card
+            controller.loadRandomItem();
+            this.character.addExperience(10);
+            this.character.addGold(5);
             removeCard(0);
+            
         }
         Card card = CardLoader.loadRandomCard(cardEntities.size());
         cardEntities.add(card);
@@ -337,7 +362,7 @@ public class LoopManiaWorld {
     public Item loadRandomUnenquippedInventoryItem(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            Item item = ItemLoader.loadRandomItem(new Pair<Integer, Integer>(unequippedInventoryItems.get(0).getX(), unequippedInventoryItems.get(0).getY()));
+            Item item = ItemLoader.loadRandomItem(new Pair<Integer, Integer>(unequippedInventoryItems.get(0).getX(), unequippedInventoryItems.get(0).getY()), rareItemsAvailable);
             if(item.getItemType() == ItemType.GOLD){
                 character.addGold(5);
                 return null;
@@ -345,15 +370,15 @@ public class LoopManiaWorld {
             removeItemByPositionInUnequippedInventoryItems(0);
             this.character.addExperience(10);
             this.character.addGold(5);
-            unequippedInventoryItems.add(item);
+            addUnequippedItem(item);
             return item;
         }else{
-            Item item = ItemLoader.loadRandomItem(firstAvailableSlot);
+            Item item = ItemLoader.loadRandomItem(firstAvailableSlot, rareItemsAvailable);
             if(item.getItemType() == ItemType.GOLD){
                 character.addGold(5);
                 return null;
             }
-            unequippedInventoryItems.add(item);
+            addUnequippedItem(item);
             return item;
         }
     }
@@ -722,11 +747,13 @@ public class LoopManiaWorld {
      * remove an item from the unequipped inventory
      * @param item item to be removed
      */
-    private void removeUnequippedInventoryItem(Item item){
+    public void removeUnequippedInventoryItem(Item item){
         int x = item.getX();
         int y = item.getY();
         item.destroy();
+        System.out.println("DESTROYED");
         unequippedInventoryItems.remove(item);
+        if(item instanceof RareItem) character.removeRareItem((RareItem)item);
         //shiftUnequippedInventoryItemsFromXYCoordinate(x, y);
     }
 
@@ -736,6 +763,7 @@ public class LoopManiaWorld {
      */
     public void addUnequippedItem(Item item){
         unequippedInventoryItems.add(item);
+        if(item instanceof RareItem) character.addRareItem((RareItem)item);
     }
 
     /**
@@ -800,8 +828,7 @@ public class LoopManiaWorld {
                 }
             }
             if(result != null){
-                unequippedInventoryItems.remove(result);
-                result.destroy();
+                removeUnequippedInventoryItem((Item)result);
                 return;
             }
         }
@@ -851,6 +878,7 @@ public class LoopManiaWorld {
         Item item = unequippedInventoryItems.get(index);
         item.destroy();
         unequippedInventoryItems.remove(index);
+        if(item instanceof RareItem) character.removeRareItem((RareItem)item);
     }
 
     /**
