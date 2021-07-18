@@ -355,7 +355,7 @@ public class LoopManiaWorld {
             this.character.addExperience(10);
             this.character.addGold(5);
             removeCard(0);
-            
+
         }
         Card card = CardLoader.loadRandomCard(cardEntities.size());
         cardEntities.add(card);
@@ -1172,8 +1172,6 @@ public class LoopManiaWorld {
         }
         return false;
     }
-
-<<<<<<< src/unsw/loopmania/LoopManiaWorld.java
         //for testing trap
         public Enemy getFirstEnemy(){
             return enemies.get(0);
@@ -1197,12 +1195,12 @@ public class LoopManiaWorld {
         public boolean towerUsed(){
             return toweractivated;
         }
-        
+
         public List<Item> getUnequippedInventoryItems(){
             return this.unequippedInventoryItems;
         }
  }
 
-    
+
 
 
