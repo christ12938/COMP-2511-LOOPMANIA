@@ -21,8 +21,7 @@ public class Shop {
         this.itemsForSale = new ArrayList<ItemType>();
         this.unequippedItems = unequippedItems;
 
-        while (itemsForSale.size() != 3) {
-            int index = new Random().nextInt(ItemType.values().length);
+        for (int index = 0; index <= 6; index++) {
             if (ItemType.values()[index] != GOLD && ItemType.values()[index] != THE_ONE_RING ) {
                 this.itemsForSale.add(ItemType.values()[index]);
             }
@@ -33,25 +32,25 @@ public class Shop {
     public int getShopBuyPrice(ItemType item) {
         switch(item){
             case SWORD:
-                return 20;
+                return 10;
 
             case STAKE:
-                return 20;
+                return 10;
 
             case STAFF:
-                return 20;
+                return 10;
 
             case SHIELD:
-                return 20;
+                return 10;
 
             case ARMOUR:
-                return 20;
+                return 10;
 
             case HELMET:
-                return 20;
+                return 10;
             
             case HEALTH_POTION:
-                return 20;
+                return 10;
 
             default:
                 return -1;
@@ -88,12 +87,8 @@ public class Shop {
         }
     }
 
-    public ItemType getSaleItem(int index) {
-        return this.itemsForSale.get(index - 1);
-    }
-
-    public boolean isItemBuyable(int index) {
-        if (character.getGold() < getShopBuyPrice(this.itemsForSale.get(index - 1)) || 
+    public boolean isItemBuyable(ItemType item) {
+        if (character.getGold() < getShopBuyPrice(item) || 
             this.unequippedItems.size() >= 16) {
             return false;
         } else {
