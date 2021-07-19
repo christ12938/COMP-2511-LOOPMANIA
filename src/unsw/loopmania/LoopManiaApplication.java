@@ -49,7 +49,7 @@ public class LoopManiaApplication extends Application {
         Parent mainMenuRoot = menuLoader.load();
 
         // load the difficulty menu
-        DifficultyMenuController difficultyMenuController = new DifficultyMenuController(primaryStage);
+        DifficultyMenuController difficultyMenuController = new DifficultyMenuController();
         FXMLLoader difficultyMenuLoader = new FXMLLoader(getClass().getResource("DifficultyMenuView.fxml"));
         difficultyMenuLoader.setController(difficultyMenuController);
         Parent difficultyMenuRoot = difficultyMenuLoader.load();
@@ -113,39 +113,29 @@ public class LoopManiaApplication extends Application {
      * switch to a different Root
      */
     private void switchToRoot(Scene scene, Parent root, Stage stage){
-        /*
+        /**
+         * First get the values from previous stage
+         */
         double xPos = stage.getX();
         double yPos = stage.getY();
         double stageWidth = stage.getWidth();
-        double stageHeight = stage.getHeight();*/
+        double stageHeight = stage.getHeight();
+
         scene.setRoot(root);
         root.requestFocus();
         stage.setScene(scene);
         stage.sizeToScene();
-        //centerScene(stage, xPos, yPos, stageWidth, stageHeight);
         stage.show();
-    }
-    
-    private void centerScene(Stage stage, double xPos, double yPos, double stageWidth, double stageHeight){
-        /**
-         * Found on stack overflow
-         * cannot find the poisition of shop until it is rendered
-         * thus show stage first then hide, relocate and show again does the trick
-         */
 
-        stage.setOnShowing(event -> stage.hide());
-            
-        stage.setOnShown(event -> {
-            /**
-             * Set the shop position to the center
-             */
-            System.out.println("HERE");
-            double centerXPosition = xPos + stageWidth/2d;
-            double centerYPosition = yPos + stageHeight/2d;
-            stage.setX(centerXPosition - stage.getWidth()/2d);
-            stage.setY(centerYPosition - stage.getHeight()/2d);
-            stage.show();
-        });
+        /**
+         * Hide and show to center window
+         */
+        stage.hide();
+        double centerXPosition = xPos + stageWidth/2d;
+        double centerYPosition = yPos + stageHeight/2d;
+        stage.setX(centerXPosition - stage.getWidth()/2d);
+        stage.setY(centerYPosition - stage.getHeight()/2d);
+        stage.show();
     }
 
     public static void main(String[] args) {

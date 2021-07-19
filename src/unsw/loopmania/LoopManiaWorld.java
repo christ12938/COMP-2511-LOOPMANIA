@@ -270,7 +270,7 @@ public class LoopManiaWorld {
      * @return
      */
     public List<Item> possiblySpawnItems(){
-        if(new Random().nextDouble() < 0.1) return null;
+        if(new Random().nextDouble() >= 0.1) return new ArrayList<>();
         List<Item> spawningItems = new ArrayList<>();
         /* Get gold spawn position */
         Pair<Integer, Integer> goldPos = possiblyGetItemSpawnPosition();
@@ -855,10 +855,20 @@ public class LoopManiaWorld {
                     break;
                 }
             }
+            for(Entity e : spawnedItems){
+                if(e.getX() == x && e.getY() == y){
+                    result = e;
+                    break;
+                }
+            }
             if(result != null){
                 //TODO: Should also add removeDebuffFromEnemy, but at this stage not required
                 //DEBUG??? MIGHT CAUSE ERROR? ADD FLAG
-                buildingEntities.remove(result);
+                if(result instanceof Building){
+                    buildingEntities.remove((Building)result);
+                }else{
+                    spawnedItems.remove((Item)result);
+                }
                 result.destroy();
                 return;
             }
@@ -1003,6 +1013,10 @@ public class LoopManiaWorld {
         }
     }
 
+    /**
+     * Get the possible spawn position for an item
+     * @return
+     */
     private Pair<Integer, Integer> possiblyGetItemSpawnPosition(){
         List<Pair<Integer, Integer>> orderedPathSpawnCandidates = new ArrayList<>();
         int indexPosition = orderedPath.indexOf(new Pair<Integer, Integer>(character.getX(), character.getY()));
@@ -1025,6 +1039,15 @@ public class LoopManiaWorld {
                             break;
                     }
                 }
+                //If there is already an enemy on that tile, dont spwan
+                for(Enemy enemy : enemies){
+                    if(orderedPath.get(i).getValue0() == enemy.getX()
+                        && orderedPath.get(i).getValue1() == enemy.getY()){
+                            flag = true;
+                            break;
+                    }
+                }
+                //If there is already a spawned item on that tile, dont spwan
                 for(Item item : spawnedItems){
                     if(orderedPath.get(i).getValue0() == item.getX()
                         && orderedPath.get(i).getValue1() == item.getY()){
@@ -1190,6 +1213,7 @@ public class LoopManiaWorld {
      */
     public void nextCycle(){
         this.cycle++;
+        controller.updateCycle();
         notifyHumanPlayer();
         /* Reset all spawner spawning behaviour */
         /* Kind of observer pattern (DEBUG) */
@@ -1255,34 +1279,74 @@ public class LoopManiaWorld {
         }
         return false;
     }
-        //for testing trap
-        public Enemy getFirstEnemy(){
-            return enemies.get(0);
+
+    //for testing trap
+    public Enemy getFirstEnemy(){
+        return enemies.get(0);
+    }
+    public Building getFirstB(){
+        return buildingEntities.get(0);
+    }
+    public boolean enemiesAlive(){
+        return !enemies.isEmpty();
+    }
+    public boolean trapsCleared(){
+        for (Building b : buildingEntities) {
+            if((b.getBuildingType() == BuildingType.TRAP_BUILDING)){
+                return false;
+            }
         }
-        public Building getFirstB(){
-            return buildingEntities.get(0);
-        }
-        public boolean enemiesAlive(){
-            return !enemies.isEmpty();
-        }
-        public boolean trapsCleared(){
-            for (Building b : buildingEntities) {
-                if((b.getBuildingType() == BuildingType.TRAP_BUILDING)){
-                    return false;
+        return true;
+    }
+
+    //for testing tower
+    public boolean towerUsed(){
+        return toweractivated;
+    }
+
+    public List<Item> getUnequippedInventoryItems(){
+        return this.unequippedInventoryItems;
+    }
+    /**
+     * Add item to uequipped inventory when encountered
+     */
+    public Item checkAndAddSpawnedItem(){
+        Item newItem = null;
+        Item itemToBeDestroyed = null;
+        for(Item item : spawnedItems){
+            if(item.getX() == character.getX() && item.getY() == character.getY()){
+                itemToBeDestroyed = item;
+                //Assume no 2 spawned items on the same tile
+                Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
+                if (firstAvailableSlot == null){
+                    newItem = ItemLoader.loadSpawnableItems(item.getItemType(), unequippedInventoryItems.get(0).getX(), unequippedInventoryItems.get(0).getY());
+                    if(item.getItemType() == ItemType.GOLD){
+                        character.addGold(5);
+                        newItem = null;
+                        break;
+                    }
+                    removeItemByPositionInUnequippedInventoryItems(0);
+                    this.character.addExperience(10);
+                    addUnequippedItem(newItem);
+                    break;
+                }else{
+                    newItem = ItemLoader.loadSpawnableItems(item.getItemType(), firstAvailableSlot.getValue0(), firstAvailableSlot.getValue1());
+                    if(item.getItemType() == ItemType.GOLD){
+                        character.addGold(5);
+                        newItem = null;
+                        break;
+                    }
+                    addUnequippedItem(newItem);
+                    break;
                 }
             }
-            return true;
         }
-
-        //for testing tower
-        public boolean towerUsed(){
-            return toweractivated;
-        }
-
-        public List<Item> getUnequippedInventoryItems(){
-            return this.unequippedInventoryItems;
-        }
- }
+        if(itemToBeDestroyed == null) return null;
+        itemToBeDestroyed.destroy();
+        spawnedItems.remove(itemToBeDestroyed);
+        return newItem;
+    }
+}
 
 
 

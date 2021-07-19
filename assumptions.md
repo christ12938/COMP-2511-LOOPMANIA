@@ -20,12 +20,16 @@ Character's max health is set to 100
 Assume no enemies can enter hero castle
 Assume no battle will occur during the tick into hero castle
 Assume Progress per time tick is as follow:
-    1. Spawn enemies
-    2. Apply Building Debuffs to enemy
-    3. Apply Building Buffs to character
-    4. Run Battles if character is not on hero castle
-    5. Remove Building buffs from character
-    6. Remove Building Debuffs from enemy (Not used right now)
+    1. Move character and enemies
+    2. Check if character is on a spawned item and add it to the inventory
+    3. Spawn items on tile
+    4. Spawn enemies
+    5. Apply Building Debuffs to enemy
+    6. Apply Building Buffs to character
+    7. Run Battles if character is not on hero castle
+    8. Remove Building buffs from character
+    9. Remove Building Debuffs from enemy (Not used right now)
+    P.S. Equipped items buff are in real time, so wont be included in the timeline
 Assume enemies can spawn on any structures, except Hero's Castle.
 Assume if the no tiles are available for the spawner to spawn enemies, then that tile is not placable for that type of spawner
 When passing through a village player gains 2 HP
@@ -49,4 +53,8 @@ A vampire's crit will deal damage for a random number between 2 and 4 turns
 Assume rare items has a 5% chance of spawning and normal items has a 95% chance of spawning, and the number of chances of obtaining any specific type of rare items would be uniformly random among those chances
 Assume only basic goals in milestone 2
 Assume quantity of goal condition is smaller than Integer.MAX_VALUE
+Assume items that can be spawn on tiles have a spawn chance of 10%.
+Assume items that can be spawn on tiles will not spawn on any entities
+Assume enemies can pass through items
+Assume 10 experiece will be added if the inventory is full when picking up the item.
 

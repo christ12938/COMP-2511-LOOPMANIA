@@ -35,14 +35,11 @@ public class DifficultyMenuController {
     private final String beserkerModeDescription = "In berserker mode, you cannot purchase more than 1 piece of protective gear (protective gear includes armour, helmets, and shields) each time you shops at the Hero's Castle.";
 
 
-    private Stage primaryStage;
-
     private MenuSwitcher backSwitcher;
 
     private MenuSwitcher confirmSwitcher;
 
-    public DifficultyMenuController(Stage primaryStage){
-        this.primaryStage = primaryStage;
+    public DifficultyMenuController(){
     }
 
     @FXML
