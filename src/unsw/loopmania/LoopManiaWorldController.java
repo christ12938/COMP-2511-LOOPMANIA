@@ -153,6 +153,12 @@ public class LoopManiaWorldController {
     private ImageView shieldCell;
 
     @FXML
+    private Label difficultyText;
+
+    @FXML
+    private Label cycleValue;
+
+    @FXML
     private ProgressBar healthBar;
 
     @FXML
@@ -362,6 +368,7 @@ public class LoopManiaWorldController {
         Rectangle2D imagePart = new Rectangle2D(0, 0, 32, 32);
         Image cardSlotImage = new Image((new File("src/images/card_slot.png")).toURI().toString());
         healthBar.setStyle("-fx-accent: green;");
+
         // Add the ground first so it is below all other entities (inculding all the twists and turns)
         for (int x = 0; x < world.getWidth(); x++) {
             for (int y = 0; y < world.getHeight(); y++) {
@@ -408,7 +415,6 @@ public class LoopManiaWorldController {
      */
     public void startTimer(){
         // TODO = handle more aspects of the behaviour required by the specification
-        System.out.println(primaryStage.getWidth() + " " + primaryStage.getHeight());
         System.out.println("starting timer");
         isPaused = false;
         // trigger adding code to process main game logic to queue. JavaFX will target framerate of 0.3 seconds
@@ -419,31 +425,39 @@ public class LoopManiaWorldController {
             world.runTickMoves();
 
             /**
-             * Progress: 1. Spawn enemies
-             *           2. Apply Building Debuffs to enemy
-             *           3. Apply Building Buffs to character
-             *           4. Run Battles if character is not on hero castle
-             *           5. Remove Building buffs from character
-             *           6x. Remove Building Debuffs from enemy (Not used right now)
+             * Progress: 1. Move character and enemies
+             *           2. Check if character is on a spawned item and add it to the inventory
+             *           3. Spawn items on tile
+             *           4. Spawn enemies
+             *           5. Apply Building Debuffs to enemy
+             *           6. Apply Building Buffs to character
+             *           7. Run Battles if character is not on hero castle
+             *           8. Remove Building buffs from character
+             *           9. Remove Building Debuffs from enemy (Not used right now)
              *           P.S. Equipped items buff are in real time, so wont be included in the timeline
              */
-            /*
+            
+            Item newItem = world.checkAndAddSpawnedItem();
+            if(newItem != null) onLoadUnequippedItem(newItem);
+
             List<Item> newSpawnedItems = world.possiblySpawnItems();
             for (Item item : newSpawnedItems){
                 onLoadSpawnedItem(item);
-            }*/
+            }
 
             List<Enemy> newEnemies = world.possiblySpawnEnemies();
             for (Enemy newEnemy: newEnemies){
                 onLoad(newEnemy);
             }
+
             world.applyBuildingDebuffsToEnemies();
             world.applyBuildingBuffsToCharacter();
 
             
             if(world.characterIsOnHeroCastle()){
                 world.nextCycle();
-                openShop();
+                if(!world.hasHumanPlayerWon()) openShop();
+
             }else{
                 List<Enemy> defeatedEnemies = world.runBattles();
                 for (Enemy e: defeatedEnemies){
@@ -454,7 +468,9 @@ public class LoopManiaWorldController {
             world.removeBuildingBuffsFromCharacter();
             world.removeBuildingDebuffsFromEnemies();
 
+            setEnemyImagesToFront();
             setCharacterImageToFront();
+
             printThreadingNotes("HANDLED TIMER");
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
@@ -514,6 +530,10 @@ public class LoopManiaWorldController {
         loadRandomCard();
     }
 
+    /**
+     * Load the Spawned Item on path tiles
+     * @param item
+     */
     private void onLoadSpawnedItem(Item item){
         ImageView view = null;
         switch(item.getItemType()){
@@ -527,6 +547,7 @@ public class LoopManiaWorldController {
                 return; /* Should never happen */
         }
         addEntity(item, view);
+        squares.getChildren().add(view);
     }
 
     /**
@@ -690,6 +711,7 @@ public class LoopManiaWorldController {
             default:
                 return;
         }
+        view.setId("enemy");
         addEntity(enemy, view);
         squares.add(view, enemy.getX(), enemy.getY());
     }
@@ -733,7 +755,7 @@ public class LoopManiaWorldController {
     private void onLoad(AlliedSoldier alliedSoldier){
         ImageView view = new ImageView(alliedSoldierImage);
         trackAlliedSoldierSlotPosition(alliedSoldier, view);
-        entityImages.add(view); //Redundant
+        entityImages.add(view); //Redundant???
         alliedSoldierSlot.add(view, alliedSoldier.getSlotPosition().get(), 0);
     }
 
@@ -1464,6 +1486,17 @@ public class LoopManiaWorldController {
     }
 
     /**
+     * Set enemies images to the front
+     */
+    private void setEnemyImagesToFront(){
+        for(ImageView view : entityImages){
+            if(view.getId() != null && view.getId().equals("enemy")) {
+                view.toFront();
+            }
+        }
+    }
+
+    /**
      * Destroy the overlapped entity when placed on gridpane
      * @param x x coordinate
      * @param y y coordinate
@@ -1481,6 +1514,14 @@ public class LoopManiaWorldController {
             return;
         }
         world.removeOverlappedEntityByCoordinates(x, y, type);
+    }
+
+    /**
+     * Signal from observable about updating cycle (Observer pattern)
+     */
+    public void updateCycle(){
+        cycleValue.setText(Integer.toString(world.getCycle()));
+        primaryStage.sizeToScene();
     }
 
     /**
@@ -1587,25 +1628,17 @@ public class LoopManiaWorldController {
              */
             shopStage.initModality(Modality.WINDOW_MODAL);
             shopStage.initOwner(primaryStage);
-            
-            /**
-             * Found on stack overflow
-             * cannot find the poisition of shop until it is rendered
-             * thus show stage first then hide, relocate and show again does the trick
-             */
-            shopStage.setOnShowing(event -> shopStage.hide());
-            
-            shopStage.setOnShown(event -> {
-                /**
-                 * Set the shop position to the center
-                 */
-                double centerXPosition = primaryStage.getX() + primaryStage.getWidth()/2d;
-                double centerYPosition = primaryStage.getY() + primaryStage.getHeight()/2d;
-                shopStage.setX(centerXPosition - shopStage.getWidth()/2d);
-                shopStage.setY(centerYPosition - shopStage.getHeight()/2d);
-                shopStage.show();
-            });
 
+            shopStage.show();
+
+            /**
+             * Hide and show to center window
+             */
+            shopStage.hide();
+            double centerXPosition = primaryStage.getX() + primaryStage.getWidth()/2d;
+            double centerYPosition = primaryStage.getY() + primaryStage.getHeight()/2d;
+            shopStage.setX(centerXPosition - shopStage.getWidth()/2d);
+            shopStage.setY(centerYPosition - shopStage.getHeight()/2d);
             shopStage.show();
 
         } catch (IOException e) {
@@ -1648,6 +1681,18 @@ public class LoopManiaWorldController {
 
     public void setDifficulty(DifficultyType difficulty){
         this.difficulty = difficulty;
+        switch(difficulty){
+            case STANDARD:
+                difficultyText.setText("Standard Mode");
+                break;
+            case SURVIVAL:
+                difficultyText.setText("Survival Mode");
+                break;
+            case BESERKER:
+                difficultyText.setText("Beserker Mode");
+                break;
+        }
+        primaryStage.sizeToScene();
     }
 
     public DifficultyType getDifficulty(){
@@ -1687,25 +1732,16 @@ public class LoopManiaWorldController {
             popUpMessageStage.initModality(Modality.WINDOW_MODAL);
             popUpMessageStage.initOwner(parentStage);
             
-            
-            /**
-             * Found on stack overflow
-             * cannot find the poisition of shop until it is rendered
-             * thus show stage first then hide, relocate and show again does the trick
-             */
-            popUpMessageStage.setOnShowing(event -> popUpMessageStage.hide());
-            
-            popUpMessageStage.setOnShown(event -> {
-                /**
-                 * Set the shop position to the center
-                 */
-                double centerXPosition = parentStage.getX() + parentStage.getWidth()/2d;
-                double centerYPosition = parentStage.getY() + parentStage.getHeight()/2d;
-                popUpMessageStage.setX(centerXPosition - popUpMessageStage.getWidth()/2d);
-                popUpMessageStage.setY(centerYPosition - popUpMessageStage.getHeight()/2d);
-                popUpMessageStage.show();
-            });
+            popUpMessageStage.show();
 
+            /**
+             * hide and show again to center the stage
+             */
+            popUpMessageStage.hide();
+            double centerXPosition = parentStage.getX() + parentStage.getWidth()/2d;
+            double centerYPosition = parentStage.getY() + parentStage.getHeight()/2d;
+            popUpMessageStage.setX(centerXPosition - popUpMessageStage.getWidth()/2d);
+            popUpMessageStage.setY(centerYPosition - popUpMessageStage.getHeight()/2d);
             popUpMessageStage.show();
 
             return popUpMessageController;

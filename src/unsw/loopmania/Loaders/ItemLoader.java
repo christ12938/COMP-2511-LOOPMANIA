@@ -95,6 +95,19 @@ public class ItemLoader{
         }
     }
 
+    public static Item loadSpawnableItems(ItemType type, int nodeX, int nodeY){
+        SimpleIntegerProperty x = new SimpleIntegerProperty(nodeX);
+        SimpleIntegerProperty y = new SimpleIntegerProperty(nodeY);
+        switch(type){
+            case GOLD:
+                return new Gold(x, y);
+            case HEALTH_POTION:
+                return new HealthPotion(x, y);
+            default:
+                return null;
+        }
+    }
+
     public static List<Item> loadShopItems(EnumMap<ItemType, Pair<Integer, Integer>> itemPositions){
         /**
          * Define shop items position manually ???
