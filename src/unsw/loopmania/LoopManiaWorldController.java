@@ -1684,12 +1684,15 @@ public class LoopManiaWorldController {
         switch(difficulty){
             case STANDARD:
                 difficultyText.setText("Standard Mode");
+                difficultyText.setTextFill(Color.BLUEVIOLET);
                 break;
             case SURVIVAL:
                 difficultyText.setText("Survival Mode");
+                difficultyText.setTextFill(Color.GREEN);
                 break;
             case BESERKER:
                 difficultyText.setText("Beserker Mode");
+                difficultyText.setTextFill(Color.RED);
                 break;
         }
         primaryStage.sizeToScene();
