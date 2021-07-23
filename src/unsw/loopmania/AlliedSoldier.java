@@ -2,6 +2,9 @@ package unsw.loopmania;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import unsw.loopmania.Enemies.Zombie;
+import unsw.loopmania.Items.Staff;
+import unsw.loopmania.Types.DamageableType;
 
 public class AlliedSoldier extends MovingEntity implements Damageable{
     /**
@@ -9,24 +12,16 @@ public class AlliedSoldier extends MovingEntity implements Damageable{
      */
     private IntegerProperty slotPosition;
 
-    private double health;
-    private int damage;
-    private boolean allied;
+    private final double maxHealth = 30.0;
+    private double currentHealth;
+    private final int attack = 5;
+    private int currentTranceTurn;
 
     public AlliedSoldier (PathPosition position, int slotPosition) {
         super(position);
         this.slotPosition = new SimpleIntegerProperty(slotPosition);
-        this.health = 30;
-        this.damage = 5;
-        this.allied = true;
-    }
-
-    public boolean isAllied() {
-        return allied;
-    }
-
-    public void setAllied(boolean allied) {
-        this.allied = allied;
+        this.currentHealth = maxHealth;
+        this.currentTranceTurn = Staff.tranceTurn;
     }
 
     public IntegerProperty getSlotPosition(){
@@ -38,16 +33,41 @@ public class AlliedSoldier extends MovingEntity implements Damageable{
     }
 
     @Override
-    public void takeDamage(double damage) {
-        health -= damage;
+    public void takeDamage(double damage, Damageable damageable) {
+        this.currentHealth = (this.currentHealth - damage) < 0 ? 0 : this.currentHealth - damage;
     }
 
     @Override
     public void dealDamage(Damageable damageable) {
-        damageable.takeDamage(damage);
+        damageable.takeDamage(attack, this);
     }
 
-    public double getHealth() {
-        return health;
+    public boolean isDefeated(){
+        return this.currentHealth <= 0 ? true : false;
     }
+
+    public DamageableType getDamageableType(){
+        return DamageableType.ALLIED_SOLDIER;
+    }
+
+    public Zombie transformToZombie(){
+        return new Zombie(getPathPosition());
+    }
+
+    public void startTranceTurn(){
+        currentTranceTurn = Staff.tranceTurn;
+    }
+
+    public void nextTranceTurn(){
+        currentTranceTurn--;
+    }
+
+    public int getTranceTurn(){
+        return currentTranceTurn;
+    }
+
+    public double getCurrentHealth(){
+        return currentHealth;
+    }
+
 }

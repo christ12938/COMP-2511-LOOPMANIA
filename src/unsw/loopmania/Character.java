@@ -3,11 +3,12 @@ package unsw.loopmania;
 import java.util.ArrayList;
 import java.util.List;
 
-import unsw.loopmania.Buildings.Building;
 import unsw.loopmania.Items.DefensiveItems;
-import unsw.loopmania.Items.Equipable;
 import unsw.loopmania.Items.Item;
 import unsw.loopmania.Items.OffensiveItems;
+import unsw.loopmania.Items.Staff;
+import unsw.loopmania.Types.DamageableType;
+import unsw.loopmania.Types.EnemyType;
 import unsw.loopmania.Types.ItemType;
 
 /**
@@ -23,14 +24,6 @@ public class Character extends MovingEntity implements Damageable{
     private int experience;
     private LoopManiaWorldController observer;
     private LoopManiaWorld world;
-    private PathPosition position;
-
-    /**
-     * List of buildings that could help in battle
-     * Set type to Building just in case in milestone 3
-     * different types of buildings can help in battle
-     */
-    private List<Building> battleBuildings;
 
     /**
      * List of allied soldiers
@@ -40,17 +33,15 @@ public class Character extends MovingEntity implements Damageable{
     /**
      * // List of equipped items
      */
-    private List<Equipable> equippedItems;
+    private List<Item> equippedItems;
 
     public Character(PathPosition position) {
         super(position);
-        this.position = position;
         this.currentHealth = this.maxHealth;
         this.gold = 0;
         this.experience = 0;
         this.attack = 5;
-        this.defense = 5;
-        battleBuildings = new ArrayList<>();
+        this.defense = 0;
         alliedSoldiers = new ArrayList<>();
         equippedItems = new ArrayList<>();
         this.observer = null;
@@ -63,6 +54,10 @@ public class Character extends MovingEntity implements Damageable{
      */
     public void setObserver(LoopManiaWorldController observer){
         this.observer = observer;
+    }
+
+    public PathPosition getPathPosition(){
+        return super.getPathPosition();
     }
 
     public double getCurrentHealth(){
@@ -81,10 +76,6 @@ public class Character extends MovingEntity implements Damageable{
         return this.experience;
     }
 
-    public double getHealth() {
-        return currentHealth;
-    }
-
     public List<AlliedSoldier> getAlliedSoldiers(){
         return this.alliedSoldiers;
     }
@@ -93,10 +84,6 @@ public class Character extends MovingEntity implements Damageable{
         this.world = world;
     }
 
-    public void setHealth(double health) {
-        this.currentHealth = health;
-
-    }
     public int getAttack() {
         return this.attack;
     }
@@ -105,46 +92,23 @@ public class Character extends MovingEntity implements Damageable{
         return this.defense;
     }
 
-    public PathPosition getPathPosition(){
-        return this.position;
+    public void setCurrentHealth(double currentHealth){
+        this.currentHealth = currentHealth;
     }
 
-    public List<Equipable> getEquippedItems(){
+    public List<Item> getEquippedItems(){
         return this.equippedItems;
-    }
-
-    public void addAttack(int attack) {
-        this.attack += attack;
-    }
-
-    public void addDefense(int defense) {
-        this.defense += defense;
-    }
-
-    /**
-     * Add buildings that could assist the character in battle
-     * @param building
-     */
-    public void addBattleBuildings(Building building){
-        this.battleBuildings.add(building);
-    }
-
-    /**
-     * Remove buildings that could assist the character in battle
-     * @param building
-     */
-    public void removeBattleBuildings(Building building){
-        this.battleBuildings.remove(building);
     }
 
     /**
      * add allied soldier
      */
-    public void addAlliedSoldier(){
+    public AlliedSoldier addAlliedSoldier(){
         AlliedSoldier alliedSoldier = observer.addAlliedSoldier();
         if(alliedSoldier != null){
             alliedSoldiers.add(alliedSoldier);
         }
+        return alliedSoldier;
     }
 
     /**
@@ -227,8 +191,16 @@ public class Character extends MovingEntity implements Damageable{
      * @param damage amount of hp too be decreased
      */
     @Override
-    public void takeDamage(double damage) {
-        damage = (damage - defense <= 0 ? 0 : damage - defense);
+    public void takeDamage(double damage, Damageable from) {
+        if(hasArmourEquipped()){
+            damage = damage/2;
+            damage = (damage - defense <= 0 ? 0 : damage - defense);
+        }else if(hasHelmetEquipped()){
+            damage = (damage - defense <= 0 ? 0 : damage - defense);
+        }else if(from.getDamageableType() == DamageableType.VAMPIRE
+            && hasShieldEquipped() && damage > (double)EnemyType.VAMPIRE.getAttack()){
+            damage = LoopManiaWorld.rand.nextDouble() < 0.6 ? EnemyType.VAMPIRE.getAttack() : damage;
+        }
         minusHealth(damage);
     }
 
@@ -236,9 +208,63 @@ public class Character extends MovingEntity implements Damageable{
      * deal damage too an damageable entity
      * @param damageable entity to be damaged
      */
-    @Override
     public void dealDamage(Damageable damageable) {
-        damageable.takeDamage(attack);
+        System.out.println("Current Attack: " + attack);
+        if(damageable.getDamageableType() == DamageableType.VAMPIRE && hasStakeEquipped()){
+            damageable.takeDamage(attack*2, this);
+        }else{
+            damageable.takeDamage(attack, this);
+        }
+    }
+
+    public boolean isNextAttackTrance(){
+        if(hasStaffEquipped()){
+            return LoopManiaWorld.rand.nextDouble() < Staff.tranceChance ? true : false;
+        }
+        return false;
+    }
+
+    public DamageableType getDamageableType(){
+        return DamageableType.CHARACTER;
+    }
+
+    public boolean isDefeated(){
+        return this.currentHealth <= 0 ? true : false;
+    }
+
+    private boolean hasStakeEquipped(){
+        for(Item item : equippedItems){
+            if(item.getItemType() == ItemType.STAKE) return true;
+        }
+        return false;
+    }
+
+    private boolean hasStaffEquipped(){
+        for(Item item : equippedItems){
+            if(item.getItemType() == ItemType.STAFF) return true;
+        }
+        return false;
+    }
+
+    private boolean hasArmourEquipped(){
+        for(Item item : equippedItems){
+            if(item.getItemType() == ItemType.ARMOUR) return true;
+        }
+        return false;
+    }
+
+    private boolean hasHelmetEquipped(){
+        for(Item item : equippedItems){
+            if(item.getItemType() == ItemType.HELMET) return true;
+        }
+        return false;
+    }
+
+    private boolean hasShieldEquipped(){
+        for(Item item : equippedItems){
+            if(item.getItemType() == ItemType.SHIELD) return true;
+        }
+        return false;
     }
 
     /**
@@ -293,15 +319,19 @@ public class Character extends MovingEntity implements Damageable{
         this.attack = attack;
     }
 
+    public void setDefense(int defense){
+        this.defense = defense;
+    }
+
     /**
      * equip the character with an equipable item
      * @param item equipable item to be equipped
      */
-    public void equip(Equipable item){
-        if(item instanceof OffensiveItems){
-            addAttack(((OffensiveItems)item).getAttack());
-        }else if(item instanceof DefensiveItems){
-            addDefense(((DefensiveItems)item).getDefense());
+    public void equip(Item item){
+        if(item.isOffensive()){
+            setAttack(attack + ((OffensiveItems)item).getAttack());
+        }else if(item.isDefensive()){
+            setDefense(defense + ((DefensiveItems)item).getDefense());
         }
         equippedItems.add(item);
     }
@@ -310,13 +340,14 @@ public class Character extends MovingEntity implements Damageable{
      * unequip item from character
      * @param item item to be unequipped
      */
-    public void unequip(Equipable item){
-        if(item instanceof OffensiveItems){
-            addAttack(((OffensiveItems)item).getAttack()*(-1));
-        }else if(item instanceof DefensiveItems){
-            addDefense(((DefensiveItems)item).getDefense()*(-1));
+    public void unequip(Item item){
+        if(item.isOffensive()){
+            setAttack(attack - ((OffensiveItems)item).getAttack());
+        }else if(item.isDefensive()){
+            setDefense(defense - ((DefensiveItems)item).getDefense());
         }
         equippedItems.remove(item);
     }
 
+    
 }

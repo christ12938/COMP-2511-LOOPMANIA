@@ -1,5 +1,7 @@
 package unsw.loopmania;
 
+import org.json.JSONObject;
+
 import unsw.loopmania.Goals.*;
 
 
@@ -10,17 +12,23 @@ public class HumanPlayer {
     private LoopManiaWorld world = null;
     private boolean hasWon = false;
 
-    public HumanPlayer(String goal, int quantity, LoopManiaWorld world) {
+    public HumanPlayer(JSONObject goal , LoopManiaWorld world) {
         try{
-            switch(goal){
+            switch(goal.getString("goal")){
                 case "gold":
-                    this.goal = new GoldGoal(quantity);
+                    this.goal = new GoldGoal(goal.getInt("quantity"));
                     break;
                 case "experience":
-                    this.goal = new ExperienceGoal(quantity);
+                    this.goal = new ExperienceGoal(goal.getInt("quantity"));
                     break;
-                case "cycle":
-                    this.goal = new CycleGoal(quantity);
+                case "cycles":
+                    this.goal = new CycleGoal(goal.getInt("quantity"));
+                    break;
+                case "AND":
+                    this.goal = new CompositeAndGoal(goal.getJSONArray("subgoals"));
+                    break;
+                case "OR":
+                    this.goal = new CompositeOrGoal(goal.getJSONArray("subgoals"));
                     break;
                 default:
                     /* Should never happen */
@@ -47,5 +55,5 @@ public class HumanPlayer {
     public boolean hasWon(){
         return this.hasWon;
     }
-    
+   
 }

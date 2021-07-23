@@ -37,8 +37,7 @@ public class StatsTest {
 
         Sword sword = World.addUnequippedSword();
         assertEquals(5, sword.getAttack());
-        
-        World.equipEquippableItem(sword);
+        World.equipItem(sword);
         assertEquals(10, World.getCharacterAttack());
 
         World.unequipEquippableItem(sword);

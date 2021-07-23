@@ -15,5 +15,8 @@ public class Gold extends Item{
     public ItemType getItemType(){
         return ItemType.GOLD;
     }
-    
+
+    public Item copyItem(int x, int y){
+        return new Gold(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
+    }  
 }

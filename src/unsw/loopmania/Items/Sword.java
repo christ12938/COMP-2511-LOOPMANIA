@@ -7,11 +7,11 @@ import unsw.loopmania.Types.ItemType;
  * represents an equipped or unequipped sword in the backend world
  */
 public class Sword extends OffensiveItems {
-    private int attack;
+
+    private final int attack = 5;
     
     public Sword(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
-        this.attack = 5;
     }    
 
     public ItemType getItemType(){
@@ -20,5 +20,9 @@ public class Sword extends OffensiveItems {
 
     public int getAttack() {
         return this.attack;
+    }
+
+    public Item copyItem(int x, int y){
+        return new Sword(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
     }
 }

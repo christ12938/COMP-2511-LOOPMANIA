@@ -1,10 +1,11 @@
 package unsw.loopmania.Buildings;
 
 import javafx.beans.property.SimpleIntegerProperty;
-import unsw.loopmania.Character;
 import unsw.loopmania.Types.BuildingType;
 
 public class VillageBuilding extends Building{
+
+    public static final double healValue = 10.0;
 
     public VillageBuilding(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
@@ -18,8 +19,4 @@ public class VillageBuilding extends Building{
         return BuildingType.VILLAGE_BUILDING;
     }
 
-    public void applyBuffToCharacter(Character character){
-        character.addHealth(2.0);
-    }
-    
 }

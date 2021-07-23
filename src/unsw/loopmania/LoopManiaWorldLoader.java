@@ -44,7 +44,7 @@ public abstract class LoopManiaWorldLoader {
 
         // load goal-condition
         JSONObject jsonGoal = json.getJSONObject("goal-condition");
-        HumanPlayer humanPlayer = new HumanPlayer(jsonGoal.getString("goal"), jsonGoal.getInt("quantity"), world);
+        HumanPlayer humanPlayer = new HumanPlayer(jsonGoal, world);
         world.setHumanPlayer(humanPlayer);
 
         JSONArray jsonEntities = json.getJSONArray("entities");
@@ -81,12 +81,11 @@ public abstract class LoopManiaWorldLoader {
         // TODO = load more entity types from the file for save file
         switch (type) {
         case "hero_castle":
-            HerosCastle herosCastle = new HerosCastle(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
+            LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
             Character character = new Character(new PathPosition(indexInPath, orderedPath));
             character.setWorld(world);
-            world.setHerosCastle(herosCastle);
             world.setCharacter(character);
-            onLoad(herosCastle, character);
+            onLoad(LoopManiaWorld.herosCastle, character);
             entity = character;
             break;
         case "path_tile":

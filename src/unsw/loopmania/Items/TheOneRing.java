@@ -15,4 +15,8 @@ public class TheOneRing extends RareItem {
     public ItemType getItemType(){
         return ItemType.THE_ONE_RING;
     }
+
+    public Item copyItem(int x, int y){
+        return new TheOneRing(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
+    }
 }

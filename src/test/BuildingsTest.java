@@ -1,17 +1,13 @@
 package test;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 import unsw.loopmania.PathPosition;
-import unsw.loopmania.Buildings.Building;
 import unsw.loopmania.Buildings.Spawner;
-import unsw.loopmania.Buildings.VillageBuilding;
 import unsw.loopmania.Cards.Card;
 import unsw.loopmania.Enemies.Enemy;
-import unsw.loopmania.Types.BuildingType;
 import unsw.loopmania.Types.CardType;
 
 import org.javatuples.Pair;
@@ -19,8 +15,6 @@ import org.junit.jupiter.api.Test;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.LoopManiaWorld;
-import unsw.loopmania.LoopManiaWorldController;
-import unsw.loopmania.LoopManiaWorldLoader;
 import unsw.loopmania.Character;
 import unsw.loopmania.HerosCastle;
 
@@ -44,8 +38,8 @@ public class BuildingsTest{
         LoopManiaWorld d = new LoopManiaWorld(4, 5, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
-        HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
-        d.setHerosCastle(hc);
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
         d.setCharacter(testCharacter);
 
         d.spawnBuilding(CardType.TOWER_CARD,2,1);
@@ -74,8 +68,7 @@ public class BuildingsTest{
         LoopManiaWorld d = new LoopManiaWorld(4, 5, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
-        HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
-        d.setHerosCastle(hc);
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
         d.setCharacter(testCharacter);
         d.spawnBuilding(CardType.TOWER_CARD,100,1);
 
@@ -86,7 +79,7 @@ public class BuildingsTest{
             enemies = d.possiblySpawnEnemies();
         }while(enemies.isEmpty());
 
-        d.applyBuildingDebuffsToEnemies();
+        d.applyTowerDamageToEnemy(enemies.get(0));
         assertTrue(!d.towerUsed());
     }
 
@@ -101,15 +94,14 @@ public class BuildingsTest{
         LoopManiaWorld d = new LoopManiaWorld(1, 3, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
-        HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
-        d.setHerosCastle(hc);
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
         d.setCharacter(testCharacter);
         d.decreaseCharacterHp(90);
         d.spawnBuilding(CardType.VILLAGE_CARD,1,1);
         d.runTickMoves();
-        d.applyBuildingBuffsToCharacter();
-        //assumes player hp starts at 100 and vilage adds 2
-        assertTrue(d.getCharacterHP() == 12);
+        d.applyStaticBuildingBuffsToCharacter();
+        //assumes player hp starts at 10 and vilage adds 10
+        assertTrue(d.getCharacterHP() == 20);
     }
 
     @Test
@@ -123,12 +115,11 @@ public class BuildingsTest{
         LoopManiaWorld d = new LoopManiaWorld(1, 3, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
-        HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
-        d.setHerosCastle(hc);
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
         d.setCharacter(testCharacter);
         d.spawnBuilding(CardType.VILLAGE_CARD,1,1);
         d.runTickMoves();
-        d.applyBuildingBuffsToCharacter();
+        d.applyStaticBuildingBuffsToCharacter();
         //assumes player hp starts at 100 and vilage adds 2
         //Shouldn't add onto max hp
         assertTrue(d.getCharacterHP() == 100);
@@ -145,13 +136,12 @@ public class BuildingsTest{
         LoopManiaWorld d = new LoopManiaWorld(1, 3, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
-        HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
-        d.setHerosCastle(hc);
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
         d.setCharacter(testCharacter);
         d.spawnBuilding(CardType.VILLAGE_CARD,1,1);
         d.runTickMoves();
         d.decreaseCharacterHp(1);
-        d.applyBuildingBuffsToCharacter();
+        d.applyStaticBuildingBuffsToCharacter();
         //assumes player hp starts at 100 and vilage adds 2
         //Shouldn't add onto max hp
         assertTrue(d.getCharacterHP() == 100);
@@ -168,8 +158,7 @@ public class BuildingsTest{
         LoopManiaWorld d = new LoopManiaWorld(1, 3, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
-        HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
-        d.setHerosCastle(hc);
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
         d.setCharacter(testCharacter);
 
         Card card;
@@ -179,7 +168,7 @@ public class BuildingsTest{
 
         d.convertCardToBuildingByCoordinates(card.getX(), card.getY(), 2, 2);
         d.runTickMoves();
-        d.applyBuildingBuffsToCharacter();
+        d.applyCampfireBuffToCharacter();
 
         //assumes base attack is 5
         assertTrue(d.getCharacterAttack() == 10);
@@ -196,8 +185,7 @@ public class BuildingsTest{
         LoopManiaWorld d = new LoopManiaWorld(1, 3, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
-        HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
-        d.setHerosCastle(hc);
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
         d.setCharacter(testCharacter);
 
         Card card;
@@ -231,8 +219,7 @@ public class BuildingsTest{
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
         testCharacter.setAttack(0);
-        HerosCastle hc = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
-        d.setHerosCastle(hc);
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
         d.setCharacter(testCharacter);
 
         Spawner spawnB = (Spawner) d.spawnBuilding(CardType.VAMPIRECASTLE_CARD, 2, 1);
@@ -253,7 +240,7 @@ public class BuildingsTest{
         d.nextCycle();
         d.possiblySpawnEnemies();
         d.runTickMoves();
-        d.applyBuildingDebuffsToEnemies();
-        assertTrue(d.getFirstEnemy().getHealth()== 10);
+        d.applyTrapsToEnemies();
+        assertTrue(d.getFirstEnemy().getCurrentHealth()== 10);
     }
 }

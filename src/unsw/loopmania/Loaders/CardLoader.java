@@ -2,9 +2,9 @@ package unsw.loopmania.Loaders;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.Cards.*;
 
 public class CardLoader{
@@ -27,7 +27,7 @@ public class CardLoader{
         cards.add(new TrapCard(new SimpleIntegerProperty(cardEntitiesSize), new SimpleIntegerProperty(0)));
         cards.add(new CampfireCard(new SimpleIntegerProperty(cardEntitiesSize), new SimpleIntegerProperty(0)));
         /* Now randomly choose a card */
-        return cards.get(new Random().nextInt(cards.size()));
+        return cards.get(LoopManiaWorld.rand.nextInt(cards.size()));
     }
 
 }

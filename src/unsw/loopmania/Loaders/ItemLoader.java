@@ -3,18 +3,16 @@ package unsw.loopmania.Loaders;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Random;
 
 import org.javatuples.Pair;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.Items.*;
 import unsw.loopmania.Types.ItemType;
 
 public class ItemLoader{
 
-    /* Single thread, so no need to worry */
-    public static Random random = new Random();
     /**
      * Creating and returning a random item object (Factory pattern)
      * @return A random item object
@@ -47,8 +45,8 @@ public class ItemLoader{
         normalItems.add(new HealthPotion(x, y));
         /* Now randomly choose a item */
         /* If chance < 5% get random item */
-        if(rareItems.size() == 0 || random.nextDouble() >= 0.05) return normalItems.get(random.nextInt(normalItems.size()));
-        return rareItems.get(random.nextInt(rareItems.size()));
+        if(rareItems.size() == 0 || LoopManiaWorld.rand.nextDouble() >= 0.05) return normalItems.get(LoopManiaWorld.rand.nextInt(normalItems.size()));
+        return rareItems.get(LoopManiaWorld.rand.nextInt(rareItems.size()));
     }
 
     public static Item loadBoughtItem(ItemType type, int nodeX, int nodeY){
@@ -108,7 +106,7 @@ public class ItemLoader{
         }
     }
 
-    public static List<Item> loadShopItems(EnumMap<ItemType, Pair<Integer, Integer>> itemPositions){
+    public static List<Item> loadShopBuyItems(EnumMap<ItemType, Pair<Integer, Integer>> itemPositions){
         /**
          * Define shop items position manually ???
          */
@@ -141,6 +139,19 @@ public class ItemLoader{
         SimpleIntegerProperty healthPotionPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.HEALTH_POTION).getValue0());
         SimpleIntegerProperty healthPotionPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.HEALTH_POTION).getValue1());
         result.add(new HealthPotion(healthPotionPosX, healthPotionPosY));
+
+        return result;
+    }
+
+    public static List<Item> loadShopSellItems(EnumMap<ItemType, Pair<Integer, Integer>> itemPositions){
+        /**
+         * Define shop items position manually ???
+         */
+        List<Item> result = ItemLoader.loadShopBuyItems(itemPositions);
+        
+        SimpleIntegerProperty theOneRingPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.THE_ONE_RING).getValue0());
+        SimpleIntegerProperty theOneRingPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.THE_ONE_RING).getValue1());
+        result.add(new TheOneRing(theOneRingPosX, theOneRingPosY));
 
         return result;
     }

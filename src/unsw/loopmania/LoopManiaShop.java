@@ -19,20 +19,23 @@ public class LoopManiaShop {
     private LoopManiaShopController controller;
     private LoopManiaWorldController parentController;
     
-    private EnumMap<ItemType, Integer> itemPrices;
+    private EnumMap<ItemType, Integer> itemBuyPrices;
+    private EnumMap<ItemType, Integer> itemSellPrices;
 
     private DifficultyBehaviour difficultyBehaviour;
 
     private List<Item> boughtItems;
 
-    private final String successMessage = new String("Buy Success");
+    private final String buySuccessMessage = new String("Buy Success");
+    private final String sellSuccessMessage = new String("Sell Success");
 
     public LoopManiaShop(LoopManiaWorld world, LoopManiaWorldController parentController, LoopManiaShopController controller){
         this.world = world;
         this.parentController = parentController;
         this.controller = controller;
         boughtItems = new ArrayList<>();
-        itemPrices = ShopLoader.loadItemPrices();
+        itemBuyPrices = ShopLoader.loadItemBuyPrices();
+        itemSellPrices = ShopLoader.loadItemSellPrices();
         switch(parentController.getDifficulty()){
             case STANDARD:
                 difficultyBehaviour = new StandardMode();
@@ -47,18 +50,19 @@ public class LoopManiaShop {
     }
 
     public String buyItem(ItemType type){
-        String errorMessage = successMessage;
-        if(world.getCharacter().getGold() < itemPrices.get(type)){
+        String errorMessage = buySuccessMessage;
+        if(world.getCharacter().getGold() < itemBuyPrices.get(type)){
             errorMessage = new String("Insufficient Gold");
         }else if(world.isUnequippedInventoryFull()){
             errorMessage = new String("Inventory is Full");
         }else{
             if(difficultyBehaviour.canBuy(boughtItems)){
-                world.getCharacter().minusGold(itemPrices.get(type));
+                world.getCharacter().minusGold(itemBuyPrices.get(type));
                 controller.updateShopGold();
                 Item boughtItem = ItemLoader.loadBoughtItem(type, world.getFirstAvailableSlotForItem().getValue0(), world.getFirstAvailableSlotForItem().getValue1());
                 boughtItems.add(boughtItem);
                 world.addUnequippedItem(boughtItem);
+                controller.addInventoryItem(boughtItem);
                 parentController.onLoadUnequippedItem(boughtItem);
             }else{
                 errorMessage = difficultyBehaviour.getErrorMessage();
@@ -67,11 +71,53 @@ public class LoopManiaShop {
         return errorMessage;
     }
 
-    public String getItemPrice(ItemType type){
-        return Integer.toString(itemPrices.get(type));
+    public String sellItem(ItemType type){
+        String errorMessage = sellSuccessMessage;
+        if(hasItme(type)){
+            world.getCharacter().addGold(itemSellPrices.get(type));
+            controller.updateShopGold();
+            Item removedItem = removeUnequippedItemByType(type);
+            if(removedItem != null) removedItem.destroy();
+        }else{
+            errorMessage = new String("No Such Item");
+        }
+        return errorMessage;
     }
 
-    public String getSuccessMessage(){
-        return successMessage;
+    private Item removeUnequippedItemByType(ItemType type){
+        Item temp = null;
+        for(Item item : world.getUnequippedInventoryItems()){
+            if(item.getItemType() == type){
+                temp = item;
+                break;
+            }
+        }
+        if(temp != null){
+            world.getUnequippedInventoryItems().remove(temp);
+        }
+        return temp;
+    }
+
+    public String getItemBuyPrice(ItemType type){
+        return Integer.toString(itemBuyPrices.get(type));
+    }
+
+    public String getItemSellPrice(ItemType type){
+        return Integer.toString(itemSellPrices.get(type));
+    }
+
+    private boolean hasItme(ItemType type){
+        for(Item item : world.getUnequippedInventoryItems()){
+            if(item.getItemType() == type) return true;
+        }
+        return false;
+    }
+
+    public String getBuySuccessMessage(){
+        return buySuccessMessage;
+    }
+
+    public String getSellSuccessMessage(){
+        return sellSuccessMessage;
     }
 }

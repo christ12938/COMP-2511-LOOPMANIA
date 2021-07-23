@@ -162,7 +162,7 @@ public class ItemsTest {
     @Test
     public void TestAddRandomItems() {
         LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
-
+        //Random??
         World.loadRandomUnenquippedInventoryItem();
         World.loadRandomUnenquippedInventoryItem();
         World.loadRandomUnenquippedInventoryItem();
@@ -240,7 +240,7 @@ public class ItemsTest {
         World.addUnequippedHealthPotion();
         World.decreaseCharacterHp(50);
         World.useHealthPotion();
-        assertEquals(60,World.getCharacterCurrentHp(), "comparing two doubles");
+        assertEquals(55,World.getCharacterCurrentHp(), "comparing two doubles");
     }
 
     @Test
@@ -270,7 +270,7 @@ public class ItemsTest {
         World.useHealthPotion();
         World.useHealthPotion();
         
-        assertEquals(60,World.getCharacterCurrentHp(), "comparing two doubles");
+        assertEquals(35, World.getCharacterCurrentHp(), "comparing two doubles");
     }
     
     @Test
