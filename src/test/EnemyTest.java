@@ -20,7 +20,9 @@ import unsw.loopmania.PathPosition;
 import unsw.loopmania.Enemies.CritStrategy;
 import unsw.loopmania.Enemies.Slug;
 import unsw.loopmania.Enemies.Vampire;
+import unsw.loopmania.Enemies.VampireCritStrategy;
 import unsw.loopmania.Enemies.Zombie;
+import unsw.loopmania.Enemies.ZombieCritStrategy;
 import unsw.loopmania.Types.EnemyType;
 
 
@@ -183,13 +185,11 @@ public class EnemyTest {
         Character character = new Character(new PathPosition(0, orderedPath));
         AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), 0);
 
-        assertTrue(soldier.isAllied());
-        CritStrategy crit = new ZombieStrategy();
-        crit.applyCrit(soldier);
-        crit.applyCrit(character);
-        crit.processCrit();
+        assertTrue(character.getAlliedSoldiers().size() == 1);
+        CritStrategy crit = new ZombieCritStrategy();
+        crit.applyCritDamage(0);
 
-        assertFalse(soldier.isAllied());
+        assertFalse(character.getAlliedSoldiers().size() == 0);
     }
 
     @Test
@@ -199,9 +199,9 @@ public class EnemyTest {
         orderedPath.add(pair1);
 
         Character character = new Character(new PathPosition(0, orderedPath));
-        double health = character.getHealth();
+        double health = character.getCurrentHealth();
 
-        CritStrategy crit = new VampireStrategy();
+        CritStrategy crit = new VampireCritStrategy();
         crit.applyCrit(character);
 
         for (int i = 0; i < 6; i++) {
