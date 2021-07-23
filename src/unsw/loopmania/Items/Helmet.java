@@ -7,11 +7,11 @@ import unsw.loopmania.Types.ItemType;
  * represents an equipped or unequipped helmet in the backend world
  */
 public class Helmet extends DefensiveItems{
-    private int defense;
 
+    private final int defense = 3;
+    
     public Helmet(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
-        this.defense = 3;
     }
     
     public ItemType getItemType(){
@@ -20,5 +20,9 @@ public class Helmet extends DefensiveItems{
 
     public int getDefense() {
        return this.defense; 
+    }
+
+    public Item copyItem(int x, int y) {
+        return new Helmet(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
     }
 }

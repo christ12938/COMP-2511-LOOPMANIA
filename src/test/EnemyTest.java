@@ -8,18 +8,19 @@ import java.util.List;
 
 import org.junit.Test;
 
+import javafx.beans.property.SimpleIntegerProperty;
+
 import org.javatuples.Pair;
 
 import unsw.loopmania.AlliedSoldier;
 import unsw.loopmania.Character;
+import unsw.loopmania.HerosCastle;
+import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Enemies.CritStrategy;
 import unsw.loopmania.Enemies.Slug;
-import unsw.loopmania.Enemies.StandardCritStrategy;
 import unsw.loopmania.Enemies.Vampire;
-import unsw.loopmania.Enemies.VampireStrategy;
 import unsw.loopmania.Enemies.Zombie;
-import unsw.loopmania.Enemies.ZombieStrategy;
 import unsw.loopmania.Types.EnemyType;
 
 
@@ -32,9 +33,10 @@ public class EnemyTest {
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
         orderedPath.add(pair2);
-        
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
         Character character = new Character(new PathPosition(0, orderedPath));
-        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
+        Slug slug = new Slug(new PathPosition(0, orderedPath));
         assertTrue(slug.inBattleRadius(character));
     }
 
@@ -48,9 +50,10 @@ public class EnemyTest {
         orderedPath.add(pair1);
         orderedPath.add(pair2);
         orderedPath.add(pair3);
-        
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
         Character character = new Character(new PathPosition(0, orderedPath));
-        Slug slug = new Slug(new PathPosition(2, orderedPath), pair1);
+        Slug slug = new Slug(new PathPosition(2, orderedPath));
         assertFalse(slug.inBattleRadius(character));
     }
 
@@ -62,9 +65,10 @@ public class EnemyTest {
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
         orderedPath.add(pair2);
-        
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
         Character character = new Character(new PathPosition(0, orderedPath));
-        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
+        Slug slug = new Slug(new PathPosition(0, orderedPath));
         assertTrue(slug.inSupportRadius(character));
     }
 
@@ -78,9 +82,10 @@ public class EnemyTest {
         orderedPath.add(pair1);
         orderedPath.add(pair2);
         orderedPath.add(pair3);
-        
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
         Character character = new Character(new PathPosition(0, orderedPath));
-        Slug slug = new Slug(new PathPosition(2, orderedPath), pair1);
+        Slug slug = new Slug(new PathPosition(2, orderedPath));
         assertFalse(slug.inSupportRadius(character));
     }
 
@@ -90,15 +95,17 @@ public class EnemyTest {
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
         Character character = new Character(new PathPosition(0, orderedPath));
-        character.setHealth(99999999);
-        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
-        double health = character.getHealth();
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        character.setCurrentHealth(99999999);
+        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        double health = character.getCurrentHealth();
 
         for (int i = 0; i < 100; i++) {
             slug.dealDamage(character);
         }
 
-        assertTrue(health > character.getHealth());
+        assertTrue(health > character.getCurrentHealth());
     }
 
     @Test
@@ -106,11 +113,13 @@ public class EnemyTest {
         Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
-        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
-        double health = slug.getHealth();
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
 
-        slug.takeDamage(5);
-        assertTrue(health > slug.getHealth());
+        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        double health = slug.getCurrentHealth();
+
+        slug.takeDamage(5, null);
+        assertTrue(health > slug.getCurrentHealth());
     }
 
     @Test
@@ -118,10 +127,11 @@ public class EnemyTest {
         Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
 
-        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
-        Vampire vampire = new Vampire(new PathPosition(0, orderedPath), pair1);
-        Zombie zombie = new Zombie(new PathPosition(0, orderedPath), pair1);
+        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        Vampire vampire = new Vampire(new PathPosition(0, orderedPath));
+        Zombie zombie = new Zombie(new PathPosition(0, orderedPath));
 
         assertTrue(slug.getEnemyType().equals(EnemyType.SLUG));
         assertTrue(vampire.getEnemyType().equals(EnemyType.VAMPIRE));
@@ -138,8 +148,10 @@ public class EnemyTest {
         orderedPath.add(pair1);
         orderedPath.add(pair2);
         orderedPath.add(pair3);
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
 
-        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
+
+        Slug slug = new Slug(new PathPosition(0, orderedPath));
         for (int i = 0; i < 100; i++) {
             slug.move();
         }
@@ -150,15 +162,16 @@ public class EnemyTest {
         Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
 
         Character character = new Character(new PathPosition(0, orderedPath));
-        double health = character.getHealth();
+        double health = character.getCurrentHealth();
 
         CritStrategy crit = new StandardCritStrategy();
         crit.applyCrit(character);
         crit.processCrit();
 
-        assertTrue(health > character.getHealth());
+        assertTrue(health > character.getCurrentHealth());
     }
 
     @Test

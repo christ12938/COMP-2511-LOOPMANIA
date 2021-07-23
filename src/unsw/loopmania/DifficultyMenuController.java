@@ -8,7 +8,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 import unsw.loopmania.Types.DifficultyType;
 
 public class DifficultyMenuController {

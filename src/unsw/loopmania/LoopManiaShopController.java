@@ -6,6 +6,8 @@ import java.util.EnumMap;
 import org.javatuples.Pair;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -28,7 +30,13 @@ import unsw.loopmania.Types.ItemType;
 public class LoopManiaShopController {
 
     @FXML
-    private GridPane shopSlot;
+    private GridPane shopBuySlot;
+
+    @FXML
+    private GridPane shopSellSlot;
+
+    @FXML
+    private GridPane inventorySlot;
     
     @FXML
     private Label goldValue;
@@ -49,8 +57,10 @@ public class LoopManiaShopController {
     private Image shieldImage;
     private Image helmetImage;
     private Image healthPotionImage;
+    private Image theOneRingImage;
 
-    private EnumMap<ItemType, Pair<Integer, Integer>> itemPositions;
+    private EnumMap<ItemType, Pair<Integer, Integer>> itemBuyPositions;
+    private EnumMap<ItemType, Pair<Integer, Integer>> itemSellPositions;
 
     private LoopManiaWorldController parent;
     private LoopManiaWorld world;
@@ -75,8 +85,10 @@ public class LoopManiaShopController {
         shieldImage = new Image((new File("src/images/shield.png")).toURI().toString());
         helmetImage = new Image((new File("src/images/helmet.png")).toURI().toString());
         healthPotionImage = new Image((new File("src/images/brilliant_blue_new.png")).toURI().toString());
+        theOneRingImage = new Image((new File("src/images/the_one_ring.png")).toURI().toString());
 
-        itemPositions = ShopLoader.loadItemPositions();
+        itemBuyPositions = ShopLoader.loadItemBuyPositions();
+        itemSellPositions = ShopLoader.loadItemSellPositions();
 
         this.parent = parent;
         this.world = world;
@@ -88,50 +100,18 @@ public class LoopManiaShopController {
 
         setWindowDragBehaviour();
 
-        shopSlot.setHgap(5.0);
-        shopSlot.setVgap(5.0);
+        shopBuySlot.setHgap(5.0);
+        shopBuySlot.setVgap(5.0);
+        shopSellSlot.setHgap(5.0);
+        shopSellSlot.setVgap(5.0);
         goldValue.setText(Integer.toString(world.getCharacter().getGold()));
 
-        ImageView view = null;
-        for(Item item : ItemLoader.loadShopItems(itemPositions)){
-            switch(item.getItemType()){
-                case SWORD:
-                    view = new ImageView(swordImage);
-                    break;
-                case STAKE:
-                    view = new ImageView(stakeImage);
-                    break;
-                case STAFF:
-                    view = new ImageView(staffImage);
-                    break;
-                case ARMOUR:
-                    view = new ImageView(armourImage);
-                    break;
-                case SHIELD:
-                    view = new ImageView(shieldImage);
-                    break;
-                case HELMET:
-                    view = new ImageView(helmetImage);
-                    break;
-                case HEALTH_POTION:
-                    view = new ImageView(healthPotionImage);
-                    break;
-                default:
-                    return; /* Should never happen */
-            }
+        onLoadShopBuyItems();
+        onLoadInventoryItems();
+        onLoadShopSellItems();
 
-            Button buyButton = new Button("Buy");
-            VBox vbox = new VBox();
-            vbox.setAlignment(Pos.CENTER);
-            vbox.getChildren().add(view);
-            vbox.getChildren().add(new Label("$" + shop.getItemPrice(item.getItemType())));
-            vbox.getChildren().add(buyButton);
-            setBuyButtonHandler(item.getItemType(), buyButton);
-            shopSlot.add(vbox, item.getX(), item.getY());
-
-            /* Found on stack overflow. Request focus later */
-            Platform.runLater(() -> anchorPaneRoot.requestFocus());
-        }
+        /* Found on stack overflow. Request focus later */
+        Platform.runLater(() -> anchorPaneRoot.requestFocus());
     }
 
     /**
@@ -143,7 +123,7 @@ public class LoopManiaShopController {
             public void handle(ActionEvent event) {
                 String returnedMessage = shop.buyItem(type);
                 Color color = null;
-                if(returnedMessage.equals(shop.getSuccessMessage())){
+                if(returnedMessage.equals(shop.getBuySuccessMessage())){
                     color = Color.GREEN;
                 }else{
                     color = Color.RED;
@@ -155,6 +135,30 @@ public class LoopManiaShopController {
            }     
         });
     }
+
+    /**
+     * Set Buy button actions
+     */
+    private void setSellButtonHandler(ItemType type, Button sellButton){
+        sellButton.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                String returnedMessage = shop.sellItem(type);
+                Color color = null;
+                if(returnedMessage.equals(shop.getSellSuccessMessage())){
+                    color = Color.GREEN;
+                }else{
+                    color = Color.RED;
+                }
+                PopUpMessageController popUpMessageController = parent.openPopUpMessageWindow(shopStage, returnedMessage, color, "Back");
+                popUpMessageController.setQuitSwitcher(()->{
+                    popUpMessageController.getStage().close();
+                });
+           }     
+        });
+    }
+
+
 
     /**
      * Set the drag behaviour of the shop window
@@ -181,6 +185,20 @@ public class LoopManiaShopController {
             
         });
     }
+
+    public void addInventoryItem(Item item){
+        ImageView view = getImageViewByType(item);
+        inventorySlot.add(view, item.getX(), item.getY());
+        item.shouldExist().addListener(new ChangeListener<Boolean>(){
+            @Override
+            public void changed(ObservableValue<? extends Boolean> obervable, Boolean oldValue, Boolean newValue) {
+                if(oldValue == true && newValue == false){
+                    inventorySlot.getChildren().remove(view);
+                }
+            }
+        });
+    }
+
     /**
      * Update the shop gold
      */
@@ -194,4 +212,81 @@ public class LoopManiaShopController {
         shopStage.close();
         parent.startTimer();
     }
+
+    private void onLoadShopBuyItems(){
+        for(Item item : ItemLoader.loadShopBuyItems(itemBuyPositions)){
+            ImageView view = getImageViewByType(item);
+            Button buyButton = new Button("Buy");
+            VBox vbox = new VBox();
+            vbox.setAlignment(Pos.CENTER);
+            vbox.getChildren().add(view);
+            vbox.getChildren().add(new Label("$" + shop.getItemBuyPrice(item.getItemType())));
+            vbox.getChildren().add(buyButton);
+            setBuyButtonHandler(item.getItemType(), buyButton);
+            shopBuySlot.add(vbox, item.getX(), item.getY());
+        }
+    }
+
+    private void onLoadShopSellItems(){
+        for(Item item : ItemLoader.loadShopSellItems(itemSellPositions)){
+            ImageView view = getImageViewByType(item);
+            Button sellButton = new Button("Sell");
+            VBox vbox = new VBox();
+            vbox.setAlignment(Pos.CENTER);
+            vbox.getChildren().add(view);
+            vbox.getChildren().add(new Label("$" + shop.getItemSellPrice(item.getItemType())));
+            vbox.getChildren().add(sellButton);
+            setSellButtonHandler(item.getItemType(), sellButton);
+            shopSellSlot.add(vbox, item.getX(), item.getY());
+        }
+    }
+
+    private void onLoadInventoryItems(){
+        // add the empty slot images for the unequipped inventory
+        Image inventorySlotImage = new Image((new File("src/images/empty_slot.png")).toURI().toString());
+        for (int x=0; x<LoopManiaWorld.unequippedInventoryWidth; x++){
+            for (int y=0; y<LoopManiaWorld.unequippedInventoryHeight; y++){
+                ImageView emptySlotView = new ImageView(inventorySlotImage);
+                inventorySlot.add(emptySlotView, x, y);
+            }
+        }
+
+        for(Item item : world.getUnequippedInventoryItems()){
+            addInventoryItem(item);
+        }
+    }
+
+    private ImageView getImageViewByType(Item item){
+        ImageView view = null;
+        switch(item.getItemType()){
+            case SWORD:
+                view = new ImageView(swordImage);
+                break;
+            case STAKE:
+                view = new ImageView(stakeImage);
+                break;
+            case STAFF:
+                view = new ImageView(staffImage);
+                break;
+            case ARMOUR:
+                view = new ImageView(armourImage);
+                break;
+            case SHIELD:
+                view = new ImageView(shieldImage);
+                break;
+            case HELMET:
+                view = new ImageView(helmetImage);
+                break;
+            case HEALTH_POTION:
+                view = new ImageView(healthPotionImage);
+                break;
+            case THE_ONE_RING:
+                view = new ImageView(theOneRingImage);
+                break;
+            default:
+                view = null; /* Should never happen */
+        }
+        return view;
+    }
 }
+

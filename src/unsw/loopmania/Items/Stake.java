@@ -7,11 +7,11 @@ import unsw.loopmania.Types.ItemType;
  * represents an equipped or unequipped stake in the backend world
  */
 public class Stake extends OffensiveItems{
-    private int attack;
+   
+    private final int attack = 3;
 
     public Stake(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
-        this.attack = 3;
     }
 
     public ItemType getItemType(){
@@ -20,5 +20,9 @@ public class Stake extends OffensiveItems{
 
     public int getAttack() {
         return this.attack;
+    }
+
+    public Item copyItem(int x, int y){
+        return new Stake(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
     }
 }

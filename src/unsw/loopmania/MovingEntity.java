@@ -23,6 +23,10 @@ public abstract class MovingEntity extends Entity {
         this.position = position;
     }
 
+    public PathPosition getPathPosition(){
+        return this.position;
+    }
+
     /**
      * move clockwise through the path
      */

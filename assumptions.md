@@ -1,7 +1,5 @@
 Battle will be turn-based.
-Character attacks before allied soldiers in order of top to bottom.
-Enemies will attack a random opponent each turn via an even uniform distribution.
-Enemies will spawn randomly via an even uniform distribution, amount of spawn enemies will be relative to path size.
+Slug will spawn randomly via an even uniform distribution, amount of spawn slugs will be relative to path size.
 Enemies can exist on the same tile as a building.
 A tile can only hold one building.
 A potion can be consumed by pressing the "H" key.
@@ -20,23 +18,22 @@ Character's max health is set to 100
 Assume no enemies can enter hero castle
 Assume no battle will occur during the tick into hero castle
 Assume Progress per time tick is as follow:
-    1. Move character and enemies
-    2. Check if character is on a spawned item and add it to the inventory
-    3. Spawn items on tile
-    4. Spawn enemies
-    5. Apply Building Debuffs to enemy
-    6. Apply Building Buffs to character
-    7. Run Battles if character is not on hero castle
-    8. Remove Building buffs from character
-    9. Remove Building Debuffs from enemy (Not used right now)
-    P.S. Equipped items buff are in real time, so wont be included in the timeline
+1. Move character and enemies
+2. Check if character is on a spawned item and add it to the inventory
+3. Spawn items on tiles
+4. Spawn enemies
+5. Apply Traps to enemies
+6. Apply static (permanant) Building Buffs to character
+7. Run Battles if character is not on hero castle
+P.S. Equipped items buff are in real time, so wont be included in the timeline
+
 Assume enemies can spawn on any structures, except Hero's Castle.
 Assume if the no tiles are available for the spawner to spawn enemies, then that tile is not placable for that type of spawner
-When passing through a village player gains 2 HP
+When passing through a village player gains 10 HP
 The radius for towers and campfires will be 5
 Towers don't stack
 Towers do 5 damage
-Enemies will take 30 dmg from traps
+Enemies will take 10 dmg from traps
 When the shop is opened, player is forced to exit the shop manually in order for the game to continue
 All shop items are $10.
 All basic items sell for $5
@@ -46,15 +43,34 @@ Assume buildings will not spawn enemies on top of character
 Zombies are spawned when cycle%1 == 0 (except for cycle 0)
 Vampires are spawned when cycle%5 == 0 (except for cycle 0)
 Items in equipped inventory cannot be sold at the shop
-A slug will have an attack of 5, battle radius of 2 and support radius of 2
-A Zombie will have an attack of 10, battle radius of 3 and support radius of 3
-A vampire will have an attack of 15, battle radius of 4 and support radius of 5
-A vampire's crit will deal damage for a random number between 2 and 4 turns
 Assume rare items has a 5% chance of spawning and normal items has a 95% chance of spawning, and the number of chances of obtaining any specific type of rare items would be uniformly random among those chances
 Assume only basic goals in milestone 2
 Assume quantity of goal condition is smaller than Integer.MAX_VALUE
-Assume items that can be spawn on tiles have a spawn chance of 10%.
+Assume items that can be spawn on tiles have a spawn chance of 5%.
 Assume items that can be spawn on tiles will not spawn on any entities
 Assume enemies can pass through items
 Assume 10 experiece will be added if the inventory is full when picking up the item.
+
+Battle process:
+1. Randomly pick an enemy
+
+Character's turn
+2. Character attacks enemy
+3. Allied Soldiers attack enemy (If any)
+4. Towers attack enemy (If any)
+
+If enemy is defeated, loom for next enemy
+
+Enemy's turn
+5. Enemy attack character
+6. Enemy attack allied soldiers (if any)
+
+Stats:
+Allied Soldiers: Health = 30, Attack =5
+Character: Health = 100, Attack = 5, Defense = 0
+Slug: Health = 10, Atack = 5, Crit chance = 10%, Crit multiplier = 150%, Battle Radius = 2, Support Radius = 2
+Zombie: Health = 10, Atack = 10, Crit chance = 10%, Crit multiplier = N/A, Battle Radius = 3, Support Radius = 3
+Vampire: Health = 20, Atack = 20, Crit chance = 20%, Crit multiplier = 100 - 200% (Uniformly random), Battle Radius = 3, Support Radius = 4
+
+
 

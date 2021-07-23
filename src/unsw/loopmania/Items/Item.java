@@ -13,6 +13,19 @@ public abstract class Item extends StaticEntity{
         super(x, y);
     }
 
+    public boolean isEquipable(){
+        return getItemType().isEquipable();
+    }
+
+    public boolean isOffensive(){
+        return getItemType().isOffensive();
+    }
+
+    public boolean isDefensive(){
+        return getItemType().isDefensive();
+    }
+
     public abstract ItemType getItemType();
+    public abstract Item copyItem(int x, int y);
     
 }

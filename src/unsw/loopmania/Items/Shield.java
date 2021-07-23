@@ -7,10 +7,11 @@ import unsw.loopmania.Types.ItemType;
  * represents an equipped or unequipped shield in the backend world
  */
 public class Shield extends DefensiveItems{
-    private int defense;
+
+    private final int defense = 3;
+
     public Shield(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
-        this.defense = 3;
     }
     
     public ItemType getItemType(){
@@ -20,4 +21,8 @@ public class Shield extends DefensiveItems{
     public int getDefense() {
         return this.defense; 
      }
+
+    public Item copyItem(int x, int y) {
+        return new Shield(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
+    }
 }

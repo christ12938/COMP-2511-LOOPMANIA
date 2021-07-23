@@ -8,7 +8,10 @@ import java.util.List;
 import org.javatuples.Pair;
 import org.junit.Test;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.AlliedSoldier;
+import unsw.loopmania.HerosCastle;
+import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Enemies.Slug;
 
@@ -21,23 +24,23 @@ public class AlliedSoldierTest {
 
         AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), 0);
 
-        assertTrue(soldier.getHealth() == 30);
+        assertTrue(soldier.getCurrentHealth() == 30);
     }
 
     @Test
     public void TestDealDamage() {
         Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
-        orderedPath.add(pair1);
-
+        orderedPath.add(pair1);        
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(0), new SimpleIntegerProperty(0));
         AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), 0);
         //TODO: I changed the parameters so the second value is the position of heros castle
-        Slug slug = new Slug(new PathPosition(0, orderedPath), pair1);
-        double health = slug.getHealth();
+        Slug slug = new Slug(new PathPosition(0, orderedPath));
+        double health = slug.getCurrentHealth();
 
         soldier.dealDamage(slug);
 
-        assertTrue(health > slug.getHealth());
+        assertTrue(health > slug.getCurrentHealth());
     }
 
     @Test 
@@ -46,12 +49,14 @@ public class AlliedSoldierTest {
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
 
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(0), new SimpleIntegerProperty(0));
+
         AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), 0);
-        double health = soldier.getHealth();
+        double health = soldier.getCurrentHealth();
 
-        soldier.takeDamage(5);
+        soldier.takeDamage(5, new Slug(new PathPosition(0, orderedPath)));
 
-        assertTrue((health - 5) == soldier.getHealth());
+        assertTrue((health - 5) == soldier.getCurrentHealth());
     }
 
     @Test
