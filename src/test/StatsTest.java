@@ -13,12 +13,14 @@ import org.junit.jupiter.api.Test;
 import org.javatuples.Pair;
 import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
+import unsw.loopmania.Items.Anduril;
 import unsw.loopmania.Items.Armour;
 import unsw.loopmania.Items.Helmet;
 import unsw.loopmania.Items.Shield;
 import unsw.loopmania.Items.Staff;
 import unsw.loopmania.Items.Stake;
 import unsw.loopmania.Items.Sword;
+import unsw.loopmania.Items.TreeStump;
 import unsw.loopmania.Character;
 
 
@@ -155,7 +157,7 @@ public class StatsTest {
     }
 
     @Test
-    public void TestAndruilStat(){
+    public void TestAndurilStat(){
         Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
         Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
@@ -169,10 +171,10 @@ public class StatsTest {
         assertEquals(15, anduril.getAttack());
         
         World.getCharacter().equip(anduril);
-        assertEquals(20, World.getCharacterDefense());
+        assertEquals(20, World.getCharacterAttack());
 
         World.getCharacter().unequip(anduril);
-        assertEquals(5, World.getCharacterDefense());
+        assertEquals(5, World.getCharacterAttack());
     
     }
 
@@ -187,14 +189,14 @@ public class StatsTest {
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
         World.setCharacter(testCharacter);
 
-        TreeStump treeStump = World.addUnequippedStump();
+        TreeStump treeStump = World.addUnequippedTreeStump();
         assertEquals(15, treeStump.getDefense());
         
         World.getCharacter().equip(treeStump);
-        assertEquals(20, World.getCharacterDefense());
+        assertEquals(15, World.getCharacterDefense());
 
         World.getCharacter().unequip(treeStump);
-        assertEquals(5, World.getCharacterDefense());
+        assertEquals(0, World.getCharacterDefense());
     
     }
 
@@ -293,7 +295,7 @@ public class StatsTest {
         assertEquals(10, World.getCharacterAttack());
         assertEquals(6, World.getCharacterDefense());
     }
-}
+
 
 
 @Test
@@ -324,4 +326,6 @@ public void TestCharacterStatsWithRareEquipment() {
     assertEquals(100, World.getCharacterCurrentHp(), "comparing two doubles");
     assertEquals(0, World.getCharacterDefense());
     assertEquals(5, World.getCharacterAttack());
+    }
+
 }

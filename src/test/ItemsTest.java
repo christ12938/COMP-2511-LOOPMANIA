@@ -119,7 +119,7 @@ public class ItemsTest {
     public void TestRemoveAndAddTreeStump() {
         LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
         assertSame(World.addUnequippedTreeStump().getItemType(), ItemType.TREE_STUMP);
-        assertSame(World.addUnequippedTreeStump().getItemType(), ItemType.THE_TREE_STUMP);
+        assertSame(World.addUnequippedTreeStump().getItemType(), ItemType.TREE_STUMP);
 
         World.removeUnequippedInventoryItemByCoordinates(0, 0);
         World.removeUnequippedInventoryItemByCoordinates(1, 0);

@@ -664,6 +664,40 @@ public class LoopManiaWorld {
     }
 
     /**
+     * spawn an anduril in the world and return the sword entity
+     * @return an anduril to be spawned in the controller as a JavaFX node
+     */
+    public Anduril addUnequippedAnduril(){
+        Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
+        if (firstAvailableSlot == null){
+            removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
+            firstAvailableSlot = getFirstAvailableSlotForItem();
+        }
+        Anduril anduril = new Anduril(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
+        unequippedInventoryItems.add(anduril);
+        return anduril;
+    }
+
+    /**
+     * spawn an anduril in the world and return the sword entity
+     * @return an anduril to be spawned in the controller as a JavaFX node
+     */
+    public TreeStump addUnequippedTreeStump(){
+        Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
+        if (firstAvailableSlot == null){
+            removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
+            firstAvailableSlot = getFirstAvailableSlotForItem();
+        }
+        TreeStump treeStump = new TreeStump(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
+        unequippedInventoryItems.add(treeStump);
+        return treeStump;
+    }
+
+    /**
      * equip an unequipped item
      */
     public Item equipItem(int nodeX, int nodeY, int x, int y) {
