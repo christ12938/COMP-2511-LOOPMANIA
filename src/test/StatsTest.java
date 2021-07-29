@@ -155,6 +155,50 @@ public class StatsTest {
     }
 
     @Test
+    public void TestAndruilStat(){
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, orderedPath);
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
+        Anduril anduril = World.addUnequippedAnduril();
+        assertEquals(15, anduril.getAttack());
+        
+        World.getCharacter().equip(anduril);
+        assertEquals(20, World.getCharacterDefense());
+
+        World.getCharacter().unequip(anduril);
+        assertEquals(5, World.getCharacterDefense());
+    
+    }
+
+    @Test
+    public void TestTreeStuempStat(){
+        Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(test1);
+        orderedPath.add(test2);
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, orderedPath);
+        Character testCharacter = new Character(new PathPosition(1,orderedPath));
+        World.setCharacter(testCharacter);
+
+        TreeStump treeStump = World.addUnequippedStump();
+        assertEquals(15, treeStump.getDefense());
+        
+        World.getCharacter().equip(treeStump);
+        assertEquals(20, World.getCharacterDefense());
+
+        World.getCharacter().unequip(treeStump);
+        assertEquals(5, World.getCharacterDefense());
+    
+    }
+
+    @Test
 
     public void TestBaseStatesCharacter() {
         Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
@@ -249,4 +293,35 @@ public class StatsTest {
         assertEquals(10, World.getCharacterAttack());
         assertEquals(6, World.getCharacterDefense());
     }
+}
+
+
+@Test
+public void TestCharacterStatsWithRareEquipment() {
+    Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
+    Pair<Integer, Integer> test2 = new Pair<Integer, Integer>(1,2);
+    List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+    orderedPath.add(test1);
+    orderedPath.add(test2);
+    LoopManiaWorld World = new LoopManiaWorld(1, 2, orderedPath);
+    Character testCharacter = new Character(new PathPosition(1,orderedPath));
+    World.setCharacter(testCharacter);
+
+    TreeStump treeStump = World.addUnequippedTreeStump();
+    Anduril anduril = World.addUnequippedAnduril();
+    
+    World.getCharacter().equip(treeStump);
+    World.getCharacter().equip(anduril);
+
+    
+    assertEquals(100, World.getCharacterCurrentHp(), "comparing two doubles");
+    assertEquals(15, World.getCharacterDefense());
+    assertEquals(20, World.getCharacterAttack());
+    
+    World.getCharacter().unequip(treeStump);
+    World.getCharacter().unequip(anduril);
+    
+    assertEquals(100, World.getCharacterCurrentHp(), "comparing two doubles");
+    assertEquals(0, World.getCharacterDefense());
+    assertEquals(5, World.getCharacterAttack());
 }
