@@ -1,12 +1,17 @@
 package unsw.loopmania;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.javatuples.Pair;
+import org.junit.Test.None;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 import unsw.loopmania.Buildings.Building;
 import unsw.loopmania.Buildings.Spawner;
 import unsw.loopmania.Buildings.TowerBuilding;
@@ -100,6 +105,10 @@ public class LoopManiaWorld {
 
     public static Random rand = new Random();
 
+    private MediaPlayer moneyPickupAudioPlayer;
+    
+    
+
     /**
      * create the world (constructor)
      *
@@ -119,6 +128,10 @@ public class LoopManiaWorld {
         buildingEntities = new ArrayList<>();
         rareItemsAvailable = new ArrayList<>();
         spawnedItems = new ArrayList<>();
+        
+        String pickupMoney = new File("src/Music/money_pickup.mp3").toURI().toString();
+        moneyPickupAudioPlayer = new MediaPlayer(new Media(pickupMoney));
+        moneyPickupAudioPlayer.setVolume(0.03);
     }
 
     public void setController(LoopManiaWorldController controller){
@@ -1396,6 +1409,8 @@ public class LoopManiaWorld {
                     newItem = ItemLoader.loadSpawnableItems(item.getItemType(), unequippedInventoryItems.get(0).getX(), unequippedInventoryItems.get(0).getY());
                     if(item.getItemType() == ItemType.GOLD){
                         character.addGold(5);
+                        moneyPickupAudioPlayer.play();
+                        moneyPickupAudioPlayer.seek(Duration.ZERO);
                         newItem = null;
                         break;
                     }
@@ -1407,6 +1422,8 @@ public class LoopManiaWorld {
                     newItem = ItemLoader.loadSpawnableItems(item.getItemType(), firstAvailableSlot.getValue0(), firstAvailableSlot.getValue1());
                     if(item.getItemType() == ItemType.GOLD){
                         character.addGold(5);
+                        moneyPickupAudioPlayer.play();
+                        moneyPickupAudioPlayer.seek(Duration.ZERO);
                         newItem = null;
                         break;
                     }

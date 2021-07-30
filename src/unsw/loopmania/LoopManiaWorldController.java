@@ -45,6 +45,9 @@ import unsw.loopmania.Types.CardType;
 import unsw.loopmania.Types.DifficultyType;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Buildings.*;
+import java.io.File;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 
 import java.util.EnumMap;
@@ -284,6 +287,10 @@ public class LoopManiaWorldController {
 
     private volatile boolean isTimelineRunning = false;
 
+    private MediaPlayer backgroundMusicPlayer;
+    private MediaPlayer deathMediaPlayer;
+    
+
     /**
      * @param world world object loaded from file
      * @param initialEntities the initial JavaFX nodes (ImageViews) which should be loaded into the GUI
@@ -348,6 +355,21 @@ public class LoopManiaWorldController {
         anchorPaneRootSetOnDragDropped = new EnumMap<DRAGGABLE_TYPE, EventHandler<DragEvent>>(DRAGGABLE_TYPE.class);
         gridPaneNodeSetOnDragEntered = new EnumMap<DRAGGABLE_TYPE, EventHandler<DragEvent>>(DRAGGABLE_TYPE.class);
         gridPaneNodeSetOnDragExited = new EnumMap<DRAGGABLE_TYPE, EventHandler<DragEvent>>(DRAGGABLE_TYPE.class);
+
+        String backgroundMusic = new File("src/Music/song1.mp3").toURI().toString();
+        String deathSound = new File("src/Music/death.mp3").toURI().toString();
+        
+
+        
+        deathMediaPlayer = new MediaPlayer(new Media(deathSound));
+        backgroundMusicPlayer = new MediaPlayer(new Media(backgroundMusic));
+
+        deathMediaPlayer.setVolume(0.03);
+        backgroundMusicPlayer.setVolume(0.03);
+
+        backgroundMusicPlayer.play();
+        backgroundMusicPlayer.setCycleCount(100);
+        
     }
 
     @FXML
@@ -409,7 +431,7 @@ public class LoopManiaWorldController {
         System.out.println("starting timer");
         isPaused = false;
         // trigger adding code to process main game logic to queue. JavaFX will target framerate of 0.3 seconds
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), event -> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.3), event -> {
 
             isTimelineRunning = true;
 
@@ -448,6 +470,10 @@ public class LoopManiaWorldController {
 
             }else{
                 List<Enemy> defeatedEnemies = world.runBattles();
+                if (world.getCharacterCurrentHp() <= 0) {
+                    backgroundMusicPlayer.pause();
+                    deathMediaPlayer.play();
+                }
                 for (Enemy e: defeatedEnemies){
                     reactToEnemyDefeat(e);
                 }
