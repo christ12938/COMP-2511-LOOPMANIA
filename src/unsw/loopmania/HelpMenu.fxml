@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="857.0" prefWidth="647.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Accordion layoutX="10.0" layoutY="117.0" prefHeight="672.0" prefWidth="627.0">
+        <panes>
+          <TitledPane animated="false" text="Buildings ">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea layoutX="14.0" layoutY="14.0" prefHeight="270.0" prefWidth="1120.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </TitledPane>
+          <TitledPane animated="false" text="Basic Items">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </TitledPane>
+            <TitledPane animated="false" text="Rare Items">
+               <content>
+                  <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="627.0" vbarPolicy="NEVER">
+                     <content>
+                        <AnchorPane prefHeight="1100.0" prefWidth="630.0">
+                           <children>
+                              <AnchorPane layoutY="250.0" prefHeight="70.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea layoutY="14.0" prefHeight="30.0" prefWidth="597.0" text="A very high damage sword which causes triple damage against bosses" />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="-46.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/anduril_flame_of_the_west.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="-60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Anduril, Flame of the West">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                    <TextArea layoutY="162.0" prefHeight="30.0" prefWidth="597.0" text="An especially powerful shield, which provides higher defence against bosses" />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="112.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/tree_stump.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tree Stump">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="500.0" prefHeight="70.0" prefWidth="613.0" />
+                              <AnchorPane prefHeight="70.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea layoutY="100.0" prefHeight="30.0" prefWidth="597.0" text="If the Character is killed, it respawns with full health up to a single time" />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/the_one_ring.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The One Ring">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+               </content>
+            </TitledPane>
+          <TitledPane animated="false" text="Enemies">
+            <content>
+                  <ScrollPane hbarPolicy="NEVER" prefHeight="1250.0" prefWidth="627.0">
+                     <content>
+                        <AnchorPane prefHeight="1100.0" prefWidth="630.0">
+                           <children>
+                              <AnchorPane layoutY="250.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Braaaaaaiiiinnnnnssss!Zombies have low health, moderate damage, and are slower compared to other&#10;enemies. A critical bite from a zombie against an allied soldier (which has a random chance of occurring) will &#10;transform the allied soldier into a zombie, which will then proceed to fight against the Character until it is &#10;killed. Zombies have a higher battle radius than slugs&#10;&#10;Spawns from zombie pit every time the Character completes a cycle of the path" />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/zombie.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zombie">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="A standard enemy type. Low health and low damage. The battle radius is the same as the support radius for a &#10;slug.&#10;" />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/slug.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Slug">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="500.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="I vant to suck your blood!Vampires have high damage, are susceptible to the stake weapon, and run away &#10;from campfires. They have a higher battle radius than slugs, and an even higher support radius. A critical bite &#10;(which has a random chance of occurring) from a vampire causes random additional damage with every &#10;vampire attack, for a random number of vampire attacks.&#10;&#10;Spawns from vampire castle every 5 cycles of the path completed by the Character" />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/vampire.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vampire">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="750.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Wow much coin how money so crypto plz mine v rich very currencyA special boss which spawns the &#10;DoggieCoin upon defeat, which randomly fluctuates in sellable price to an extraordinary extent. It has high &#10;health and can stun the character, which prevents the character from making an attack temporarily. The &#10;battle and support radii are the same as for slugs.&#10;&#10;Spawns after 20 cycles&#10;" />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/doggie.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doggie">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="1000.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="To the moon!An incredibly tough boss which, when appears, causes the price of DoggieCoin to increase &#10;drastically. Defeating this boss causes the price of DoggieCoin to plummet. Elan has the ability to heal other &#10;enemy NPCs. The battle and support radii are the same as for slugs.&#10;&#10;Spawns after 40 cycles, and the player has reached 10000 experience points" />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/ElanMuske.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Elan Muske">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+            </content>
+          </TitledPane>
+        </panes>
+      </Accordion>
+      <Label layoutX="284.0" layoutY="14.0" text="Help">
+         <font>
+            <Font name="System Bold" size="36.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
