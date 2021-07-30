@@ -10,9 +10,6 @@ The maximum amount of gold and experience is Integer.MAX_VALUE from java.math.
 When dropping an entity onto an already occupied pane, the overlapped entity will be destroyed.
 If player is given an amount of gold that makes them exceed the gold limit, their gold is set to gold limit
 If player is given an amount of exp that makes them exceed the exp limit, their exp is set to exp limit
-If a common item is obtained with a full inventory player is given 5 gold and 10 exp
-If a rare item is obtained with a full inventory player is given 50 gold and 100 exp
-If a common item is obtained with a full inventory player is given 5 gold and 10 exp
 A bag of gold gives 5 gold to the player
 Character's max health is set to 100
 Assume no enemies can enter hero castle
@@ -50,6 +47,7 @@ Assume items that can be spawn on tiles have a spawn chance of 5%.
 Assume items that can be spawn on tiles will not spawn on any entities
 Assume enemies can pass through items
 Assume 10 experiece will be added if the inventory is full when picking up the item.
+Assume 10 gold will be added if the inventory is full when picking up items.
 
 Battle process:
 1. Randomly pick an enemy
@@ -71,6 +69,9 @@ Character: Health = 100, Attack = 5, Defense = 0
 Slug: Health = 10, Atack = 5, Crit chance = 10%, Crit multiplier = 150%, Battle Radius = 2, Support Radius = 2
 Zombie: Health = 10, Atack = 10, Crit chance = 10%, Crit multiplier = N/A, Battle Radius = 3, Support Radius = 3
 Vampire: Health = 20, Atack = 20, Crit chance = 20%, Crit multiplier = 100 - 200% (Uniformly random), Battle Radius = 3, Support Radius = 4
+Tree stump decreases bossses damage by 70%
+Elan Muske has a 20% chance of healing all battling enemies (including self) for 10 health
+Doggie has a 20% chance of stunning the character. (This effect will not accumulate)
 
 
 

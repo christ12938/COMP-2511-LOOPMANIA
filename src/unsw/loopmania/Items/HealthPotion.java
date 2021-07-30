@@ -9,6 +9,7 @@ import unsw.loopmania.Types.ItemType;
 public class HealthPotion extends Consumables {
 
     public static final int healingHealth = 5;
+    
     public HealthPotion(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
     }

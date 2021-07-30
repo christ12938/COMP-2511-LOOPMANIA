@@ -31,6 +31,7 @@ public class Vampire extends Enemy{
     }
 
     public void setCurrentHealth(double currentHealth){
+        if(currentHealth > maxHealth) currentHealth = maxHealth;
         this.currentHealth = currentHealth;
     }
 

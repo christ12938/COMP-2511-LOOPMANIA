@@ -29,6 +29,12 @@ public class ItemLoader{
                 case THE_ONE_RING:
                     rareItems.add(new TheOneRing(x, y));
                     break;
+                case ANDURIL:
+                    rareItems.add(new Anduril(x, y));
+                    break;
+                case TREE_STUMP:
+                    rareItems.add(new TreeStump(x, y));
+                    break;
                 default:
                     continue;
             }
@@ -45,7 +51,7 @@ public class ItemLoader{
         normalItems.add(new HealthPotion(x, y));
         /* Now randomly choose a item */
         /* If chance < 5% get random item */
-        if(rareItems.size() == 0 || LoopManiaWorld.rand.nextDouble() >= 0.05) return normalItems.get(LoopManiaWorld.rand.nextInt(normalItems.size()));
+        if(rareItems.size() == 0 || LoopManiaWorld.rand.nextDouble() >= 0.01) return normalItems.get(LoopManiaWorld.rand.nextInt(normalItems.size()));
         return rareItems.get(LoopManiaWorld.rand.nextInt(rareItems.size()));
     }
 
@@ -72,7 +78,7 @@ public class ItemLoader{
         }
     }
 
-    public static Equipable loadEquipableItem(ItemType type, int nodeX, int nodeY){
+/*    public static Equipable loadEquipableItem(ItemType type, int nodeX, int nodeY){
         SimpleIntegerProperty x = new SimpleIntegerProperty(nodeX);
         SimpleIntegerProperty y = new SimpleIntegerProperty(nodeY);
         switch(type){
@@ -91,7 +97,7 @@ public class ItemLoader{
             default:
                 return null;
         }
-    }
+    }*/
 
     public static Item loadSpawnableItems(ItemType type, int nodeX, int nodeY){
         SimpleIntegerProperty x = new SimpleIntegerProperty(nodeX);
@@ -152,6 +158,14 @@ public class ItemLoader{
         SimpleIntegerProperty theOneRingPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.THE_ONE_RING).getValue0());
         SimpleIntegerProperty theOneRingPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.THE_ONE_RING).getValue1());
         result.add(new TheOneRing(theOneRingPosX, theOneRingPosY));
+
+        SimpleIntegerProperty andurilPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.ANDURIL).getValue0());
+        SimpleIntegerProperty andurilPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.ANDURIL).getValue1());
+        result.add(new Anduril(andurilPosX, andurilPosY));
+
+        SimpleIntegerProperty treeStumpPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.TREE_STUMP).getValue0());
+        SimpleIntegerProperty treeStumpPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.TREE_STUMP).getValue1());
+        result.add(new TreeStump(treeStumpPosX, treeStumpPosY));
 
         return result;
     }

@@ -204,7 +204,7 @@ public class LoopManiaWorldController {
     private Image goldImage;
     private Image healthPotionImage;
     private Image theOneRingImage;
-    private Image flameOfTheWestImage;
+    private Image andurilImage;
     private Image treeStumpImage;
     private Image doggieCoinImage;
 
@@ -330,6 +330,8 @@ public class LoopManiaWorldController {
         goldImage = new Image((new File("src/images/gold_pile.png")).toURI().toString());
         healthPotionImage = new Image((new File("src/images/brilliant_blue_new.png")).toURI().toString());
         theOneRingImage = new Image((new File("src/images/the_one_ring.png")).toURI().toString());
+        andurilImage = new Image((new File("src/images/anduril_flame_of_the_west.png")).toURI().toString());
+        treeStumpImage = new Image((new File("src/images/tree_stump.png")).toURI().toString());
 
         /* Initialize allied soldier image */
         alliedSoldierImage = new Image((new File("src/images/deep_elf_master_archer.png")).toURI().toString());
@@ -407,7 +409,7 @@ public class LoopManiaWorldController {
         System.out.println("starting timer");
         isPaused = false;
         // trigger adding code to process main game logic to queue. JavaFX will target framerate of 0.3 seconds
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.3), event -> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), event -> {
 
             isTimelineRunning = true;
 
@@ -611,6 +613,12 @@ public class LoopManiaWorldController {
                 view = new ImageView(theOneRingImage);
                 draggableType = null;
                 break;
+            case ANDURIL:
+                view = new ImageView(andurilImage);
+                break;
+            case TREE_STUMP:
+                view = new ImageView(treeStumpImage);
+                break;
             default:
                 return;
         }
@@ -648,6 +656,12 @@ public class LoopManiaWorldController {
                 break;
             case HELMET:
                 view = new ImageView(helmetImage);
+                break;
+            case ANDURIL:
+                view = new ImageView(andurilImage);
+                break;
+            case TREE_STUMP:
+                view = new ImageView(treeStumpImage);
                 break;
             default:
                 return;
@@ -1345,12 +1359,14 @@ public class LoopManiaWorldController {
             case SWORD:
             case STAKE:
             case STAFF:
+            case ANDURIL:
                 targetCell = weaponCell;
                 break;
             case ARMOUR:
                 targetCell = armourCell;
                 break;
             case SHIELD:
+            case TREE_STUMP:
                 targetCell = shieldCell;
                 break;
             case HELMET:
@@ -1532,6 +1548,7 @@ public class LoopManiaWorldController {
     }
 
     public void displayVictoryMessage(){
+        if(!isPaused) pause();
         PopUpMessageController popUpMessageController = openPopUpMessageWindow(primaryStage, "You Won!", Color.GREEN, "Quit Game");
         popUpMessageController.setQuitSwitcher(() ->{
             popUpMessageController.getStage().close();
@@ -1541,6 +1558,7 @@ public class LoopManiaWorldController {
 
     public void displayDefeatMessage(){
         if(world.hasHumanPlayerWon()) return;
+        if(!isPaused) pause();
         PopUpMessageController popUpMessageController = openPopUpMessageWindow(primaryStage, "You Lost!", Color.RED, "Quit Game");
         popUpMessageController.setQuitSwitcher(() ->{
             popUpMessageController.getStage().close();

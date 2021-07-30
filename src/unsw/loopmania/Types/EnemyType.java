@@ -7,8 +7,8 @@ public enum EnemyType{
     SLUG(2, 2, 10, 5, 0.1, 1.5),
     ZOMBIE(3, 3, 10, 10, 0.1, 0),
     VAMPIRE(3, 4, 20, 20, 0.2, 2),
-    DOGGIE(2, 2, 30, 25, 0.1, 2),
-    ELAN_MUSKE(2, 2, 40, 30, 0.1, 2);
+    DOGGIE(2, 2, 50, 25, 0.1, 2),
+    ELAN_MUSKE(2, 2, 100, 30, 0.1, 2);
 
     private int battleRadius;
     private int supportRadius;

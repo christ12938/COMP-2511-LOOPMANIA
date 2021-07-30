@@ -14,9 +14,8 @@ public enum ItemType{
     HEALTH_POTION(false, false, false),
     DOGGIECOIN(false, false, false),
     THE_ONE_RING(false, false, false),
-    FLAME_OF_THE_WEST(true, true, false),
+    ANDURIL(true, true, false),
     TREE_STUMP(true, false, true);
-
 
     private boolean isEquipable;
     private boolean isOffensive;

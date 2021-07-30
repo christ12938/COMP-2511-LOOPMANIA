@@ -1,6 +1,9 @@
 package unsw.loopmania.Enemies;
 
+import java.util.List;
+
 import unsw.loopmania.Damageable;
+import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Types.DamageableType;
 import unsw.loopmania.Types.EnemyType;
@@ -32,6 +35,7 @@ public class ElanMuske extends Enemy{
 
     @Override
     public void setCurrentHealth(double currentHealth) {
+        if(currentHealth > maxHealth) currentHealth = maxHealth;
         this.currentHealth = currentHealth;
     }
 
@@ -41,6 +45,14 @@ public class ElanMuske extends Enemy{
             damageable.takeDamage(critStrategy.applyCritDamage(attack), this);
         }else{
             damageable.takeDamage(attack, this);
+        }
+    }
+
+    public void healEnemies(List<Enemy> battleEnemies){
+        for(Enemy e : battleEnemies){
+            if(LoopManiaWorld.rand.nextDouble() < 0.2){
+                e.setCurrentHealth(e.getCurrentHealth() + 10);
+            }
         }
     }
 }
