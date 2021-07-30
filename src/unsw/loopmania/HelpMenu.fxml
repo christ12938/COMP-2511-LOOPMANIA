@@ -11,67 +11,145 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="857.0" prefWidth="647.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Accordion layoutX="10.0" layoutY="117.0" prefHeight="672.0" prefWidth="627.0">
         <panes>
-          <TitledPane animated="false" text="Buildings ">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TextArea layoutX="14.0" layoutY="14.0" prefHeight="270.0" prefWidth="1120.0" />
-                     </children>
-                  </AnchorPane>
-            </content>
-          </TitledPane>
           <TitledPane animated="false" text="Basic Items">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
-          </TitledPane>
-            <TitledPane animated="false" text="Rare Items">
                <content>
-                  <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="627.0" vbarPolicy="NEVER">
+                  <ScrollPane hbarPolicy="NEVER" prefHeight="1250.0" prefWidth="627.0">
                      <content>
                         <AnchorPane prefHeight="1100.0" prefWidth="630.0">
                            <children>
-                              <AnchorPane layoutY="250.0" prefHeight="70.0" prefWidth="613.0">
+                              <AnchorPane layoutY="250.0" prefHeight="250.0" prefWidth="613.0">
                                  <children>
-                                    <TextArea layoutY="14.0" prefHeight="30.0" prefWidth="597.0" text="A very high damage sword which causes triple damage against bosses" />
-                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="-46.0" pickOnBounds="true" preserveRatio="true">
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="A standard melee weapon. Increases damage dealt by Character&#10;&#10;Purchase in Hero's Castle, loot from enemies, or obtained from cards lost due to being the oldest and &#10;replaced." />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../images/anduril_flame_of_the_west.png" />
+                                          <Image url="@../../images/basic_sword.png" />
                                        </image>
                                     </ImageView>
-                                    <Text layoutY="-60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Anduril, Flame of the West">
-                                       <font>
-                                          <Font size="24.0" />
-                                       </font>
-                                    </Text>
-                                    <TextArea layoutY="162.0" prefHeight="30.0" prefWidth="597.0" text="An especially powerful shield, which provides higher defence against bosses" />
-                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="112.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../../images/tree_stump.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Text layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tree Stump">
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sword">
                                        <font>
                                           <Font size="24.0" />
                                        </font>
                                     </Text>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane layoutY="500.0" prefHeight="70.0" prefWidth="613.0" />
-                              <AnchorPane prefHeight="70.0" prefWidth="613.0">
+                              <AnchorPane prefHeight="250.0" prefWidth="613.0">
                                  <children>
-                                    <TextArea layoutY="100.0" prefHeight="30.0" prefWidth="597.0" text="If the Character is killed, it respawns with full health up to a single time" />
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="A melee weapon with lower stats than the sword, but causes very high damage to vampires&#10;&#10;Purchase in Hero's Castle, loot from enemies, or obtained from cards lost due to being the oldest and &#10;replaced.&#10;" />
                                     <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../images/the_one_ring.png" />
+                                          <Image url="@../../images/stake.png" />
                                        </image>
                                     </ImageView>
-                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The One Ring">
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stake">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="500.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Body armour, provides defence and halves enemy attack.&#10;&#10;Purchase in Hero's Castle, loot from enemies, or obtained from cards lost due to being the oldest and &#10;replaced.&#10;" />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/armour.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Armour">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="750.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Defends against enemy attacks, critical vampire attacks have a 60% lower chance of occurring.&#10;&#10;Purchase in Hero's Castle, loot from enemies, or obtained from cards lost due to being the oldest and &#10;replaced." />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/shield.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Shield">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="1000.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Defends against enemy attacks, enemy attacks are reduced by a scalar value. The damage inflicted by the &#10;Character against enemies is reduced (since it is harder to see).Spawns after 40 cycles, and the player has &#10;reached 10000 experience points.&#10;&#10;Purchase in Hero's Castle, loot from enemies, or obtained from cards lost due to being the oldest and &#10;replaced." />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/helmet.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Helmet">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="1250.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Money, used to buy things.&#10;&#10;Obtain in Hero's Castle by selling items, loot from enemies, pick up off the ground, or obtained from &#10;cards/items lost due to being the oldest and replaced. Spawns randomly on path tiles.&#10;&#10;" />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/gold_pile.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gold">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="1500.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Refills Character health.&#10;&#10;Purchase from Hero's Castle, loot from enemies, pick up off the ground, or obtained from cards lost due to &#10;being the oldest and replaced. Spawns randomly on path tiles." />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/brilliant_blue_new.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Health potion">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="1750.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="A revolutionary asset type, which randomly fluctuates in sellable price to an extraordinary extent. Can sell at &#10;shop.&#10;&#10;Obtained when defeat Doggie." />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/doggiecoin.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DoggieCoin">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutX="10.0" layoutY="2000.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="A melee weapon with very low stats (lower than both the sword and stake), which has a random chance of &#10;inflicting a trance, which transforms the attacked enemy into an allied soldier temporarily (and fights &#10;alongside the Character). If the trance ends during the fight, the affected enemy reverts back to acting as &#10;an enemy which fights the Character. If the fight ends whilst the enemy is in a trance, the enemy dies.&#10;&#10;Spawns after 40 cycles, and the player has reached 10000 experience points&#10;&#10;Purchase in Hero's Castle, loot from enemies, or obtained from cards lost due to being the oldest and &#10;replaced." />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/staff.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Staff">
                                        <font>
                                           <Font size="24.0" />
                                        </font>
@@ -83,6 +161,60 @@
                      </content>
                   </ScrollPane>
                </content>
+          </TitledPane>
+          <TitledPane animated="false" text="Buildings">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </TitledPane>
+            <TitledPane animated="false" text="Rare Items">
+               <content>
+                  <AnchorPane prefHeight="1100.0" prefWidth="630.0">
+                     <children>
+                        <AnchorPane layoutY="250.0" prefHeight="70.0" prefWidth="613.0">
+                           <children>
+                              <TextArea editable="false" layoutY="14.0" prefHeight="30.0" prefWidth="597.0" text="A very high damage sword which causes triple damage against bosses" />
+                              <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="-46.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../images/anduril_flame_of_the_west.png" />
+                                 </image>
+                              </ImageView>
+                              <Text layoutY="-60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Anduril, Flame of the West">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Text>
+                              <TextArea editable="false" layoutY="162.0" prefHeight="30.0" prefWidth="597.0" text="An especially powerful shield, which provides higher defence against bosses" />
+                              <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="112.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../images/tree_stump.png" />
+                                 </image>
+                              </ImageView>
+                              <Text layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tree Stump">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="70.0" prefWidth="613.0">
+                           <children>
+                              <TextArea editable="false" layoutY="100.0" prefHeight="30.0" prefWidth="597.0" text="If the Character is killed, it respawns with full health up to a single time" />
+                              <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../images/the_one_ring.png" />
+                                 </image>
+                              </ImageView>
+                              <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The One Ring">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+               </content>
             </TitledPane>
           <TitledPane animated="false" text="Enemies">
             <content>
@@ -92,7 +224,7 @@
                            <children>
                               <AnchorPane layoutY="250.0" prefHeight="250.0" prefWidth="613.0">
                                  <children>
-                                    <TextArea layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Braaaaaaiiiinnnnnssss!Zombies have low health, moderate damage, and are slower compared to other&#10;enemies. A critical bite from a zombie against an allied soldier (which has a random chance of occurring) will &#10;transform the allied soldier into a zombie, which will then proceed to fight against the Character until it is &#10;killed. Zombies have a higher battle radius than slugs&#10;&#10;Spawns from zombie pit every time the Character completes a cycle of the path" />
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Braaaaaaiiiinnnnnssss!Zombies have low health, moderate damage, and are slower compared to other&#10;enemies. A critical bite from a zombie against an allied soldier (which has a random chance of occurring) will &#10;transform the allied soldier into a zombie, which will then proceed to fight against the Character until it is &#10;killed. Zombies have a higher battle radius than slugs&#10;&#10;Spawns from zombie pit every time the Character completes a cycle of the path" />
                                     <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../images/zombie.png" />
@@ -107,7 +239,7 @@
                               </AnchorPane>
                               <AnchorPane prefHeight="250.0" prefWidth="613.0">
                                  <children>
-                                    <TextArea layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="A standard enemy type. Low health and low damage. The battle radius is the same as the support radius for a &#10;slug.&#10;" />
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="A standard enemy type. Low health and low damage. The battle radius is the same as the support radius for a &#10;slug.&#10;" />
                                     <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../images/slug.png" />
@@ -122,7 +254,7 @@
                               </AnchorPane>
                               <AnchorPane layoutY="500.0" prefHeight="250.0" prefWidth="613.0">
                                  <children>
-                                    <TextArea layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="I vant to suck your blood!Vampires have high damage, are susceptible to the stake weapon, and run away &#10;from campfires. They have a higher battle radius than slugs, and an even higher support radius. A critical bite &#10;(which has a random chance of occurring) from a vampire causes random additional damage with every &#10;vampire attack, for a random number of vampire attacks.&#10;&#10;Spawns from vampire castle every 5 cycles of the path completed by the Character" />
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="I vant to suck your blood!Vampires have high damage, are susceptible to the stake weapon, and run away &#10;from campfires. They have a higher battle radius than slugs, and an even higher support radius. A critical bite &#10;(which has a random chance of occurring) from a vampire causes random additional damage with every &#10;vampire attack, for a random number of vampire attacks.&#10;&#10;Spawns from vampire castle every 5 cycles of the path completed by the Character" />
                                     <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../images/vampire.png" />
@@ -137,7 +269,7 @@
                               </AnchorPane>
                               <AnchorPane layoutY="750.0" prefHeight="250.0" prefWidth="613.0">
                                  <children>
-                                    <TextArea layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Wow much coin how money so crypto plz mine v rich very currencyA special boss which spawns the &#10;DoggieCoin upon defeat, which randomly fluctuates in sellable price to an extraordinary extent. It has high &#10;health and can stun the character, which prevents the character from making an attack temporarily. The &#10;battle and support radii are the same as for slugs.&#10;&#10;Spawns after 20 cycles&#10;" />
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Wow much coin how money so crypto plz mine v rich very currencyA special boss which spawns the &#10;DoggieCoin upon defeat, which randomly fluctuates in sellable price to an extraordinary extent. It has high &#10;health and can stun the character, which prevents the character from making an attack temporarily. The &#10;battle and support radii are the same as for slugs.&#10;&#10;Spawns after 20 cycles&#10;" />
                                     <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../images/doggie.png" />
@@ -152,7 +284,7 @@
                               </AnchorPane>
                               <AnchorPane layoutY="1000.0" prefHeight="250.0" prefWidth="613.0">
                                  <children>
-                                    <TextArea layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="To the moon!An incredibly tough boss which, when appears, causes the price of DoggieCoin to increase &#10;drastically. Defeating this boss causes the price of DoggieCoin to plummet. Elan has the ability to heal other &#10;enemy NPCs. The battle and support radii are the same as for slugs.&#10;&#10;Spawns after 40 cycles, and the player has reached 10000 experience points" />
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="To the moon!An incredibly tough boss which, when appears, causes the price of DoggieCoin to increase &#10;drastically. Defeating this boss causes the price of DoggieCoin to plummet. Elan has the ability to heal other &#10;enemy NPCs. The battle and support radii are the same as for slugs.&#10;&#10;Spawns after 40 cycles, and the player has reached 10000 experience points" />
                                     <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../images/ElanMuske.png" />
