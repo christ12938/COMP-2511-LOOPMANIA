@@ -60,7 +60,6 @@ public class LoopManiaWorld {
 
     private HumanPlayer humanPlayer;
     private Character character;
-    private Shop shop;
 
     //for testing
     private boolean toweractivated = false;
@@ -664,6 +663,40 @@ public class LoopManiaWorld {
     }
 
     /**
+     * spawn an anduril in the world and return the sword entity
+     * @return an anduril to be spawned in the controller as a JavaFX node
+     */
+    public Anduril addUnequippedAnduril(){
+        Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
+        if (firstAvailableSlot == null){
+            removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
+            firstAvailableSlot = getFirstAvailableSlotForItem();
+        }
+        Anduril anduril = new Anduril(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
+        unequippedInventoryItems.add(anduril);
+        return anduril;
+    }
+
+    /**
+     * spawn an anduril in the world and return the sword entity
+     * @return an anduril to be spawned in the controller as a JavaFX node
+     */
+    public TreeStump addUnequippedTreeStump(){
+        Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
+        if (firstAvailableSlot == null){
+            removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
+            firstAvailableSlot = getFirstAvailableSlotForItem();
+        }
+        TreeStump treeStump = new TreeStump(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
+        unequippedInventoryItems.add(treeStump);
+        return treeStump;
+    }
+
+    /**
      * equip an unequipped item
      */
     public Item equipItem(int nodeX, int nodeY, int x, int y) {
@@ -723,142 +756,6 @@ public class LoopManiaWorld {
         }
     }
 
-    public void loadShop() {
-        Shop shop = new Shop(this.character, this.unequippedInventoryItems);
-        this.shop = shop;
-    }
-
-    /**
-     * get buy price of item
-     * @param item item whose buy price is going to be returned
-     * @return buy price
-     */
-    public int getBuyPrice(ItemType item) {
-        return this.shop.getShopBuyPrice(item);
-    }
-
-     /**
-     * get sell price of item
-     * @param item item whose sell price is going to be returned
-     * @return sell price
-     */
-    public int getSellPrice(ItemType item) {
-        return this.shop.getShopSellPrice(item);
-    }
-
-    /**
-     * buy a sword from the shop, added to unequipinventory
-     * @return false if couldn't be bought, else true
-     */
-    public boolean buySword() {
-        if (this.shop.isItemBuyable(ItemType.SWORD) == false) {
-            return false;
-        } else {
-            minusGold(this.shop.getShopBuyPrice(ItemType.SWORD));
-            addUnequippedSword();
-            return true;
-        }
-    }
-
-    /**
-     * buy a stake from the shop, added to unequipinventory
-     * @return false if couldn't be bought, else true
-     */
-    public boolean buyStake() {
-        if (this.shop.isItemBuyable(ItemType.STAKE) == false) {
-            return false;
-        } else {
-            minusGold(this.shop.getShopBuyPrice(ItemType.STAKE));
-            addUnequippedStake();
-            return true;
-        }
-    }
-
-    /**
-     * buy a staff from the shop, added to unequipinventory
-     * @return false if couldn't be bought, else true
-     */
-    public boolean buyStaff() {
-        if (this.shop.isItemBuyable(ItemType.STAFF) == false) {
-            return false;
-        } else {
-            minusGold(this.shop.getShopBuyPrice(ItemType.STAFF));
-            addUnequippedStaff();
-            return true;
-        }
-    }
-
-    /**
-     * buy a armour from the shop, added to unequipinventory
-     * @return false if couldn't be bought, else true
-     */
-    public boolean buyArmour() {
-        if (this.shop.isItemBuyable(ItemType.ARMOUR) == false) {
-            return false;
-        } else {
-            minusGold(this.shop.getShopBuyPrice(ItemType.ARMOUR));
-            addUnequippedArmour();
-            return true;
-        }
-    }
-
-    /**
-     * buy a shield from the shop, added to unequipinventory
-     * @return false if couldn't be bought, else true
-     */
-    public boolean buyShield() {
-        if (this.shop.isItemBuyable(ItemType.SHIELD) == false) {
-            return false;
-        } else {
-            minusGold(this.shop.getShopBuyPrice(ItemType.SHIELD));
-            addUnequippedShield();
-            return true;
-        }
-    }
-
-    /**
-     * buy a helmet from the shop, added to unequipinventory
-     * @return false if couldn't be bought, else true
-     */
-    public boolean buyHelmet() {
-        if (this.shop.isItemBuyable(ItemType.HELMET) == false) {
-            return false;
-        } else {
-            minusGold(this.shop.getShopBuyPrice(ItemType.HELMET));
-            addUnequippedHelmet();
-            return true;
-        }
-    }
-
-    /**
-     * buy a healthpotion from the shop, added to unequipinventory
-     * @return false if couldn't be bought, else true
-     */
-    public boolean buyHealthPotion() {
-        if (this.shop.isItemBuyable(ItemType.HEALTH_POTION) == false) {
-            return false;
-        } else {
-            minusGold(this.shop.getShopBuyPrice(ItemType.HEALTH_POTION));
-            addUnequippedHealthPotion();
-            return true;
-        }
-    }
-
-    /**
-     * sell an item from unequipinventory
-     * @return false if couldn't be bought, else true
-     */
-    public boolean sellItem(ItemType item) {
-
-        for(Item inventoryItem : this.unequippedInventoryItems) {
-            if (inventoryItem.getItemType().equals(item)) {
-                removeUnequippedInventoryItem(inventoryItem);
-                addGold(this.shop.getShopSellPrice(item));
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * remove an item by x,y coordinates

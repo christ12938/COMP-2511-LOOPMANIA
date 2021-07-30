@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.javatuples.Pair;
 import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
+import unsw.loopmania.Items.Item;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Character;
 
@@ -103,6 +104,27 @@ public class ItemsTest {
     }
 
     @Test
+    public void TestRemoveAndAddAnduril() {
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(World.addUnequippedAnduril().getItemType(), ItemType.ANDURIL);
+        assertSame(World.addUnequippedAnduril().getItemType(), ItemType.ANDURIL);
+
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
+
+    }
+
+    @Test
+    public void TestRemoveAndAddTreeStump() {
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(World.addUnequippedTreeStump().getItemType(), ItemType.TREE_STUMP);
+        assertSame(World.addUnequippedTreeStump().getItemType(), ItemType.TREE_STUMP);
+
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
+    }
+
+    @Test
     public void TestAddAndRemoveGold() {
         Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
         Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
@@ -162,14 +184,22 @@ public class ItemsTest {
     @Test
     public void TestAddRandomItems() {
         LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
-        //Random??
-        World.loadRandomUnenquippedInventoryItem();
-        World.loadRandomUnenquippedInventoryItem();
-        World.loadRandomUnenquippedInventoryItem();
         
-        World.removeUnequippedInventoryItemByCoordinates(0, 0);
-        World.removeUnequippedInventoryItemByCoordinates(1, 0);
-        World.removeUnequippedInventoryItemByCoordinates(2, 0);
+        Item item1 = World.loadRandomUnenquippedInventoryItem();
+        Item item2 = World.loadRandomUnenquippedInventoryItem();
+        Item item3 = World.loadRandomUnenquippedInventoryItem();
+        
+        if (item1.getItemType() != ItemType.GOLD) {
+            World.removeUnequippedInventoryItem(item1);
+        }
+
+        if (item2.getItemType() != ItemType.GOLD) {
+            World.removeUnequippedInventoryItem(item2);
+        }
+
+        if (item3.getItemType() != ItemType.GOLD) {
+            World.removeUnequippedInventoryItem(item3);
+        }
     }
     
     @Test

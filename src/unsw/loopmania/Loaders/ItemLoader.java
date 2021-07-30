@@ -45,7 +45,7 @@ public class ItemLoader{
         normalItems.add(new HealthPotion(x, y));
         /* Now randomly choose a item */
         /* If chance < 5% get random item */
-        if(rareItems.size() == 0 || LoopManiaWorld.rand.nextDouble() >= 0.05) return normalItems.get(LoopManiaWorld.rand.nextInt(normalItems.size()));
+        if(rareItems.size() == 0 || LoopManiaWorld.rand.nextDouble() >= 0.01) return normalItems.get(LoopManiaWorld.rand.nextInt(normalItems.size()));
         return rareItems.get(LoopManiaWorld.rand.nextInt(rareItems.size()));
     }
 

@@ -142,3 +142,4 @@ public class LoopManiaApplication extends Application {
         launch(args);
     }
 }
+    

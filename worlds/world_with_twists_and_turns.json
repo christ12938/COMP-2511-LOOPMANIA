@@ -4,7 +4,7 @@
   "rare_items": ["the_one_ring"],
   "goal-condition": { "goal": "AND", "subgoals":
     [ { "goal": "cycles", "quantity": 2 },
-      { "goal": "gold", "quantity": 10 }
+      { "goal": "gold", "quantity": 1000000 }
     ]
   }
   ,
