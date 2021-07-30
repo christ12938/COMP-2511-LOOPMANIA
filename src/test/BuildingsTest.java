@@ -25,6 +25,8 @@ import unsw.loopmania.HerosCastle;
  * A clickable "Run Test" link should appear if you have installed the Java Extension Pack properly.
  */
 public class BuildingsTest{
+
+    //checks to see if towers attack enemies within their radius during battle
     @Test
     public void TowerRadiusTrue() {
         Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
@@ -54,6 +56,8 @@ public class BuildingsTest{
         assertTrue(d.towerUsed());
     }
 
+
+    //checks that towers don't attack enemies outside their radius during battle
     @Test
     public void TowerRadiusFalse() {
         Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
@@ -83,6 +87,7 @@ public class BuildingsTest{
         assertTrue(!d.towerUsed());
     }
 
+    //Checks the chracters health is increased appropriatley when passing over a villiage
     @Test
     public void TestVillage(){
         Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
@@ -104,6 +109,8 @@ public class BuildingsTest{
         assertTrue(d.getCharacterHP() == 20);
     }
 
+    //Checks that the characters HP does not increase over the max value when travelling over a villiage
+    //when already at max HP
     @Test
     public void TestVillageMaxHP(){
         Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
@@ -125,6 +132,9 @@ public class BuildingsTest{
         assertTrue(d.getCharacterHP() == 100);
     }
 
+
+    //Checks that the characters HP does not increase over the max value when travelling over a villiage
+    //when close to max HP (close enough where healing from a villaige would push their HP over max)
     @Test
     public void TestVillageNearMaxHP(){
         Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
@@ -147,6 +157,7 @@ public class BuildingsTest{
         assertTrue(d.getCharacterHP() == 100);
     }
 
+    //Tests the the campfire provides and attack buff when the character is in range
     @Test
     public void CampfireRadiusTrue(){
         Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
@@ -174,6 +185,8 @@ public class BuildingsTest{
         assertTrue(d.getCharacterAttack() == 10);
     }
 
+
+    //Tests the the campfire does not provide an attack buff when the character is out of range
     @Test
     public void CampfireRadiusFalse(){
         Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
@@ -199,6 +212,7 @@ public class BuildingsTest{
         assertTrue(d.getCharacterAttack() == 5);
     }
 
+    //Tests that a trap deals damage to an enemy when they pass over it
     @Test
     public void TestTrap(){
         Pair<Integer, Integer> test1 = new Pair<Integer, Integer>(1,1);
@@ -244,3 +258,4 @@ public class BuildingsTest{
         assertTrue(d.getFirstEnemy().getCurrentHealth()== 10);
     }
 }
+
