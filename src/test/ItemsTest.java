@@ -117,9 +117,9 @@ public class ItemsTest {
     @Test
     public void TestRemoveAndAddDoggieCoin() {
         LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
-        assertSame(World.addUnequippedDoggieCoin.getItemType(), ItemType.DOGGIE_COIN);
-        assertSame(World.addUnequippedDoggieCoin.getItemType(), ItemType.DOGGIE_COIN);
-
+        assertSame(World.addUnequippedDoggieCoin().getItemType(), ItemType.DOGGIE_COIN);
+        assertSame(World.addUnequippedDoggieCoin().getItemType(), ItemType.DOGGIE_COIN);
+        
         World.removeUnequippedInventoryItemByCoordinates(0, 0);
         World.removeUnequippedInventoryItemByCoordinates(1, 0);
     }

@@ -680,8 +680,8 @@ public class LoopManiaWorld {
     }
 
     /**
-     * spawn an anduril in the world and return the sword entity
-     * @return an anduril to be spawned in the controller as a JavaFX node
+     * spawn an TreeStump in the world and return the sword entity
+     * @return an TreeStump to be spawned in the controller as a JavaFX node
      */
     public TreeStump addUnequippedTreeStump(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
@@ -695,6 +695,24 @@ public class LoopManiaWorld {
         unequippedInventoryItems.add(treeStump);
         return treeStump;
     }
+
+    /**
+     * spawn a DoggieCoin in the world and return the sword entity
+     * @return an DoggieCoin to be spawned in the controller as a JavaFX node
+     */
+    public DoggieCoin addUnequippedDoggieCoin(){
+        Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
+        if (firstAvailableSlot == null){
+            removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
+            firstAvailableSlot = getFirstAvailableSlotForItem();
+        }
+        DoggieCoin doggieCoin = new DoggieCoin(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
+        unequippedInventoryItems.add(doggieCoin);
+        return doggieCoin;
+    }
+
 
     /**
      * equip an unequipped item
