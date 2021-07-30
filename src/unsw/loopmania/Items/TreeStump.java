@@ -23,6 +23,6 @@ public class TreeStump extends Shield{
      }
 
     public Item copyItem(int x, int y) {
-        return new Shield(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
+        return new TreeStump(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
     }
 }

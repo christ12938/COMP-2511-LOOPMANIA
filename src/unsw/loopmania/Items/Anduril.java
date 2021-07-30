@@ -23,6 +23,6 @@ public class Anduril extends Sword {
     }
 
     public Item copyItem(int x, int y){
-        return new Sword(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
+        return new Anduril(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
     }
 }
