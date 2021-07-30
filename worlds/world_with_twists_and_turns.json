@@ -4,7 +4,7 @@
   "rare_items": ["the_one_ring", "anduril_flame_of_the_west", "tree_stump"],
   "goal-condition": { "goal": "AND", "subgoals":
     [ { "goal": "cycles", "quantity": 2 },
-      { "goal": "gold", "quantity": 1000000 }
+      { "goal": "bosses"}
     ]
   }
   ,

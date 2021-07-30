@@ -11,6 +11,7 @@ public class HumanPlayer {
     private LoopManiaWorldController controller = null;
     private LoopManiaWorld world = null;
     private boolean hasWon = false;
+    private boolean hasLost = false;
 
     public HumanPlayer(JSONObject goal , LoopManiaWorld world) {
         try{
@@ -23,6 +24,9 @@ public class HumanPlayer {
                     break;
                 case "cycles":
                     this.goal = new CycleGoal(goal.getInt("quantity"));
+                    break;
+                case "bosses":
+                    this.goal = new BossGoal();
                     break;
                 case "AND":
                     this.goal = new CompositeAndGoal(goal.getJSONArray("subgoals"));
@@ -54,6 +58,14 @@ public class HumanPlayer {
 
     public boolean hasWon(){
         return this.hasWon;
+    }
+
+    public boolean hasLost(){
+        return this.hasLost;
+    }
+
+    public void setHasLost(boolean hasLost){
+        this.hasLost = hasLost;
     }
    
 }

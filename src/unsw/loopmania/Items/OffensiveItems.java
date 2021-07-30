@@ -12,7 +12,9 @@ public abstract class OffensiveItems extends Equipable {
         super(x, y);
     }
 
-    abstract public ItemType getItemType();
-    abstract public int getAttack();
+    public int getAttack(){
+        return getItemType().getAttack();
+    }
 
+    abstract public ItemType getItemType();
 }

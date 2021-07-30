@@ -43,6 +43,7 @@ import unsw.loopmania.Items.Item;
 import unsw.loopmania.Types.OverlappableEntityType;
 import unsw.loopmania.Types.CardType;
 import unsw.loopmania.Types.DifficultyType;
+import unsw.loopmania.Types.EnemyType;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Buildings.*;
 
@@ -329,6 +330,7 @@ public class LoopManiaWorldController {
         helmetImage = new Image((new File("src/images/helmet.png")).toURI().toString());
         goldImage = new Image((new File("src/images/gold_pile.png")).toURI().toString());
         healthPotionImage = new Image((new File("src/images/brilliant_blue_new.png")).toURI().toString());
+        doggieCoinImage = new Image((new File("src/images/doggiecoin.png")).toURI().toString());
         theOneRingImage = new Image((new File("src/images/the_one_ring.png")).toURI().toString());
         andurilImage = new Image((new File("src/images/anduril_flame_of_the_west.png")).toURI().toString());
         treeStumpImage = new Image((new File("src/images/tree_stump.png")).toURI().toString());
@@ -409,7 +411,7 @@ public class LoopManiaWorldController {
         System.out.println("starting timer");
         isPaused = false;
         // trigger adding code to process main game logic to queue. JavaFX will target framerate of 0.3 seconds
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), event -> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.3), event -> {
 
             isTimelineRunning = true;
 
@@ -425,7 +427,7 @@ public class LoopManiaWorldController {
              */
 
             world.runTickMoves();
-            
+
             Item newItem = world.checkAndAddSpawnedItem();
             if(newItem != null) onLoadUnequippedItem(newItem);
 
@@ -443,9 +445,11 @@ public class LoopManiaWorldController {
             world.applyStaticBuildingBuffsToCharacter();
             
             if(world.characterIsOnHeroCastle()){
-                world.nextCycle();
-                if(!world.hasHumanPlayerWon()) openShop();
-
+                if(!world.hasHumanPlayerWon()) {
+                    world.nextCycle();
+                    world.updateDoggieCoin();
+                    openShop();
+                }
             }else{
                 List<Enemy> defeatedEnemies = world.runBattles();
                 for (Enemy e: defeatedEnemies){
@@ -504,15 +508,31 @@ public class LoopManiaWorldController {
     }
 
     /**
+     * Load doggie coin from the world, and pair it with an image in the GUI
+     */
+    public void loadDoggieCoin(){
+        onLoadUnequippedItem(world.loadDoggieCoinItem());
+    }
+
+    /**
      * run GUI events after an enemy is defeated, such as spawning items/experience/gold
      * @param enemy defeated enemy for which we should react to the death of
      */
     private void reactToEnemyDefeat(Enemy enemy){
         // react to character defeating an enemy
         // in starter code, spawning extra card/weapon...
-        // TODO = provide different benefits to defeating the enemy based on the type of enemy
-        loadRandomItem();
+        if(enemy.getEnemyType() == EnemyType.DOGGIE){
+            loadDoggieCoin();
+            world.bossDefeated();
+        }else if(enemy.getEnemyType() == EnemyType.ELAN_MUSKE){
+            world.decreaseDoggieCoinValue();
+            loadRandomItem();
+            world.bossDefeated();
+        }else{
+            loadRandomItem();
+        }
         loadRandomCard();
+        world.addExperienceReward(enemy.getEnemyType());
     }
 
     /**
@@ -586,6 +606,7 @@ public class LoopManiaWorldController {
     public void onLoadUnequippedItem(Item item) {
         ImageView view = null;
         DRAGGABLE_TYPE draggableType = DRAGGABLE_TYPE.ITEMS;
+        ItemType subType = item.getItemSubType();
         switch(item.getItemType()){
             case SWORD:
                 view = new ImageView(swordImage);
@@ -609,9 +630,13 @@ public class LoopManiaWorldController {
                 view = new ImageView(healthPotionImage);
                 draggableType = null;
                 break;
+            case DOGGIECOIN:
+                view = new ImageView(doggieCoinImage);
+                draggableType = null;
+                break;
             case THE_ONE_RING:
                 view = new ImageView(theOneRingImage);
-                draggableType = null;
+                if(subType == null) draggableType = null;
                 break;
             case ANDURIL:
                 view = new ImageView(andurilImage);
@@ -656,6 +681,9 @@ public class LoopManiaWorldController {
                 break;
             case HELMET:
                 view = new ImageView(helmetImage);
+                break;
+            case THE_ONE_RING:
+                view = new ImageView(theOneRingImage);
                 break;
             case ANDURIL:
                 view = new ImageView(andurilImage);
@@ -1355,6 +1383,7 @@ public class LoopManiaWorldController {
     private boolean isOnCorrectEquipableSlot(int column, int row){
         ImageView targetCell = null;
         ItemType type = world.getUnequippedItemTypeByCoordinates(GridPane.getColumnIndex(currentlyDraggedImage), GridPane.getRowIndex(currentlyDraggedImage));
+        ItemType subType = world.getUnequippedItemSubTypeByCoordinates(GridPane.getColumnIndex(currentlyDraggedImage), GridPane.getRowIndex(currentlyDraggedImage));
         switch(type){
             case SWORD:
             case STAKE:
@@ -1373,14 +1402,31 @@ public class LoopManiaWorldController {
                 targetCell = helmetCell;
                 break;
             default:
-                return false;
+                break;
         }
 
-        if(column == GridPane.getColumnIndex(targetCell) && row == GridPane.getRowIndex(targetCell)){
+        if(targetCell != null && column == GridPane.getColumnIndex(targetCell) && row == GridPane.getRowIndex(targetCell)){
             return true;
-        }else{
-            return false;
         }
+
+        if(subType != null){
+            switch(subType){
+                case ANDURIL:
+                    targetCell = weaponCell;
+                    break;
+                case TREE_STUMP:
+                    targetCell = shieldCell;
+                    break;
+                default:
+                    break;
+            }
+
+            if(targetCell != null && column == GridPane.getColumnIndex(targetCell) && row == GridPane.getRowIndex(targetCell)){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -1548,6 +1594,7 @@ public class LoopManiaWorldController {
     }
 
     public void displayVictoryMessage(){
+        if(world.hasHumanPlayerLost()) return;
         if(!isPaused) pause();
         PopUpMessageController popUpMessageController = openPopUpMessageWindow(primaryStage, "You Won!", Color.GREEN, "Quit Game");
         popUpMessageController.setQuitSwitcher(() ->{
@@ -1597,6 +1644,10 @@ public class LoopManiaWorldController {
             case BESERKER:
                 difficultyText.setText("Beserker Mode");
                 difficultyText.setTextFill(Color.RED);
+                break;
+            case CONFUSING:
+                difficultyText.setText("Confusing Mode");
+                difficultyText.setTextFill(Color.PINK);
                 break;
         }
         primaryStage.sizeToScene();

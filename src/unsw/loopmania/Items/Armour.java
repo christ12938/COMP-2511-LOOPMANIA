@@ -8,8 +8,6 @@ import unsw.loopmania.Types.ItemType;
  */
 public class Armour extends DefensiveItems{
 
-    private final int defense = 3;
-
     public Armour(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
     }
@@ -17,10 +15,6 @@ public class Armour extends DefensiveItems{
     public ItemType getItemType(){
         return ItemType.ARMOUR;
     }
-
-    public int getDefense() {
-        return this.defense; 
-     }
 
     public Item copyItem(int x, int y){
         return new Armour(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
