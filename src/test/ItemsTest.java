@@ -115,6 +115,16 @@ public class ItemsTest {
     }
 
     @Test
+    public void TestRemoveAndAddDoggieCoin() {
+        LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
+        assertSame(World.addUnequippedDoggieCoin.getItemType(), ItemType.DOGGIE_COIN);
+        assertSame(World.addUnequippedDoggieCoin.getItemType(), ItemType.DOGGIE_COIN);
+
+        World.removeUnequippedInventoryItemByCoordinates(0, 0);
+        World.removeUnequippedInventoryItemByCoordinates(1, 0);
+    }
+
+    @Test
     public void TestRemoveAndAddTreeStump() {
         LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
         assertSame(World.addUnequippedTreeStump().getItemType(), ItemType.TREE_STUMP);
