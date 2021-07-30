@@ -36,6 +36,8 @@ public class ShopLoader {
         itemPositions.put(ItemType.HELMET, new Pair<Integer, Integer>(2, 1));
         itemPositions.put(ItemType.HEALTH_POTION, new Pair<Integer, Integer>(0, 2));
         itemPositions.put(ItemType.THE_ONE_RING, new Pair<Integer, Integer>(1, 2));
+        itemPositions.put(ItemType.ANDURIL, new Pair<Integer, Integer>(2, 2));
+        itemPositions.put(ItemType.TREE_STUMP, new Pair<Integer, Integer>(0, 3));
         return itemPositions;
     }
 
@@ -67,6 +69,8 @@ public class ShopLoader {
         itemPrices.put(ItemType.HELMET, 5);
         itemPrices.put(ItemType.HEALTH_POTION, 5);
         itemPrices.put(ItemType.THE_ONE_RING, 20);
+        itemPrices.put(ItemType.ANDURIL, 20);
+        itemPrices.put(ItemType.TREE_STUMP, 20);
         return itemPrices;
     }
 }

@@ -204,6 +204,9 @@ public class LoopManiaWorldController {
     private Image goldImage;
     private Image healthPotionImage;
     private Image theOneRingImage;
+    private Image andurilImage;
+    private Image treeStumpImage;
+    private Image doggieCoinImage;
 
 
     /**
@@ -212,6 +215,8 @@ public class LoopManiaWorldController {
     private Image slugImage;
     private Image zombieImage;
     private Image vampireImage;
+    private Image doggieImage;
+    private Image elanMuskeImage;
 
     /**
      * Image of allied soldier
@@ -312,6 +317,8 @@ public class LoopManiaWorldController {
         slugImage = new Image((new File("src/images/slug.png")).toURI().toString());
         zombieImage = new Image((new File("src/images/zombie.png")).toURI().toString());
         vampireImage = new Image((new File("src/images/vampire.png")).toURI().toString());
+        doggieImage = new Image((new File("src/images/doggie.png")).toURI().toString());
+        elanMuskeImage = new Image((new File("src/images/ElanMuske.png")).toURI().toString());
 
         /* Initialize all item images */
         swordImage = new Image((new File("src/images/basic_sword.png")).toURI().toString());
@@ -323,6 +330,8 @@ public class LoopManiaWorldController {
         goldImage = new Image((new File("src/images/gold_pile.png")).toURI().toString());
         healthPotionImage = new Image((new File("src/images/brilliant_blue_new.png")).toURI().toString());
         theOneRingImage = new Image((new File("src/images/the_one_ring.png")).toURI().toString());
+        andurilImage = new Image((new File("src/images/anduril_flame_of_the_west.png")).toURI().toString());
+        treeStumpImage = new Image((new File("src/images/tree_stump.png")).toURI().toString());
 
         /* Initialize allied soldier image */
         alliedSoldierImage = new Image((new File("src/images/deep_elf_master_archer.png")).toURI().toString());
@@ -400,7 +409,7 @@ public class LoopManiaWorldController {
         System.out.println("starting timer");
         isPaused = false;
         // trigger adding code to process main game logic to queue. JavaFX will target framerate of 0.3 seconds
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), event -> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), event -> {
 
             isTimelineRunning = true;
 
@@ -604,6 +613,12 @@ public class LoopManiaWorldController {
                 view = new ImageView(theOneRingImage);
                 draggableType = null;
                 break;
+            case ANDURIL:
+                view = new ImageView(andurilImage);
+                break;
+            case TREE_STUMP:
+                view = new ImageView(treeStumpImage);
+                break;
             default:
                 return;
         }
@@ -642,6 +657,12 @@ public class LoopManiaWorldController {
             case HELMET:
                 view = new ImageView(helmetImage);
                 break;
+            case ANDURIL:
+                view = new ImageView(andurilImage);
+                break;
+            case TREE_STUMP:
+                view = new ImageView(treeStumpImage);
+                break;
             default:
                 return;
         }
@@ -665,6 +686,12 @@ public class LoopManiaWorldController {
                 break;
             case VAMPIRE:
                 view = new ImageView(vampireImage);
+                break;
+            case DOGGIE:
+                view = new ImageView(doggieImage);
+                break;
+            case ELAN_MUSKE:
+                view = new ImageView(elanMuskeImage);
                 break;
             default:
                 return;
@@ -904,7 +931,6 @@ public class LoopManiaWorldController {
     private void addDragEventHandlers(ImageView view, DRAGGABLE_TYPE draggableType, GridPane sourceGridPane, GridPane targetGridPane){
         view.setOnDragDetected(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-                System.out.println("HERE");
                 currentlyDraggedImage = view; // set image currently being dragged, so squares setOnDragEntered can detect it...
                 currentlyDraggedType = draggableType;
                 currentlyDraggedTargetGridPane = targetGridPane;
@@ -1333,12 +1359,14 @@ public class LoopManiaWorldController {
             case SWORD:
             case STAKE:
             case STAFF:
+            case ANDURIL:
                 targetCell = weaponCell;
                 break;
             case ARMOUR:
                 targetCell = armourCell;
                 break;
             case SHIELD:
+            case TREE_STUMP:
                 targetCell = shieldCell;
                 break;
             case HELMET:
@@ -1520,6 +1548,7 @@ public class LoopManiaWorldController {
     }
 
     public void displayVictoryMessage(){
+        if(!isPaused) pause();
         PopUpMessageController popUpMessageController = openPopUpMessageWindow(primaryStage, "You Won!", Color.GREEN, "Quit Game");
         popUpMessageController.setQuitSwitcher(() ->{
             popUpMessageController.getStage().close();
@@ -1529,6 +1558,7 @@ public class LoopManiaWorldController {
 
     public void displayDefeatMessage(){
         if(world.hasHumanPlayerWon()) return;
+        if(!isPaused) pause();
         PopUpMessageController popUpMessageController = openPopUpMessageWindow(primaryStage, "You Lost!", Color.RED, "Quit Game");
         popUpMessageController.setQuitSwitcher(() ->{
             popUpMessageController.getStage().close();

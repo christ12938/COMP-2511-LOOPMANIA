@@ -5,5 +5,7 @@ public enum DamageableType {
     ALLIED_SOLDIER,
     SLUG,
     ZOMBIE,
-    VAMPIRE;
+    VAMPIRE,
+    DOGGIE,
+    ELAN_MUSKE;
 }

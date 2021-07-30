@@ -6,7 +6,7 @@ import unsw.loopmania.Types.ItemType;
 /**
  * represents an equipped or unequipped TreeStump in the backend world
  */
-public class TreeStump extends Shield{
+public class TreeStump extends DefensiveItems{
 
     private final int defense = 15;
 

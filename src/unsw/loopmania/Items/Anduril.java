@@ -6,7 +6,7 @@ import unsw.loopmania.Types.ItemType;
 /**
  * represents an equipped or unequipped Anudril in the backend world
  */
-public class Anduril extends Sword {
+public class Anduril extends OffensiveItems{
 
     private final int attack = 15;
     

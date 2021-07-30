@@ -69,6 +69,9 @@ Character: Health = 100, Attack = 5, Defense = 0
 Slug: Health = 10, Atack = 5, Crit chance = 10%, Crit multiplier = 150%, Battle Radius = 2, Support Radius = 2
 Zombie: Health = 10, Atack = 10, Crit chance = 10%, Crit multiplier = N/A, Battle Radius = 3, Support Radius = 3
 Vampire: Health = 20, Atack = 20, Crit chance = 20%, Crit multiplier = 100 - 200% (Uniformly random), Battle Radius = 3, Support Radius = 4
+Tree stump decreases bossses damage by 70%
+Elan Muske has a 20% chance of healing all battling enemies (including self) for 10 health
+Doggie has a 20% chance of stunning the character. (This effect will not accumulate)
 
 
 

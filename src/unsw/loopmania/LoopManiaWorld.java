@@ -13,6 +13,8 @@ import unsw.loopmania.Buildings.TowerBuilding;
 import unsw.loopmania.Buildings.TrapBuilding;
 import unsw.loopmania.Buildings.VillageBuilding;
 import unsw.loopmania.Cards.Card;
+import unsw.loopmania.Enemies.Doggie;
+import unsw.loopmania.Enemies.ElanMuske;
 import unsw.loopmania.Enemies.Enemy;
 import unsw.loopmania.Enemies.Slug;
 import unsw.loopmania.Enemies.Vampire;
@@ -209,6 +211,12 @@ public class LoopManiaWorld {
             case "the_one_ring":
                 rareItemsAvailable.add(ItemType.THE_ONE_RING);
                 break;
+            case "anduril_flame_of_the_west":
+                rareItemsAvailable.add(ItemType.ANDURIL);
+                break;
+            case "tree_stump":
+                rareItemsAvailable.add(ItemType.TREE_STUMP);
+                break;
             default:
                 return;
         }
@@ -279,6 +287,7 @@ public class LoopManiaWorld {
      * spawns enemies if the conditions warrant it, adds to world
      * @return list of the enemies to be displayed on screen
      */
+    //DEBUG!!!! WONT SPAWN WHEN TILES ARE FULL
     public List<Enemy> possiblySpawnEnemies(){
         List<Enemy> spawningEnemies = new ArrayList<>();
         /* Get Slug Spawn Position */
@@ -308,7 +317,45 @@ public class LoopManiaWorld {
             spawningEnemies.add(enemy);
         }
 
+        /* Get Bosses Spawn Position */
+
+        /* Spawn Doggie */
+        if(cycle != 0 && cycle%20 == 0 && !hasDoggie()){
+            Pair<Integer, Integer> doggiePos = possiblyGetBossSpawnPosition();
+            if (doggiePos != null){
+                int indexInPath = orderedPath.indexOf(doggiePos);
+                Enemy enemy = new Doggie(new PathPosition(indexInPath, orderedPath));
+                enemies.add(enemy);
+                spawningEnemies.add(enemy);
+            }
+        }
+
+        /* Spawn Elon Musk */
+        if(cycle != 0 && cycle%40 == 0 && !hasElanMuske() && character.getExperience() >= 10000){
+            Pair<Integer, Integer> elonMuskPos = possiblyGetBossSpawnPosition();
+            if (elonMuskPos != null){
+                int indexInPath = orderedPath.indexOf(elonMuskPos);
+                Enemy enemy = new ElanMuske(new PathPosition(indexInPath, orderedPath));
+                enemies.add(enemy);
+                spawningEnemies.add(enemy);
+            }
+        }
+
         return spawningEnemies;
+    }
+
+    private boolean hasDoggie(){
+        for(Enemy e : enemies){
+            if(e.getEnemyType() == EnemyType.DOGGIE) return true;
+        }
+        return false;
+    }
+
+    private boolean hasElanMuske(){
+        for(Enemy e : enemies){
+            if(e.getEnemyType() == EnemyType.ELAN_MUSKE) return true;
+        }
+        return false;
     }
 
     /**
@@ -366,22 +413,26 @@ public class LoopManiaWorld {
              */
             /* Fight until character or enemy is dead */
             while(true){
+                boolean isCharacterStunned = false;
                 /* Character's turn */
-                /* TODO: You cannot trance a boss */
-                if(character.isNextAttackTrance()){
-                    AlliedSoldier trancedAlliedSoldier = addAlliedSoldier();
-                    if(trancedAlliedSoldier == null){
-                        character.dealDamage(attackedEnemy);
+                if(!isCharacterStunned){
+                    if(attackedEnemy.getEnemyType() != EnemyType.ELAN_MUSKE
+                        && attackedEnemy.getEnemyType() != EnemyType.DOGGIE
+                        && character.isNextAttackTrance()){
+                        AlliedSoldier trancedAlliedSoldier = addAlliedSoldier();
+                        if(trancedAlliedSoldier == null){
+                            character.dealDamage(attackedEnemy);
+                        }else{
+                            battleEnemies.remove(attackedEnemy);
+                            trancedEnemies.add(attackedEnemy);
+                            trancedSoldiers.add(trancedAlliedSoldier);
+                            trancedAlliedSoldier.startTranceTurn();
+                            character.getAlliedSoldiers().add(trancedAlliedSoldier);
+                            break;
+                        }
                     }else{
-                        battleEnemies.remove(attackedEnemy);
-                        trancedEnemies.add(attackedEnemy);
-                        trancedSoldiers.add(trancedAlliedSoldier);
-                        trancedAlliedSoldier.startTranceTurn();
-                        character.getAlliedSoldiers().add(trancedAlliedSoldier);
-                        break;
+                        character.dealDamage(attackedEnemy);
                     }
-                }else{
-                    character.dealDamage(attackedEnemy);
                 }
                 for(AlliedSoldier alliedSoldier : character.getAlliedSoldiers()){
                     alliedSoldier.dealDamage(attackedEnemy);
@@ -396,6 +447,15 @@ public class LoopManiaWorld {
                     break;
                 }
                 /* Enemy's turn */
+                if(attackedEnemy.getEnemyType() == EnemyType.DOGGIE){
+                    if(isCharacterStunned){
+                        isCharacterStunned = false;
+                    }else if(rand.nextDouble() < 0.2){
+                        isCharacterStunned = true;
+                    }
+                }else if(attackedEnemy.getEnemyType() == EnemyType.ELAN_MUSKE){
+                    ((ElanMuske)attackedEnemy).healEnemies(battleEnemies);
+                }
                 attackedEnemy.dealDamage(character);
                 if(character.isDefeated()) break;
                 for(AlliedSoldier alliedSoldier : new ArrayList<AlliedSoldier>(character.getAlliedSoldiers())){
@@ -1097,6 +1157,30 @@ public class LoopManiaWorld {
         return null;
     }
 
+    private Pair<Integer, Integer> possiblyGetBossSpawnPosition(){
+        List<Pair<Integer, Integer>> orderedPathSpawnCandidates = new ArrayList<>();
+        int indexPosition = orderedPath.indexOf(new Pair<Integer, Integer>(character.getX(), character.getY()));
+        // inclusive start and exclusive end of range of positions not allowed
+        int startNotAllowed = (indexPosition - 2 + orderedPath.size())%orderedPath.size();
+        int endNotAllowed = (indexPosition + 3)%orderedPath.size();
+        // note terminating condition has to be != rather than < since wrap around...
+        for (int i=endNotAllowed; i!=startNotAllowed; i=(i+1)%orderedPath.size()){
+            // If on hero castle, dont spawn
+            if(orderedPath.get(i).getValue0() == herosCastle.getX()
+                && orderedPath.get(i).getValue1() == herosCastle.getY()){
+                    continue;
+            }
+            orderedPathSpawnCandidates.add(orderedPath.get(i));
+        }
+
+        // choose random choice
+        Pair<Integer, Integer> spawnPosition = null;
+        if(orderedPathSpawnCandidates.size() != 0){
+            spawnPosition = orderedPathSpawnCandidates.get(rand.nextInt(orderedPathSpawnCandidates.size()));
+        }
+        return spawnPosition;
+    }
+    
     /**
      * Get all spawner possible spawning locations on that cycle
      * @param type Spawner type
