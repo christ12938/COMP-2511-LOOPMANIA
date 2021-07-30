@@ -204,6 +204,9 @@ public class LoopManiaWorldController {
     private Image goldImage;
     private Image healthPotionImage;
     private Image theOneRingImage;
+    private Image flameOfTheWestImage;
+    private Image treeStumpImage;
+    private Image doggieCoinImage;
 
 
     /**
@@ -212,6 +215,8 @@ public class LoopManiaWorldController {
     private Image slugImage;
     private Image zombieImage;
     private Image vampireImage;
+    private Image doggieImage;
+    private Image elanMuskeImage;
 
     /**
      * Image of allied soldier
@@ -312,6 +317,8 @@ public class LoopManiaWorldController {
         slugImage = new Image((new File("src/images/slug.png")).toURI().toString());
         zombieImage = new Image((new File("src/images/zombie.png")).toURI().toString());
         vampireImage = new Image((new File("src/images/vampire.png")).toURI().toString());
+        doggieImage = new Image((new File("src/images/doggie.png")).toURI().toString());
+        elanMuskeImage = new Image((new File("src/images/ElanMuske.png")).toURI().toString());
 
         /* Initialize all item images */
         swordImage = new Image((new File("src/images/basic_sword.png")).toURI().toString());
@@ -666,6 +673,12 @@ public class LoopManiaWorldController {
             case VAMPIRE:
                 view = new ImageView(vampireImage);
                 break;
+            case DOGGIE:
+                view = new ImageView(doggieImage);
+                break;
+            case ELAN_MUSKE:
+                view = new ImageView(elanMuskeImage);
+                break;
             default:
                 return;
         }
@@ -904,7 +917,6 @@ public class LoopManiaWorldController {
     private void addDragEventHandlers(ImageView view, DRAGGABLE_TYPE draggableType, GridPane sourceGridPane, GridPane targetGridPane){
         view.setOnDragDetected(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-                System.out.println("HERE");
                 currentlyDraggedImage = view; // set image currently being dragged, so squares setOnDragEntered can detect it...
                 currentlyDraggedType = draggableType;
                 currentlyDraggedTargetGridPane = targetGridPane;

@@ -5,36 +5,38 @@ import unsw.loopmania.PathPosition;
 import unsw.loopmania.Types.DamageableType;
 import unsw.loopmania.Types.EnemyType;
 
-public class Slug extends Enemy{
+public class Doggie extends Enemy{
 
-    private final double maxHealth = EnemyType.SLUG.getMaxHealth();
+    private final double maxHealth = EnemyType.DOGGIE.getMaxHealth();
     private double currentHealth;
-    private final int attack = EnemyType.SLUG.getAttack();
+    private final int attack = EnemyType.DOGGIE.getAttack();
     private CritStrategy critStrategy;
 
-    public Slug(PathPosition position){
+    public Doggie(PathPosition position) {
         super(position);
         this.currentHealth = maxHealth;
-        this.critStrategy = new SlugCritStrategy();
+        this.critStrategy = new DoggieCritStrategy();
     }
-    
+
     public EnemyType getEnemyType(){
-        return EnemyType.SLUG;
+        return EnemyType.DOGGIE;
     }
 
     public DamageableType getDamageableType(){
-        return DamageableType.SLUG;
+        return DamageableType.DOGGIE;
     }
 
     public double getCurrentHealth(){
         return this.currentHealth;
     }
 
-    public void setCurrentHealth(double currentHealth){
+    @Override
+    public void setCurrentHealth(double currentHealth) {
         this.currentHealth = currentHealth;
     }
 
-    public void dealDamage(Damageable damageable){
+    @Override
+    public void dealDamage(Damageable damageable) {
         if(critStrategy.isNextAttackCritical()){
             damageable.takeDamage(critStrategy.applyCritDamage(attack), this);
         }else{

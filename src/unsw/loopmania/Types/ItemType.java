@@ -12,7 +12,11 @@ public enum ItemType{
     HELMET(true, false, true),
     GOLD(false, false, false),
     HEALTH_POTION(false, false, false),
-    THE_ONE_RING(false, false, false);
+    DOGGIECOIN(false, false, false),
+    THE_ONE_RING(false, false, false),
+    FLAME_OF_THE_WEST(true, true, false),
+    TREE_STUMP(true, false, true);
+
 
     private boolean isEquipable;
     private boolean isOffensive;
