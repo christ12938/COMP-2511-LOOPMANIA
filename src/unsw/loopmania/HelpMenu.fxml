@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
@@ -13,7 +14,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="857.0" prefWidth="647.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Accordion layoutX="10.0" layoutY="117.0" prefHeight="672.0" prefWidth="627.0">
+      <Accordion layoutX="10.0" layoutY="80.0" prefHeight="672.0" prefWidth="627.0">
         <panes>
           <TitledPane animated="false" text="Basic Items">
                <content>
@@ -143,7 +144,7 @@
                               </AnchorPane>
                               <AnchorPane layoutX="10.0" layoutY="2000.0" prefHeight="250.0" prefWidth="613.0">
                                  <children>
-                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="A melee weapon with very low stats (lower than both the sword and stake), which has a random chance of &#10;inflicting a trance, which transforms the attacked enemy into an allied soldier temporarily (and fights &#10;alongside the Character). If the trance ends during the fight, the affected enemy reverts back to acting as &#10;an enemy which fights the Character. If the fight ends whilst the enemy is in a trance, the enemy dies.&#10;&#10;Spawns after 40 cycles, and the player has reached 10000 experience points&#10;&#10;Purchase in Hero's Castle, loot from enemies, or obtained from cards lost due to being the oldest and &#10;replaced." />
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="A melee weapon with very low stats (lower than both the sword and stake), which has a random chance of &#10;inflicting a trance, which transforms the attacked enemy into an allied soldier temporarily (and fights &#10;alongside the Character). If the trance ends during the fight, the affected enemy reverts back to acting as&#10;an enemy which fights the Character. If the fight ends whilst the enemy is in a trance, the enemy dies.&#10;&#10;Spawns after 40 cycles, and the player has reached 10000 experience points&#10;&#10;Purchase in Hero's Castle, loot from enemies, or obtained from cards lost due to being the oldest and &#10;replaced." />
                                     <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../images/staff.png" />
@@ -163,9 +164,136 @@
                </content>
           </TitledPane>
           <TitledPane animated="false" text="Buildings">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
+               <content>
+                  <ScrollPane hbarPolicy="NEVER" prefHeight="1250.0" prefWidth="627.0">
+                     <content>
+                        <AnchorPane prefHeight="1100.0" prefWidth="630.0">
+                           <children>
+                              <AnchorPane layoutY="250.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Produces zombies every cycle of the path completed by the Character, spawning nearby on the path&#10;&#10;Placement: Only on non-path tiles adjacent to the path&#10;" />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/zombie_pit.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zombie Pit">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Produces vampires every 5 cycles of the path completed by the Character, spawning nearby on the path&#10;&#10;Placement: Only on non-path tiles adjacent to the path" />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/vampire_castle_building_transparent.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vampire castle">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="500.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="During a battle within its shooting radius, enemies will be attacked by the tower.&#10;&#10;Placement : Only on non-path tiles adjacent to the path." />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/tower.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tower">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="750.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Character regains health when passing through.&#10;&#10;Placement: Only on path tiles." />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/shield.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Village">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="1000.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Produces allied soldier to join Character when passes through.&#10;&#10;Placement: Only on path tiles." />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/barracks.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Barracks">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="1250.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="When an enemy steps on a trap, the enemy is damaged (and potentially killed if it loses all health) and the&#10;trap is destroyed.&#10;&#10;Placement: Only on path tiles." />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/trap.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Trap">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="1500.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Character deals double damage within campfire battle radius.&#10;&#10;Placement: Any non-path tile." />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/campfire.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Campfire">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutY="1750.0" prefHeight="250.0" prefWidth="613.0">
+                                 <children>
+                                    <TextArea editable="false" layoutY="100.0" prefHeight="130.0" prefWidth="597.0" text="Character starts at the Hero's Castle, and upon finishing the required number of cycles of the path completed &#10;by the Character, when the Character enters this castle, the Human Player is offered a window to purchase &#10;items at the Hero's Castle.&#10;&#10;Placement: Exists at the starting position of the Character (not spawned by a card, always exists)." />
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="3.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../images/heros_castle.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hero's Castle">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+               </content>
           </TitledPane>
             <TitledPane animated="false" text="Rare Items">
                <content>
@@ -310,5 +438,10 @@
             <Font name="System Bold" size="36.0" />
          </font>
       </Label>
+      <Button layoutX="260.0" layoutY="780.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="121.0" text="Back">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
