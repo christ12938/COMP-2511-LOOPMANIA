@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.javatuples.Pair;
 import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
-import unsw.loopmania.Items.Gold;
 import unsw.loopmania.Items.Item;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Character;
