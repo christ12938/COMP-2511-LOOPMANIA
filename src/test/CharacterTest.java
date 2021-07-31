@@ -97,12 +97,12 @@ public class CharacterTest {
 
         double health = character.getCurrentHealth();
 
-        character.takeDamage(EnemyType.SLUG.getAttack(), slug);
-
         Armour armour = new Armour(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
 
         character.equip(armour);
 
-        assertEquals(health, character.getCurrentHealth() + (EnemyType.SLUG.getAttack() / 2) + character.getDefense());
+        character.takeDamage(20, slug);
+
+        assertEquals(health, character.getCurrentHealth() + (20 / 2 - character.getDefense()) );
     }
 }
