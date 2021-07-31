@@ -20,8 +20,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import unsw.loopmania.Items.Item;
 import unsw.loopmania.Loaders.ItemLoader;
 import unsw.loopmania.Loaders.ShopLoader;
@@ -74,6 +77,9 @@ public class LoopManiaShopController {
 
     private LoopManiaShop shop;
 
+    private MediaPlayer sellItemAudioPlayer;
+    private MediaPlayer buyItemAudioPlayer;
+
     public LoopManiaShopController(LoopManiaWorldController parent, LoopManiaWorld world, Stage shopStage) {
 
         shop = new LoopManiaShop(world, parent, this);
@@ -95,6 +101,15 @@ public class LoopManiaShopController {
 
         itemBuyPositions = ShopLoader.loadItemBuyPositions();
         itemSellPositions = ShopLoader.loadItemSellPositions();
+
+        String buyAudio = new File("src/Music/BuyItem.mp3").toURI().toString();
+        String sellAudio = new File("src/Music/SellItem.mp3").toURI().toString();
+
+        buyItemAudioPlayer = new MediaPlayer(new Media(buyAudio));
+        sellItemAudioPlayer = new MediaPlayer(new Media(sellAudio));
+
+        buyItemAudioPlayer.setVolume(0.1);
+        sellItemAudioPlayer.setVolume(0.03);
 
         this.parent = parent;
         this.world = world;
@@ -128,6 +143,8 @@ public class LoopManiaShopController {
             @Override
             public void handle(ActionEvent event) {
                 String returnedMessage = shop.buyItem(type);
+                buyItemAudioPlayer.play();
+                buyItemAudioPlayer.seek(Duration.ZERO);
                 Color color = null;
                 if(returnedMessage.equals(shop.getBuySuccessMessage())){
                     color = Color.GREEN;
@@ -150,6 +167,8 @@ public class LoopManiaShopController {
             @Override
             public void handle(ActionEvent event) {
                 String returnedMessage = shop.sellItem(type);
+                sellItemAudioPlayer.play();
+                sellItemAudioPlayer.seek(Duration.ZERO);
                 Color color = null;
                 if(returnedMessage.equals(shop.getSellSuccessMessage())){
                     color = Color.GREEN;
