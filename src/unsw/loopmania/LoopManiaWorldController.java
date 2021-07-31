@@ -345,6 +345,7 @@ public class LoopManiaWorldController {
         helmetImage = new Image((new File("src/images/helmet.png")).toURI().toString());
         goldImage = new Image((new File("src/images/gold_pile.png")).toURI().toString());
         healthPotionImage = new Image((new File("src/images/brilliant_blue_new.png")).toURI().toString());
+        doggieCoinImage = new Image((new File("src/images/doggiecoin.png")).toURI().toString());
         theOneRingImage = new Image((new File("src/images/the_one_ring.png")).toURI().toString());
         andurilImage = new Image((new File("src/images/anduril_flame_of_the_west.png")).toURI().toString());
         treeStumpImage = new Image((new File("src/images/tree_stump.png")).toURI().toString());
@@ -453,6 +454,13 @@ public class LoopManiaWorldController {
         draggedEntity.setVisible(false);
         draggedEntity.setOpacity(0.7);
         anchorPaneRoot.getChildren().add(draggedEntity);
+
+        anchorPaneRoot.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent e) {
+                anchorPaneRoot.requestFocus();
+            }
+        });
     }
 
     /**
@@ -479,7 +487,7 @@ public class LoopManiaWorldController {
              */
 
             world.runTickMoves();
-            
+
             Item newItem = world.checkAndAddSpawnedItem();
             if(newItem != null) onLoadUnequippedItem(newItem);
 
@@ -497,9 +505,11 @@ public class LoopManiaWorldController {
             world.applyStaticBuildingBuffsToCharacter();
             
             if(world.characterIsOnHeroCastle()){
-                world.nextCycle();
-                if(!world.hasHumanPlayerWon()) openShop();
-
+                if(!world.hasHumanPlayerWon()) {
+                    world.nextCycle();
+                    world.updateDoggieCoin();
+                    openShop();
+                }
             }else{
                 List<Enemy> defeatedEnemies = world.runBattles();
                 if (world.getCharacterCurrentHp() <= 0) {
@@ -562,6 +572,13 @@ public class LoopManiaWorldController {
     }
 
     /**
+     * Load doggie coin from the world, and pair it with an image in the GUI
+     */
+    public void loadDoggieCoin(){
+        onLoadUnequippedItem(world.loadDoggieCoinItem());
+    }
+
+    /**
      * run GUI events after an enemy is defeated, such as spawning items/experience/gold
      * @param enemy defeated enemy for which we should react to the death of
      */
@@ -575,6 +592,7 @@ public class LoopManiaWorldController {
         }
         loadRandomItem();
         loadRandomCard();
+        world.addExperienceReward(enemy.getEnemyType());
     }
 
     /**
@@ -648,6 +666,7 @@ public class LoopManiaWorldController {
     public void onLoadUnequippedItem(Item item) {
         ImageView view = null;
         DRAGGABLE_TYPE draggableType = DRAGGABLE_TYPE.ITEMS;
+        ItemType subType = item.getItemSubType();
         switch(item.getItemType()){
             case SWORD:
                 view = new ImageView(swordImage);
@@ -671,9 +690,13 @@ public class LoopManiaWorldController {
                 view = new ImageView(healthPotionImage);
                 draggableType = null;
                 break;
+            case DOGGIECOIN:
+                view = new ImageView(doggieCoinImage);
+                draggableType = null;
+                break;
             case THE_ONE_RING:
                 view = new ImageView(theOneRingImage);
-                draggableType = null;
+                if(subType == null) draggableType = null;
                 break;
             case ANDURIL:
                 view = new ImageView(andurilImage);
@@ -730,6 +753,9 @@ public class LoopManiaWorldController {
                 view = new ImageView(helmetImage);
                 equippingArmourAudioPlayer.play();
                 equippingArmourAudioPlayer.seek(Duration.ZERO);
+                break;
+            case THE_ONE_RING:
+                view = new ImageView(theOneRingImage);
                 break;
             case ANDURIL:
                 view = new ImageView(andurilImage);
@@ -1016,6 +1042,7 @@ public class LoopManiaWorldController {
                 currentlyDraggedImage = view; // set image currently being dragged, so squares setOnDragEntered can detect it...
                 currentlyDraggedType = draggableType;
                 currentlyDraggedTargetGridPane = targetGridPane;
+                anchorPaneRoot.requestFocus();
                 //Drag was detected, start drap-and-drop gesture
                 //Allow any transfer node
                 Dragboard db = view.startDragAndDrop(TransferMode.MOVE);
@@ -1441,6 +1468,7 @@ public class LoopManiaWorldController {
     private boolean isOnCorrectEquipableSlot(int column, int row){
         ImageView targetCell = null;
         ItemType type = world.getUnequippedItemTypeByCoordinates(GridPane.getColumnIndex(currentlyDraggedImage), GridPane.getRowIndex(currentlyDraggedImage));
+        ItemType subType = world.getUnequippedItemSubTypeByCoordinates(GridPane.getColumnIndex(currentlyDraggedImage), GridPane.getRowIndex(currentlyDraggedImage));
         switch(type){
             case SWORD:
             case STAKE:
@@ -1459,14 +1487,31 @@ public class LoopManiaWorldController {
                 targetCell = helmetCell;
                 break;
             default:
-                return false;
+                break;
         }
 
-        if(column == GridPane.getColumnIndex(targetCell) && row == GridPane.getRowIndex(targetCell)){
+        if(targetCell != null && column == GridPane.getColumnIndex(targetCell) && row == GridPane.getRowIndex(targetCell)){
             return true;
-        }else{
-            return false;
         }
+
+        if(subType != null){
+            switch(subType){
+                case ANDURIL:
+                    targetCell = weaponCell;
+                    break;
+                case TREE_STUMP:
+                    targetCell = shieldCell;
+                    break;
+                default:
+                    break;
+            }
+
+            if(targetCell != null && column == GridPane.getColumnIndex(targetCell) && row == GridPane.getRowIndex(targetCell)){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -1635,6 +1680,7 @@ public class LoopManiaWorldController {
     }
 
     public void displayVictoryMessage(){
+        if(world.hasHumanPlayerLost()) return;
         if(!isPaused) pause();
         PopUpMessageController popUpMessageController = openPopUpMessageWindow(primaryStage, "You Won!", Color.GREEN, "Quit Game");
         popUpMessageController.setQuitSwitcher(() ->{
@@ -1684,6 +1730,10 @@ public class LoopManiaWorldController {
             case BESERKER:
                 difficultyText.setText("Beserker Mode");
                 difficultyText.setTextFill(Color.RED);
+                break;
+            case CONFUSING:
+                difficultyText.setText("Confusing Mode");
+                difficultyText.setTextFill(Color.PINK);
                 break;
         }
         primaryStage.sizeToScene();
@@ -1744,6 +1794,48 @@ public class LoopManiaWorldController {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    @FXML
+    private void openHelpMenu(){
+
+        /* Pause the game first */
+        if(!isPaused) pause();
+
+        /**
+         * Cleanse left over dragging event
+         */
+        cleanseDragInput();
+        
+        try {
+            Stage helpStage = new Stage();
+            FXMLLoader helpLoader = new FXMLLoader(getClass().getResource("HelpMenu.fxml"));
+            HelpMenuController helpMenuController = new HelpMenuController(helpStage, this);
+            helpLoader.setController(helpMenuController);
+            helpStage.setScene(new Scene(helpLoader.load()));
+            helpStage.setResizable(false);
+
+            /**
+             * Set Stage modality and owner to block all controls to owner
+             */
+            helpStage.initModality(Modality.WINDOW_MODAL);
+            helpStage.initOwner(primaryStage);
+
+            helpStage.show();
+
+            /**
+             * Hide and show to center window
+             */
+            helpStage.hide();
+            double centerXPosition = primaryStage.getX() + primaryStage.getWidth()/2d;
+            double centerYPosition = primaryStage.getY() + primaryStage.getHeight()/2d;
+            helpStage.setX(centerXPosition - helpStage.getWidth()/2d);
+            helpStage.setY(centerYPosition - helpStage.getHeight()/2d);
+            helpStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

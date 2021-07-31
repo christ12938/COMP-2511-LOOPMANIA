@@ -60,6 +60,7 @@ public class LoopManiaShopController {
     private Image shieldImage;
     private Image helmetImage;
     private Image healthPotionImage;
+    private Image doggieCoinImage;
     private Image theOneRingImage;
     private Image andurilImage;
     private Image treeStumpImage;
@@ -93,6 +94,7 @@ public class LoopManiaShopController {
         shieldImage = new Image((new File("src/images/shield.png")).toURI().toString());
         helmetImage = new Image((new File("src/images/helmet.png")).toURI().toString());
         healthPotionImage = new Image((new File("src/images/brilliant_blue_new.png")).toURI().toString());
+        doggieCoinImage = new Image((new File("src/images/doggiecoin.png")).toURI().toString());
         theOneRingImage = new Image((new File("src/images/the_one_ring.png")).toURI().toString());
         andurilImage = new Image((new File("src/images/anduril_flame_of_the_west.png")).toURI().toString());
         treeStumpImage = new Image((new File("src/images/tree_stump.png")).toURI().toString());
@@ -302,6 +304,9 @@ public class LoopManiaShopController {
                 break;
             case HEALTH_POTION:
                 view = new ImageView(healthPotionImage);
+                break;
+            case DOGGIECOIN:
+                view = new ImageView(doggieCoinImage);
                 break;
             case THE_ONE_RING:
                 view = new ImageView(theOneRingImage);

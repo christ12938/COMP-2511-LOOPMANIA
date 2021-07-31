@@ -14,6 +14,9 @@ public class ElanMuske extends Enemy{
     private double currentHealth;
     private final int attack = EnemyType.ELAN_MUSKE.getAttack();
     private CritStrategy critStrategy;
+
+    public static double jumpChance = 0.8;
+    public static boolean hasSpawned = false;
     
     public ElanMuske(PathPosition position) {
         super(position);

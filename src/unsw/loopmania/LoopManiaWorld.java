@@ -338,42 +338,31 @@ public class LoopManiaWorld {
         /* Get Bosses Spawn Position */
 
         /* Spawn Doggie */
-        if(cycle != 0 && cycle%20 == 0 && !hasDoggie()){
+        if(cycle != 0 && cycle >=20 && !Doggie.hasSpawned){
             Pair<Integer, Integer> doggiePos = possiblyGetBossSpawnPosition();
             if (doggiePos != null){
                 int indexInPath = orderedPath.indexOf(doggiePos);
                 Enemy enemy = new Doggie(new PathPosition(indexInPath, orderedPath));
                 enemies.add(enemy);
                 spawningEnemies.add(enemy);
+                Doggie.hasSpawned = true;
             }
         }
 
         /* Spawn Elon Musk */
-        if(cycle != 0 && cycle%40 == 0 && !hasElanMuske() && character.getExperience() >= 10000){
+        if(cycle != 0 && cycle >= 40 && !ElanMuske.hasSpawned && character.getExperience() >= 10000){
             Pair<Integer, Integer> elonMuskPos = possiblyGetBossSpawnPosition();
             if (elonMuskPos != null){
                 int indexInPath = orderedPath.indexOf(elonMuskPos);
                 Enemy enemy = new ElanMuske(new PathPosition(indexInPath, orderedPath));
                 enemies.add(enemy);
                 spawningEnemies.add(enemy);
+                increaseDoggieCoinValue();
+                ElanMuske.hasSpawned = true;
             }
         }
 
         return spawningEnemies;
-    }
-
-    private boolean hasDoggie(){
-        for(Enemy e : enemies){
-            if(e.getEnemyType() == EnemyType.DOGGIE) return true;
-        }
-        return false;
-    }
-
-    private boolean hasElanMuske(){
-        for(Enemy e : enemies){
-            if(e.getEnemyType() == EnemyType.ELAN_MUSKE) return true;
-        }
-        return false;
     }
 
     /**
@@ -399,6 +388,9 @@ public class LoopManiaWorld {
         /* First determine if character is in battle radius of enemies  */
         for (Enemy e: enemies){
             // Pythagoras: a^2+b^2 < radius^2 to see if within radius
+            if(e.getEnemyType() == EnemyType.ELAN_MUSKE && rand.nextDouble() < 0.85){
+                continue;
+            }
             if(e.inBattleRadius(character)){
                 battleEnemies.add(e);
             }
@@ -562,7 +554,7 @@ public class LoopManiaWorld {
     public Item loadRandomUnenquippedInventoryItem(){
         Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
         if (firstAvailableSlot == null){
-            Item item = ItemLoader.loadRandomItem(new Pair<Integer, Integer>(unequippedInventoryItems.get(0).getX(), unequippedInventoryItems.get(0).getY()), rareItemsAvailable);
+            Item item = ItemLoader.loadRandomItem(new Pair<Integer, Integer>(unequippedInventoryItems.get(0).getX(), unequippedInventoryItems.get(0).getY()), rareItemsAvailable, controller.getDifficulty());
             if(item.getItemType() == ItemType.GOLD){
                 character.addGold(5);
                 return null;
@@ -573,7 +565,7 @@ public class LoopManiaWorld {
             addUnequippedItem(item);
             return item;
         }else{
-            Item item = ItemLoader.loadRandomItem(firstAvailableSlot, rareItemsAvailable);
+            Item item = ItemLoader.loadRandomItem(firstAvailableSlot, rareItemsAvailable, controller.getDifficulty());
             if(item.getItemType() == ItemType.GOLD){
                 character.addGold(5);
                 return null;
@@ -581,6 +573,25 @@ public class LoopManiaWorld {
             addUnequippedItem(item);
             return item;
         }
+    }
+
+    /**
+     * Load doggie coin
+     * @return
+     */
+    public Item loadDoggieCoinItem(){
+        Pair<Integer, Integer> firstAvailableSlot = getFirstAvailableSlotForItem();
+        DoggieCoin doggieCoin = null;
+        if (firstAvailableSlot == null){
+            doggieCoin = new DoggieCoin(new SimpleIntegerProperty(unequippedInventoryItems.get(0).getX()), new SimpleIntegerProperty(unequippedInventoryItems.get(0).getY()));
+            removeItemByPositionInUnequippedInventoryItems(0);
+            this.character.addExperience(10);
+            this.character.addGold(5);
+        }else{
+            doggieCoin = new DoggieCoin(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
+        }
+        addUnequippedItem(doggieCoin);
+        return doggieCoin;
     }
 
     /**
@@ -735,7 +746,7 @@ public class LoopManiaWorld {
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
 
-        TheOneRing theonering = new TheOneRing(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
+        TheOneRing theonering = new TheOneRing(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()), null);
         unequippedInventoryItems.add(theonering);
         return theonering;
     }
@@ -752,7 +763,7 @@ public class LoopManiaWorld {
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        Anduril anduril = new Anduril(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
+        Anduril anduril = new Anduril(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()), null);
         unequippedInventoryItems.add(anduril);
         return anduril;
     }
@@ -769,7 +780,7 @@ public class LoopManiaWorld {
             this.character.addGold(5);
             firstAvailableSlot = getFirstAvailableSlotForItem();
         }
-        TreeStump treeStump = new TreeStump(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()));
+        TreeStump treeStump = new TreeStump(new SimpleIntegerProperty(firstAvailableSlot.getValue0()), new SimpleIntegerProperty(firstAvailableSlot.getValue1()), null);
         unequippedInventoryItems.add(treeStump);
         return treeStump;
     }
@@ -802,6 +813,15 @@ public class LoopManiaWorld {
         for(Item item : unequippedInventoryItems){
             if(item.getX() == x && item.getY() ==y){
                 return item.getItemType();
+            }
+        }
+        return null;
+    }
+
+    public ItemType getUnequippedItemSubTypeByCoordinates(int x, int y){
+        for(Item item : unequippedInventoryItems){
+            if(item.getX() == x && item.getY() ==y){
+                return item.getItemSubType();
             }
         }
         return null;
@@ -996,12 +1016,7 @@ public class LoopManiaWorld {
     public Item getUnequippedItemByCoordinates(int x, int y){
         for (Item e: unequippedInventoryItems){
             if ((e.getX() == x) && (e.getY() == y)){
-                //Redundant, just in case
-                if(e.isEquipable()){
-                    return e;
-                }else{
-                    return null;
-                }
+                return e;
             }
         }
         return null;
@@ -1468,6 +1483,44 @@ public class LoopManiaWorld {
                 character.setAttack(character.getAttack()/2);
             }
         }
+    }
+
+    public void updateDoggieCoin(){
+        DoggieCoin.currentValue = rand.nextInt((DoggieCoin.maxValue - DoggieCoin.minValue) + 1) + DoggieCoin.minValue;
+    }
+
+    private void increaseDoggieCoinValue(){
+        DoggieCoin.maxValue = 50;
+        DoggieCoin.minValue = 40;
+        DoggieCoin.currentValue = 45;
+        System.out.println("1");
+    }
+
+    public void decreaseDoggieCoinValue(){
+        DoggieCoin.maxValue = 20;
+        DoggieCoin.minValue = 1;
+        DoggieCoin.currentValue = 10;
+    }
+
+    public void addExperienceReward(EnemyType type){
+        character.addExperience(type.getExperienceReward());
+    }
+
+    public void bossDefeated(){
+        bossesDefeated++;
+        notifyHumanPlayer();
+    }
+
+    public int getBossesDefeated(){
+        return this.bossesDefeated;
+    }
+
+    public void setHasLost(boolean hasLost){
+        humanPlayer.setHasLost(hasLost);
+    }
+
+    public boolean hasHumanPlayerLost(){
+        return humanPlayer.hasLost();
     }
 
 }

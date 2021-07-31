@@ -269,14 +269,16 @@ public class Character extends MovingEntity implements Damageable{
 
     private boolean hasAndurilEquipped(){
         for(Item item : equippedItems){
-            if(item.getItemType() == ItemType.ANDURIL) return true;
+            if(item.getItemType() == ItemType.ANDURIL 
+                || item.getItemSubType() == ItemType.ANDURIL) return true;
         }
         return false;
     }
 
     private boolean hasTreeStumpEquipped(){
         for(Item item : equippedItems){
-            if(item.getItemType() == ItemType.TREE_STUMP) return true;
+            if(item.getItemType() == ItemType.TREE_STUMP
+                || item.getItemSubType() == ItemType.TREE_STUMP) return true;
         }
         return false;
     }
@@ -307,11 +309,22 @@ public class Character extends MovingEntity implements Damageable{
             /* Apply effect of the one ring */
             Item destroyedRareItem = null;
             for(Item i : world.getUnequippedInventoryItems()){
-                if(i.getItemType() == ItemType.THE_ONE_RING){
+                if(i.getItemType() == ItemType.THE_ONE_RING || i.getItemSubType() == ItemType.THE_ONE_RING){
                     currentHealth = maxHealth;
                     destroyedRareItem = i;
                     break;
                 }
+            }
+
+            if(destroyedRareItem == null){
+                for(Item i : equippedItems){
+                    if(i.getItemType() == ItemType.THE_ONE_RING || i.getItemSubType() == ItemType.THE_ONE_RING){
+                        currentHealth = maxHealth;
+                        destroyedRareItem = i;
+                        unequip(i);
+                        break;
+                    }
+                }  
             }
 
             if (observer != null) {
@@ -321,6 +334,7 @@ public class Character extends MovingEntity implements Damageable{
             if(destroyedRareItem != null){
                 world.removeUnequippedInventoryItem(destroyedRareItem);
             }else{
+                world.setHasLost(true);
                 observer.displayDefeatMessage();
             }
         }else{
@@ -348,6 +362,13 @@ public class Character extends MovingEntity implements Damageable{
         }else if(item.isDefensive()){
             setDefense(defense + ((DefensiveItems)item).getDefense());
         }
+        if(item.getItemSubType() != null){
+            if(item.getItemSubType().isOffensive()){
+                setAttack(attack + item.getItemSubType().getAttack());
+            }else if(item.getItemSubType().isDefensive()){
+                setDefense(defense + item.getItemSubType().getDefense());
+            } 
+        }
         equippedItems.add(item);
     }
 
@@ -360,6 +381,13 @@ public class Character extends MovingEntity implements Damageable{
             setAttack(attack - ((OffensiveItems)item).getAttack());
         }else if(item.isDefensive()){
             setDefense(defense - ((DefensiveItems)item).getDefense());
+        }
+        if(item.getItemSubType() != null){
+            if(item.getItemSubType().isOffensive()){
+                setAttack(attack - item.getItemSubType().getAttack());
+            }else if(item.getItemSubType().isDefensive()){
+                setDefense(defense - item.getItemSubType().getDefense());
+            } 
         }
         equippedItems.remove(item);
     }

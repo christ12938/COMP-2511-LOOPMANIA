@@ -37,6 +37,11 @@
                     <Font name="System Bold" size="15" />
                 </font>
             </RadioButton>
+            <RadioButton fx:id="confusingModeButton" text="Confusing">
+                <font>
+                    <Font name="System Bold" size="15" />
+                </font>
+            </RadioButton>
             <Label fx:id="modeDescription" prefHeight="57">
                 <font>
                     <Font name="System Bold" size="15" />
