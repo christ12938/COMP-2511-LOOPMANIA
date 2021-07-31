@@ -42,7 +42,6 @@ public class BuildingsTest{
         orderedPath.add(test1);
         orderedPath.add(test2);
 
-
         LoopManiaWorld d = new LoopManiaWorld(4, 5, orderedPath);
 
         Character testCharacter = new Character(new PathPosition(1,orderedPath));
