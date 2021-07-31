@@ -22,6 +22,7 @@ import unsw.loopmania.Items.Shield;
 import unsw.loopmania.Items.TheOneRing;
 import unsw.loopmania.Items.TreeStump;
 import unsw.loopmania.Types.EnemyType;
+import unsw.loopmania.Types.ItemType;
 
 public class CharacterTest {
     // Tests taking damage from vampire with shield
@@ -157,5 +158,63 @@ public class CharacterTest {
         character.takeDamage(110, slug);
 
         assertEquals(character.getCurrentHealth(), character.getMaxHealth());
+    }
+
+    @Test
+    public void TestItemSubTypeEquipOffensive() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
+
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        LoopManiaWorld world = new LoopManiaWorld(4, 5, orderedPath);
+
+        LoopManiaWorld.herosCastle = new unsw.loopmania.HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        character.setWorld(world);
+
+        TheOneRing theOneRing = new TheOneRing(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1), ItemType.SWORD);
+
+        int attack = character.getAttack();        
+
+        character.equip(theOneRing);
+
+        assertEquals(character.getAttack(), attack + ItemType.SWORD.getAttack());
+
+        character.unequip(theOneRing);
+
+        assertEquals(character.getAttack(), attack);
+    }
+
+    @Test
+    public void TestItemSubTypeEquipDefensive() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
+
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        LoopManiaWorld world = new LoopManiaWorld(4, 5, orderedPath);
+
+        LoopManiaWorld.herosCastle = new unsw.loopmania.HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        character.setWorld(world);
+
+        TheOneRing theOneRing = new TheOneRing(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1), ItemType.SHIELD);
+
+        int defence = character.getDefense();
+
+        character.equip(theOneRing);
+
+        assertEquals(character.getDefense(), defence + ItemType.SHIELD.getDefense());
+
+        character.unequip(theOneRing);
+
+        assertEquals(character.getDefense(), defence);
     }
 }

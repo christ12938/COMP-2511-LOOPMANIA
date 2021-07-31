@@ -365,7 +365,7 @@ public class Character extends MovingEntity implements Damageable{
         if(item.getItemSubType() != null){
             if(item.getItemSubType().isOffensive()){
                 setAttack(attack + item.getItemSubType().getAttack());
-            }else if(item.isDefensive()){
+            }else if(item.getItemSubType().isDefensive()){
                 setDefense(defense + item.getItemSubType().getDefense());
             } 
         }
@@ -385,7 +385,7 @@ public class Character extends MovingEntity implements Damageable{
         if(item.getItemSubType() != null){
             if(item.getItemSubType().isOffensive()){
                 setAttack(attack - item.getItemSubType().getAttack());
-            }else if(item.isDefensive()){
+            }else if(item.getItemSubType().isDefensive()){
                 setDefense(defense - item.getItemSubType().getDefense());
             } 
         }
