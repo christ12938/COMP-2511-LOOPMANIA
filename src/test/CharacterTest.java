@@ -17,6 +17,7 @@ import unsw.loopmania.Enemies.Doggie;
 import unsw.loopmania.Enemies.ElanMuske;
 import unsw.loopmania.Enemies.Slug;
 import unsw.loopmania.Enemies.Vampire;
+import unsw.loopmania.Items.Armour;
 import unsw.loopmania.Items.Shield;
 import unsw.loopmania.Items.TreeStump;
 import unsw.loopmania.Types.EnemyType;
@@ -101,6 +102,10 @@ public class CharacterTest {
 
         character.takeDamage(EnemyType.SLUG.getAttack(), slug);
 
-        assertEquals(health, character.getCurrentHealth() + (EnemyType.SLUG.getAttack() / 2), 0.001);
+        Armour armour = new Armour(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        character.equip(armour);
+
+        assertEquals(health, character.getCurrentHealth() + (EnemyType.SLUG.getAttack() / 2));
     }
 }
