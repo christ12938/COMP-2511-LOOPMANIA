@@ -12,20 +12,24 @@ import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Character;
 import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
+import unsw.loopmania.Enemies.Doggie;
+import unsw.loopmania.Enemies.ElanMuske;
 import unsw.loopmania.Enemies.Vampire;
 import unsw.loopmania.Items.Shield;
+import unsw.loopmania.Items.TreeStump;
 import unsw.loopmania.Types.EnemyType;
 
 public class CharacterTest {
+    // Tests taking damage from vampire with shield
     @Test
-    public void TestTakeDamage() {
+    public void TestTakeDamageVampireWithShield() {
         Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
         Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
 
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
         orderedPath.add(pair2);
-        
+
         LoopManiaWorld.herosCastle = new unsw.loopmania.HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
 
         Character character = new Character(new PathPosition(0, orderedPath));
@@ -37,6 +41,38 @@ public class CharacterTest {
         double health = character.getCurrentHealth();
 
         character.takeDamage(EnemyType.VAMPIRE.getAttack() + 1, vampire);
+
+        assertTrue(health > character.getCurrentHealth());
+    }
+
+    // Tests taking damage from bosses with tree stump
+    @Test
+    public void TestTakeDamageBossesTreeStump() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
+
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        LoopManiaWorld.herosCastle = new unsw.loopmania.HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        Doggie doggie = new Doggie(new PathPosition(1, orderedPath));
+        ElanMuske elanMuske = new ElanMuske(new PathPosition(1, orderedPath));
+
+        TreeStump treeStump = new TreeStump(new SimpleIntegerProperty(1), new SimpleIntegerProperty(1), null);
+        character.equip(treeStump);
+
+        double health = character.getCurrentHealth();
+
+        character.takeDamage(EnemyType.DOGGIE.getAttack(), doggie);
+
+        assertTrue(health > character.getCurrentHealth());
+
+        health = character.getCurrentHealth();
+
+        character.takeDamage(EnemyType.ELAN_MUSKE.getAttack(), elanMuske);
 
         assertTrue(health > character.getCurrentHealth());
     }
