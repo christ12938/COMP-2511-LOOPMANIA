@@ -401,6 +401,13 @@ public class LoopManiaWorldController {
         draggedEntity.setVisible(false);
         draggedEntity.setOpacity(0.7);
         anchorPaneRoot.getChildren().add(draggedEntity);
+
+        anchorPaneRoot.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent e) {
+                anchorPaneRoot.requestFocus();
+            }
+        });
     }
 
     /**
@@ -962,6 +969,7 @@ public class LoopManiaWorldController {
                 currentlyDraggedImage = view; // set image currently being dragged, so squares setOnDragEntered can detect it...
                 currentlyDraggedType = draggableType;
                 currentlyDraggedTargetGridPane = targetGridPane;
+                anchorPaneRoot.requestFocus();
                 //Drag was detected, start drap-and-drop gesture
                 //Allow any transfer node
                 Dragboard db = view.startDragAndDrop(TransferMode.MOVE);
@@ -1708,6 +1716,48 @@ public class LoopManiaWorldController {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    @FXML
+    private void openHelpMenu(){
+
+        /* Pause the game first */
+        if(!isPaused) pause();
+
+        /**
+         * Cleanse left over dragging event
+         */
+        cleanseDragInput();
+        
+        try {
+            Stage helpStage = new Stage();
+            FXMLLoader helpLoader = new FXMLLoader(getClass().getResource("HelpMenu.fxml"));
+            HelpMenuController helpMenuController = new HelpMenuController(helpStage, this);
+            helpLoader.setController(helpMenuController);
+            helpStage.setScene(new Scene(helpLoader.load()));
+            helpStage.setResizable(false);
+
+            /**
+             * Set Stage modality and owner to block all controls to owner
+             */
+            helpStage.initModality(Modality.WINDOW_MODAL);
+            helpStage.initOwner(primaryStage);
+
+            helpStage.show();
+
+            /**
+             * Hide and show to center window
+             */
+            helpStage.hide();
+            double centerXPosition = primaryStage.getX() + primaryStage.getWidth()/2d;
+            double centerYPosition = primaryStage.getY() + primaryStage.getHeight()/2d;
+            helpStage.setX(centerXPosition - helpStage.getWidth()/2d);
+            helpStage.setY(centerYPosition - helpStage.getHeight()/2d);
+            helpStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
