@@ -43,6 +43,7 @@ import unsw.loopmania.Items.Item;
 import unsw.loopmania.Types.OverlappableEntityType;
 import unsw.loopmania.Types.CardType;
 import unsw.loopmania.Types.DifficultyType;
+import unsw.loopmania.Types.EnemyType;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Buildings.*;
 import java.io.File;
@@ -289,6 +290,14 @@ public class LoopManiaWorldController {
 
     private MediaPlayer backgroundMusicPlayer;
     private MediaPlayer deathMediaPlayer;
+    private MediaPlayer shopAudioPlayer;
+    private MediaPlayer equippingSwordAudioPlayer;
+    private MediaPlayer equippingArmourAudioPlayer;
+    private MediaPlayer equippingShieldAudioPlayer;
+    private MediaPlayer restoreHealthAudioPlayer;
+    private MediaPlayer spawnZombieAudioPlayer;
+    private MediaPlayer zombieDeathAudioPlayer;
+    private MediaPlayer loadTrapAudioPlayer;
     
 
     /**
@@ -358,14 +367,37 @@ public class LoopManiaWorldController {
 
         String backgroundMusic = new File("src/Music/song1.mp3").toURI().toString();
         String deathSound = new File("src/Music/death.mp3").toURI().toString();
-        
+        String shopAudio = new File("src/Music/ShopBell.mp3").toURI().toString();
+        String equippingSwordAudio = new File("src/Music/EquippingSword.mp3").toURI().toString();
+        String equippingArmourAudio = new File("src/Music/EquippingArmour.mp3").toURI().toString();
+        String equippingShieldAudio = new File("src/Music/EquippingShield.mp3").toURI().toString();
+        String restoringHpAudio = new File("src/Music/RestoreHp.mp3").toURI().toString();
+        String spawningZombieAudio = new File("src/Music/ZombieSpawn.mp3").toURI().toString();
+        String zombieDeathAudio = new File("src/Music/ZombieDeath.mp3").toURI().toString();
+        String loadTrapAudio = new File("src/Music/ArmingTrap.mp3").toURI().toString();
 
-        
+
+        shopAudioPlayer = new MediaPlayer(new Media(shopAudio));
         deathMediaPlayer = new MediaPlayer(new Media(deathSound));
         backgroundMusicPlayer = new MediaPlayer(new Media(backgroundMusic));
+        equippingSwordAudioPlayer = new MediaPlayer(new Media(equippingSwordAudio));
+        equippingArmourAudioPlayer = new MediaPlayer(new Media(equippingArmourAudio));
+        equippingShieldAudioPlayer = new MediaPlayer(new Media(equippingShieldAudio));
+        restoreHealthAudioPlayer = new MediaPlayer(new Media(restoringHpAudio));
+        spawnZombieAudioPlayer = new MediaPlayer(new Media(spawningZombieAudio));
+        zombieDeathAudioPlayer = new MediaPlayer(new Media(zombieDeathAudio));
+        loadTrapAudioPlayer = new MediaPlayer(new Media(loadTrapAudio));
 
         deathMediaPlayer.setVolume(0.03);
         backgroundMusicPlayer.setVolume(0.03);
+        shopAudioPlayer.setVolume(0.03);
+        equippingSwordAudioPlayer.setVolume(0.03);
+        equippingArmourAudioPlayer.setVolume(0.2);
+        equippingShieldAudioPlayer.setVolume(0.03);
+        restoreHealthAudioPlayer.setVolume(0.03);
+        spawnZombieAudioPlayer.setVolume(0.03);
+        zombieDeathAudioPlayer.setVolume(0.03);
+        loadTrapAudioPlayer.setVolume(0.03);
 
         backgroundMusicPlayer.play();
         backgroundMusicPlayer.setCycleCount(100);
@@ -537,6 +569,10 @@ public class LoopManiaWorldController {
         // react to character defeating an enemy
         // in starter code, spawning extra card/weapon...
         // TODO = provide different benefits to defeating the enemy based on the type of enemy
+        if (enemy.getEnemyType() == EnemyType.ZOMBIE) {
+            zombieDeathAudioPlayer.play();
+            zombieDeathAudioPlayer.seek(Duration.ZERO);
+        }
         loadRandomItem();
         loadRandomCard();
     }
@@ -667,27 +703,43 @@ public class LoopManiaWorldController {
         switch(item.getItemType()){
             case SWORD:
                 view = new ImageView(swordImage);
+                equippingSwordAudioPlayer.play();
+                equippingSwordAudioPlayer.seek(Duration.ZERO);
                 break;
             case STAKE:
                 view = new ImageView(stakeImage);
+                equippingSwordAudioPlayer.play();
+                equippingSwordAudioPlayer.seek(Duration.ZERO);
                 break;
             case STAFF:
                 view = new ImageView(staffImage);
+                equippingSwordAudioPlayer.play();
+                equippingSwordAudioPlayer.seek(Duration.ZERO);
                 break;
             case ARMOUR:
                 view = new ImageView(armourImage);
+                equippingArmourAudioPlayer.play();
+                equippingArmourAudioPlayer.seek(Duration.ZERO);
                 break;
             case SHIELD:
                 view = new ImageView(shieldImage);
+                equippingShieldAudioPlayer.play();
+                equippingShieldAudioPlayer.seek(Duration.ZERO);
                 break;
             case HELMET:
                 view = new ImageView(helmetImage);
+                equippingArmourAudioPlayer.play();
+                equippingArmourAudioPlayer.seek(Duration.ZERO);
                 break;
             case ANDURIL:
                 view = new ImageView(andurilImage);
+                equippingSwordAudioPlayer.play();
+                equippingSwordAudioPlayer.seek(Duration.ZERO);
                 break;
             case TREE_STUMP:
                 view = new ImageView(treeStumpImage);
+                equippingShieldAudioPlayer.play();
+                equippingShieldAudioPlayer.seek(Duration.ZERO);
                 break;
             default:
                 return;
@@ -709,6 +761,8 @@ public class LoopManiaWorldController {
                 break;
             case ZOMBIE:
                 view = new ImageView(zombieImage);
+                spawnZombieAudioPlayer.play();
+                spawnZombieAudioPlayer.seek(Duration.ZERO);
                 break;
             case VAMPIRE:
                 view = new ImageView(vampireImage);
@@ -750,6 +804,8 @@ public class LoopManiaWorldController {
                 view = new ImageView(barracksBuildingImage);
                 break;
             case TRAP_BUILDING:
+                loadTrapAudioPlayer.play();
+                loadTrapAudioPlayer.seek(Duration.ZERO);
                 view = new ImageView(trapBuildingImage);
                 break;
             case CAMPFIRE_BUILDING:
@@ -1080,14 +1136,18 @@ public class LoopManiaWorldController {
         switch (event.getCode()) {
         case SPACE:
             if (isPaused){
+                backgroundMusicPlayer.play();
                 startTimer();
             }
             else{
+                backgroundMusicPlayer.pause();
                 pause();
             }
             break;
         case H:
             this.world.useHealthPotion();
+            restoreHealthAudioPlayer.play();
+            restoreHealthAudioPlayer.seek(Duration.ZERO);
             break;
             
         default:
@@ -1536,7 +1596,8 @@ public class LoopManiaWorldController {
     private void openShop(){
         /* Pause the game first */
         if(!isPaused) pause();
-
+        shopAudioPlayer.play();
+        shopAudioPlayer.seek(Duration.ZERO);
         /**
          * Cleanse left over dragging event
          */

@@ -106,6 +106,7 @@ public class LoopManiaWorld {
     public static Random rand = new Random();
 
     private MediaPlayer moneyPickupAudioPlayer;
+    private MediaPlayer activateTrapAudioPlayer;
     
     
 
@@ -130,8 +131,12 @@ public class LoopManiaWorld {
         spawnedItems = new ArrayList<>();
         
         String pickupMoney = new File("src/Music/money_pickup.mp3").toURI().toString();
+        String activateTrapAudio = new File("src/Music/TrapActivate.mp3").toURI().toString();
+
+        activateTrapAudioPlayer = new MediaPlayer(new Media(activateTrapAudio));
         moneyPickupAudioPlayer = new MediaPlayer(new Media(pickupMoney));
         moneyPickupAudioPlayer.setVolume(0.03);
+        activateTrapAudioPlayer.setVolume(0.03);
     }
 
     public void setController(LoopManiaWorldController controller){
@@ -1279,6 +1284,8 @@ public class LoopManiaWorld {
                 if(b.getBuildingType() == BuildingType.TRAP_BUILDING){
                     b.destroy();
                     enemy.takeDamage(TrapBuilding.attack, character);
+                    activateTrapAudioPlayer.play();
+                    activateTrapAudioPlayer.seek(Duration.ZERO);
                     buildingEntities.remove(b);
                     if(enemy.isDefeated()){
                         enemiesToBeRemoved.add(enemy);
