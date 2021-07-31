@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import unsw.loopmania.PathPosition;
+import unsw.loopmania.Buildings.BarracksBuilding;
 import unsw.loopmania.Buildings.Spawner;
 import unsw.loopmania.Buildings.ZombiePitBuilding;
 import unsw.loopmania.Cards.Card;
@@ -289,6 +290,20 @@ public class BuildingsTest{
     public void TestZombiePitGetSpawningCycle() {
         ZombiePitBuilding zombiePit = new ZombiePitBuilding(new SimpleIntegerProperty(1), new SimpleIntegerProperty(1));
         assertTrue(zombiePit.getSpawningCycle() == 1);
+    }
+
+    // Tests if getBuildingRadius for BarracksBuilding is correct value
+    @Test
+    public void TestBarracksGetBuildingRadius() {
+        BarracksBuilding barracksBuilding = new BarracksBuilding(new SimpleIntegerProperty(1), new SimpleIntegerProperty(1));
+        assertTrue(barracksBuilding.getBuildingRadius() == 1);
+    }
+
+    // Tests the return of getBuildingType for BarracksBuilding is of correct type
+    @Test
+    public void TestBarracksGetBuildingType() {
+        BarracksBuilding barracksBuilding = new BarracksBuilding(new SimpleIntegerProperty(1), new SimpleIntegerProperty(1));
+        assertTrue(barracksBuilding.getBuildingType().equals(BuildingType.BARRACKS_BUILDING));
     }
 }
 
