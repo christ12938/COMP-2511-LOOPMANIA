@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import unsw.loopmania.Types.DifficultyType;
 
@@ -22,6 +23,9 @@ public class DifficultyMenuController {
     private RadioButton beserkerModeButton;
 
     @FXML
+    private RadioButton confusingModeButton;
+
+    @FXML
     private Label modeDescription;
 
     private ToggleGroup group = new ToggleGroup();
@@ -32,6 +36,7 @@ public class DifficultyMenuController {
     private final String standardModeDescription = "Standard mode has no distinguishing effects.";
     private final String survivalModeDescription = "In survival mode, you can only purchase 1 health potion each time you shop at the Hero's Castle.";
     private final String beserkerModeDescription = "In berserker mode, you cannot purchase more than 1 piece of protective gear (protective gear includes armour, helmets, and shields) each time you shops at the Hero's Castle.";
+    private final String confusingModeDescription = "In confusing mode, rare items look the same as the original item, but have both their original properties/behaviour, and the added properties/behaviour of another random rare item.";
 
 
     private MenuSwitcher backSwitcher;
@@ -47,6 +52,13 @@ public class DifficultyMenuController {
         standardModeButton.setToggleGroup(group);
         survivalModeButton.setToggleGroup(group);
         beserkerModeButton.setToggleGroup(group);
+        confusingModeButton.setToggleGroup(group);
+
+        standardModeButton.setTextFill(Color.BLUEVIOLET);
+        survivalModeButton.setTextFill(Color.GREEN);
+        beserkerModeButton.setTextFill(Color.RED);
+        confusingModeButton.setTextFill(Color.PINK);
+        
         //Default = standard mode
         setToggleAction();
         standardModeButton.setSelected(true);
@@ -80,6 +92,8 @@ public class DifficultyMenuController {
                 return DifficultyType.SURVIVAL;
             case "beserkerModeButton":
                 return DifficultyType.BESERKER;
+            case "confusingModeButton":
+                return DifficultyType.CONFUSING;
             default:
                 return null;
         }
@@ -101,6 +115,9 @@ public class DifficultyMenuController {
                             break;
                         case "beserkerModeButton":
                             modeDescription.setText(beserkerModeDescription);
+                            break;
+                        case "confusingModeButton":
+                            modeDescription.setText(confusingModeDescription);
                             break;
                         default:
                             return;

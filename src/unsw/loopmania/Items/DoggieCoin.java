@@ -5,7 +5,9 @@ import unsw.loopmania.Types.ItemType;
 
 public class DoggieCoin extends Item{
 
-    private double value = 10;
+    public static int minValue = 1;
+    public static int currentValue = 10;
+    public static int maxValue = 20;
 
     public DoggieCoin(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);

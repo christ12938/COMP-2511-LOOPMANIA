@@ -11,6 +11,7 @@ public class Doggie extends Enemy{
     private double currentHealth;
     private final int attack = EnemyType.DOGGIE.getAttack();
     private CritStrategy critStrategy;
+    public static boolean hasSpawned = false;
 
     public Doggie(PathPosition position) {
         super(position);

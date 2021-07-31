@@ -30,6 +30,9 @@ public abstract class CompositeGoal implements Goal{
                     case "cycles":
                         this.subgoals.add(new CycleGoal(subgoals.getJSONObject(i).getInt("quantity")));
                         break;
+                    case "bosses":
+                        this.subgoals.add(new BossGoal());
+                        break;
                     default:
                         /* Should never happen */
                         throw new Exception("Goal " + subgoals.getJSONObject(i).getString("goal") + " is not defined. ");
