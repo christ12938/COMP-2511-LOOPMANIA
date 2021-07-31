@@ -110,6 +110,8 @@ public class LoopManiaWorld {
     
     
 
+    MediaPlayer cursedMediaPlayer;
+
     /**
      * create the world (constructor)
      *
@@ -129,6 +131,10 @@ public class LoopManiaWorld {
         buildingEntities = new ArrayList<>();
         rareItemsAvailable = new ArrayList<>();
         spawnedItems = new ArrayList<>();
+
+        String cursedFile = "src/Music/evil_laugh.mp3";
+        Media cursedSound = new Media(new File(cursedFile).toURI().toString());
+        cursedMediaPlayer = new MediaPlayer(cursedSound);
         
         String pickupMoney = new File("src/Music/money_pickup.mp3").toURI().toString();
         String activateTrapAudio = new File("src/Music/TrapActivate.mp3").toURI().toString();
@@ -324,6 +330,15 @@ public class LoopManiaWorld {
             Enemy enemy = new Zombie(new PathPosition(indexInPath, orderedPath));
             enemies.add(enemy);
             spawningEnemies.add(enemy);
+            //spawn additional zombie if cursed
+            Random random = new Random();
+            if(random.nextInt(9) == 1){
+                Enemy enemy2 = new Zombie(new PathPosition(indexInPath, orderedPath));
+                enemies.add(enemy2);
+                spawningEnemies.add(enemy2);
+                cursedMediaPlayer.play();
+                cursedMediaPlayer.seek(Duration.ZERO);
+            }
         }
 
         /* Get Vampire Spawn Position */
@@ -333,6 +348,15 @@ public class LoopManiaWorld {
             Enemy enemy = new Vampire(new PathPosition(indexInPath, orderedPath));
             enemies.add(enemy);
             spawningEnemies.add(enemy);
+            //spawn additional vampire if cursed
+            Random random = new Random();
+            if(random.nextInt(9) == 1){
+                Enemy enemy2 = new Vampire(new PathPosition(indexInPath, orderedPath));
+                enemies.add(enemy2);
+                spawningEnemies.add(enemy2);
+                cursedMediaPlayer.play();
+                cursedMediaPlayer.seek(Duration.ZERO);
+            }
         }
 
         /* Get Bosses Spawn Position */
@@ -418,7 +442,7 @@ public class LoopManiaWorld {
             Enemy attackedEnemy = battleEnemies.get(choice);
             System.out.println("Enemy fighting: " + attackedEnemy);
             /**
-             * Always starts with attacks from character side first, 
+             * Always starts with attacks from character side first,
              * character -> allied soldiers -> tower
              */
             /* Fight until character or enemy is dead */
@@ -478,7 +502,7 @@ public class LoopManiaWorld {
                     }
                 }
             }
-            
+
             List<AlliedSoldier> temp = new ArrayList<>();
             for(int i = 0; i < trancedSoldiers.size(); i++){
                 trancedSoldiers.get(i).nextTranceTurn();
@@ -505,7 +529,7 @@ public class LoopManiaWorld {
                 character.getAlliedSoldiers().remove(trancedSoldiers.get(i));
             }
         }
-        
+
         for (Enemy e: defeatedEnemies){
             // IMPORTANT = we kill enemies here, because killEnemy removes the enemy from the enemies list
             // if we killEnemy in prior loop, we get java.util.ConcurrentModificationException
@@ -1213,7 +1237,7 @@ public class LoopManiaWorld {
         }
         return spawnPosition;
     }
-    
+
     /**
      * Get all spawner possible spawning locations on that cycle
      * @param type Spawner type
