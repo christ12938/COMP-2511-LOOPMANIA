@@ -128,11 +128,9 @@ public class LoopManiaWorld {
         rareItemsAvailable = new ArrayList<>();
         spawnedItems = new ArrayList<>();
 
-        String cursedFile = "Music/evil_laugh.mp3";
+        String cursedFile = "src/Music/evil_laugh.mp3";
         Media cursedSound = new Media(new File(cursedFile).toURI().toString());
         cursedMediaPlayer = new MediaPlayer(cursedSound);
-        cursedMediaPlayer.play();
-
     }
 
     public void setController(LoopManiaWorldController controller){
