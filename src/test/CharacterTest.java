@@ -95,9 +95,6 @@ public class CharacterTest {
         Character character = new Character(new PathPosition(0, orderedPath));
         Slug slug = new Slug(new PathPosition(1, orderedPath));
 
-        Shield shield = new Shield(new SimpleIntegerProperty(1), new SimpleIntegerProperty(1));
-        character.equip(shield);
-
         double health = character.getCurrentHealth();
 
         character.takeDamage(EnemyType.SLUG.getAttack(), slug);
@@ -106,6 +103,6 @@ public class CharacterTest {
 
         character.equip(armour);
 
-        assertEquals(health, character.getCurrentHealth() + (EnemyType.SLUG.getAttack() / 2));
+        assertEquals(health, character.getCurrentHealth() + (EnemyType.SLUG.getAttack() / 2) + character.getDefense());
     }
 }
