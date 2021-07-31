@@ -19,6 +19,7 @@ import unsw.loopmania.Enemies.Slug;
 import unsw.loopmania.Enemies.Vampire;
 import unsw.loopmania.Items.Armour;
 import unsw.loopmania.Items.Shield;
+import unsw.loopmania.Items.TheOneRing;
 import unsw.loopmania.Items.TreeStump;
 import unsw.loopmania.Types.EnemyType;
 
@@ -104,5 +105,32 @@ public class CharacterTest {
         character.takeDamage(20, slug);
 
         assertEquals(health, character.getCurrentHealth() + (20 / 2 - character.getDefense()) );
+    }
+
+    // Test dying with the One Ring
+    @Test
+    public void TestTheOneRing() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
+
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        LoopManiaWorld world = new LoopManiaWorld(4, 5, orderedPath);
+
+        LoopManiaWorld.herosCastle = new unsw.loopmania.HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        character.setWorld(world);
+        Slug slug = new Slug(new PathPosition(1, orderedPath));
+
+        TheOneRing theOneRing = new TheOneRing(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1), null);
+
+        character.equip(theOneRing);
+
+        character.takeDamage(110, slug);
+
+        assertEquals(character.getCurrentHealth(), character.getMaxHealth());
     }
 }
