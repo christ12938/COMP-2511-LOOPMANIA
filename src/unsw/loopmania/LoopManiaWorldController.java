@@ -92,7 +92,7 @@ enum DRAGGABLE_TYPE{
  *     This is run on the JavaFX application thread when it has enough time.
  */
 public class LoopManiaWorldController {
-    
+
     /**
      * squares gridpane includes path images, enemies, character, empty grass, buildings
      */
@@ -241,12 +241,12 @@ public class LoopManiaWorldController {
 
     /**
      * the target grid pane of the image currently dragged
-     * added for refining the GUI 
+     * added for refining the GUI
      */
     private GridPane currentlyDraggedTargetGridPane;
 
     private GridPane currentlyDraggedSourceGridPane;
-    
+
     /**
      * null if nothing being dragged, or the type of item being dragged
      */
@@ -298,7 +298,10 @@ public class LoopManiaWorldController {
     private MediaPlayer spawnZombieAudioPlayer;
     private MediaPlayer zombieDeathAudioPlayer;
     private MediaPlayer loadTrapAudioPlayer;
-    
+    private MediaPlayer loadVampireSAudioPlayer;
+    private MediaPlayer loadZombieSAudioPlayer;
+    private MediaPlayer loadViliageAudioPlayer;
+
 
     /**
      * @param world world object loaded from file
@@ -376,6 +379,9 @@ public class LoopManiaWorldController {
         String spawningZombieAudio = new File("src/Music/ZombieSpawn.mp3").toURI().toString();
         String zombieDeathAudio = new File("src/Music/ZombieDeath.mp3").toURI().toString();
         String loadTrapAudio = new File("src/Music/ArmingTrap.mp3").toURI().toString();
+        String loadVampireS = new File("src/Music/place_vampS.mp3").toURI().toString();
+        String loadZombieS = new File("src/Music/place_zombieS.mp3").toURI().toString();
+        String loadVilliageAudio = new File("src/Music/place_zombieS.mp3").toURI().toString();
 
 
         shopAudioPlayer = new MediaPlayer(new Media(shopAudio));
@@ -388,6 +394,9 @@ public class LoopManiaWorldController {
         spawnZombieAudioPlayer = new MediaPlayer(new Media(spawningZombieAudio));
         zombieDeathAudioPlayer = new MediaPlayer(new Media(zombieDeathAudio));
         loadTrapAudioPlayer = new MediaPlayer(new Media(loadTrapAudio));
+        loadVampireSAudioPlayer =  new MediaPlayer(new Media(loadVampireS));
+        loadZombieSAudioPlayer =  new MediaPlayer(new Media(loadZombieS));
+        loadViliageAudioPlayer =  new MediaPlayer(new Media(loadVilliageAudio));
 
         deathMediaPlayer.setVolume(0.03);
         backgroundMusicPlayer.setVolume(0.03);
@@ -399,10 +408,13 @@ public class LoopManiaWorldController {
         spawnZombieAudioPlayer.setVolume(0.03);
         zombieDeathAudioPlayer.setVolume(0.03);
         loadTrapAudioPlayer.setVolume(0.03);
+        loadVampireSAudioPlayer.setVolume(0.06);
+        loadZombieSAudioPlayer.setVolume(0.03);
+        loadViliageAudioPlayer.setVolume(0.03);
 
         backgroundMusicPlayer.play();
         backgroundMusicPlayer.setCycleCount(100);
-        
+
     }
 
     @FXML
@@ -503,7 +515,7 @@ public class LoopManiaWorldController {
 
             world.applyTrapsToEnemies();
             world.applyStaticBuildingBuffsToCharacter();
-            
+
             if(world.characterIsOnHeroCastle()){
                 if(!world.hasHumanPlayerWon()) {
                     world.nextCycle();
@@ -815,15 +827,21 @@ public class LoopManiaWorldController {
         ImageView view = null;
         switch(building.getBuildingType()){
             case VAMPIRECASTLE_BUILDING:
+                loadVampireSAudioPlayer.play();
+                loadVampireSAudioPlayer.seek(Duration.ZERO);
                 view = new ImageView(vampireCastleBuildingImage);
                 break;
             case ZOMBIEPIT_BUILDING:
+                loadZombieSAudioPlayer.play();
+                loadZombieSAudioPlayer.seek(Duration.ZERO);
                 view = new ImageView(zombiePitBuildingImage);
                 break;
             case TOWER_BUILDING:
                 view = new ImageView(towerBuildingImage);
                 break;
             case VILLAGE_BUILDING:
+                loadViliageAudioPlayer.play();
+                loadViliageAudioPlayer.seek(Duration.ZERO);
                 view = new ImageView(villageBuildingImage);
                 break;
             case BARRACKS_BUILDING:
@@ -1176,7 +1194,7 @@ public class LoopManiaWorldController {
             restoreHealthAudioPlayer.play();
             restoreHealthAudioPlayer.seek(Duration.ZERO);
             break;
-            
+
         default:
             break;
         }
@@ -1381,7 +1399,7 @@ public class LoopManiaWorldController {
     }
 
     private boolean canSpawnEnemies(int column, int row){
-        
+
         if(!isAdjacentToPath(column, row)) return false;
 
         Pair<Integer, Integer> up = new Pair<>(column, row - 1);
@@ -1636,7 +1654,7 @@ public class LoopManiaWorldController {
     }
 
     /**
-     * Open the shop 
+     * Open the shop
      */
     private void openShop(){
         /* Pause the game first */
@@ -1647,7 +1665,7 @@ public class LoopManiaWorldController {
          * Cleanse left over dragging event
          */
         cleanseDragInput();
-        
+
         try {
             Stage shopStage = new Stage();
             FXMLLoader shopLoader = new FXMLLoader(getClass().getResource("LoopManiaShop.fxml"));
@@ -1758,7 +1776,7 @@ public class LoopManiaWorldController {
 
         /* Pause the game first */
         if(!isPaused) pause();
-        
+
         cleanseDragInput();
 
         try {
@@ -1775,7 +1793,7 @@ public class LoopManiaWorldController {
              */
             popUpMessageStage.initModality(Modality.WINDOW_MODAL);
             popUpMessageStage.initOwner(parentStage);
-            
+
             popUpMessageStage.show();
 
             /**
@@ -1795,7 +1813,7 @@ public class LoopManiaWorldController {
         }
         return null;
     }
-    
+
     @FXML
     private void openHelpMenu(){
 
@@ -1806,7 +1824,7 @@ public class LoopManiaWorldController {
          * Cleanse left over dragging event
          */
         cleanseDragInput();
-        
+
         try {
             Stage helpStage = new Stage();
             FXMLLoader helpLoader = new FXMLLoader(getClass().getResource("HelpMenu.fxml"));
