@@ -3,6 +3,7 @@ package test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import unsw.loopmania.HerosCastle;
 import unsw.loopmania.HumanPlayer;
 import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.LoopManiaWorldController;
+import unsw.loopmania.LoopManiaWorldControllerLoader;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Enemies.CritStrategy;
 import unsw.loopmania.Enemies.Slug;
@@ -183,42 +185,26 @@ public class EnemyTest {
         assertTrue(health > character.getCurrentHealth());
     }
 
+    // For whoever wrote this test, it doesn't work since it doesn't add allied soldiers to
+    // the character and doing so causes a null pointer error. For some reason, I can't call
+    // the LoopManiaWorldControllerLoader from this test that's required, I think it may be 
+    // cause the directory this test is called from is different from where the directory is 
+    // called during normal application startup and I have no clue how to fix this.
     /*@Test
     public void TestZombieStrategy() {
         Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
         List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
         orderedPath.add(pair1);
 
-        LoopManiaWorld world = new LoopManiaWorld(4, 5, orderedPath);
-
         Character character = new Character(new PathPosition(0, orderedPath));
-        world.setCharacter(character);
-
-        JSONObject insert = new JSONObject();
-        insert.put("goal", "experience");
-        insert.put("quantity", 123456);
-
-        JSONObject json = new JSONObject();
-        json.put("a", 'a');
-        json.put("goal-condition", insert);
-
-        System.out.println(json);
-
-        HumanPlayer humanPlayer = new HumanPlayer(json, world);
-        world.setHumanPlayer(humanPlayer);
-
-        LoopManiaWorldController controller = new LoopManiaWorldController(world, new ArrayList<>());
-        world.setController(controller);
-
-        world.addAlliedSoldier();
-        character.addAlliedSoldier();
+        AlliedSoldier soldier = new AlliedSoldier(new PathPosition(0, orderedPath), 0);
 
         assertTrue(character.getAlliedSoldiers().size() == 1);
         CritStrategy crit = new ZombieCritStrategy();
         crit.applyCritDamage(0);
 
         assertFalse(character.getAlliedSoldiers().size() == 0);
-    }*/
+    } */
 
     @Test
     public void TestVampireStrategy() {
