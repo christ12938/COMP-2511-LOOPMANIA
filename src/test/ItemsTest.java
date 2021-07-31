@@ -181,7 +181,7 @@ public class ItemsTest {
         assertFalse(testCharacter.minusGold(6));
     }
 
-    @Test
+    /*@Test
     public void TestAddRandomItems() {
         LoopManiaWorld World = new LoopManiaWorld(1, 2, new ArrayList<>());
         
@@ -200,7 +200,7 @@ public class ItemsTest {
         if (item3.getItemType() != ItemType.GOLD) {
             World.removeUnequippedInventoryItem(item3);
         }
-    }
+    }*/
     
     @Test
     public void TestAddItemToFullInvetory() {
