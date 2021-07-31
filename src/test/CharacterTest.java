@@ -1,5 +1,6 @@
 package test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Enemies.Doggie;
 import unsw.loopmania.Enemies.ElanMuske;
+import unsw.loopmania.Enemies.Slug;
 import unsw.loopmania.Enemies.Vampire;
 import unsw.loopmania.Items.Shield;
 import unsw.loopmania.Items.TreeStump;
@@ -75,5 +77,30 @@ public class CharacterTest {
         character.takeDamage(EnemyType.ELAN_MUSKE.getAttack(), elanMuske);
 
         assertTrue(health > character.getCurrentHealth());
+    }
+
+    // Tests taking damage with armour on
+    @Test
+    public void TestTakeDamageWithArmour() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
+
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        LoopManiaWorld.herosCastle = new unsw.loopmania.HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        Slug slug = new Slug(new PathPosition(1, orderedPath));
+
+        Shield shield = new Shield(new SimpleIntegerProperty(1), new SimpleIntegerProperty(1));
+        character.equip(shield);
+
+        double health = character.getCurrentHealth();
+
+        character.takeDamage(EnemyType.SLUG.getAttack(), slug);
+
+        assertEquals(health, character.getCurrentHealth() + (EnemyType.SLUG.getAttack() / 2), 0.001);
     }
 }
