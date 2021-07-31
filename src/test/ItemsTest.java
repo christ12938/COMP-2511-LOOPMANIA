@@ -17,6 +17,7 @@ import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Enemies.Slug;
 import unsw.loopmania.Items.Item;
+import unsw.loopmania.Items.Staff;
 import unsw.loopmania.Items.TheOneRing;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Character;
@@ -433,5 +434,31 @@ public class ItemsTest {
         character.unequip(theOneRing);
 
         assertEquals(character.getDefense(), defence);
+    }
+
+    // Test next attack trance
+    @Test
+    public void TestNextAttackTrance() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
+
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        LoopManiaWorld world = new LoopManiaWorld(4, 5, orderedPath);
+
+        LoopManiaWorld.herosCastle = new unsw.loopmania.HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        character.setWorld(world);
+
+        Staff staff = new Staff(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        character.equip(staff);
+
+        for (int i = 0; i < 100; i++) {
+            character.isNextAttackTrance();
+        }
     }
 }

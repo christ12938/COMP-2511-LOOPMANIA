@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.javatuples.Pair;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Character;
+import unsw.loopmania.HumanPlayer;
 import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Enemies.Doggie;
@@ -125,5 +127,22 @@ public class CharacterTest {
         character.addExperience(Integer.MAX_VALUE);
 
         assertFalse(character.addExperience(1)); 
+    }
+
+    // Test minus gold from 0
+    @Test
+    public void TestMinusGoldZero() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
+
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        LoopManiaWorld.herosCastle = new unsw.loopmania.HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+
+        assertFalse(character.minusGold(10)); 
     }
 }
