@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.javatuples.Pair;
-import org.junit.Test.None;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.media.Media;
