@@ -4,6 +4,7 @@ import java.util.EnumMap;
 
 import org.javatuples.Pair;
 
+import unsw.loopmania.Items.DoggieCoin;
 import unsw.loopmania.Types.ItemType;
 
 public class ShopLoader {
@@ -35,7 +36,10 @@ public class ShopLoader {
         itemPositions.put(ItemType.SHIELD, new Pair<Integer, Integer>(1, 1));
         itemPositions.put(ItemType.HELMET, new Pair<Integer, Integer>(2, 1));
         itemPositions.put(ItemType.HEALTH_POTION, new Pair<Integer, Integer>(0, 2));
-        itemPositions.put(ItemType.THE_ONE_RING, new Pair<Integer, Integer>(1, 2));
+        itemPositions.put(ItemType.DOGGIECOIN, new Pair<Integer, Integer>(1, 2));
+        itemPositions.put(ItemType.THE_ONE_RING, new Pair<Integer, Integer>(2, 2));
+        itemPositions.put(ItemType.ANDURIL, new Pair<Integer, Integer>(0, 3));
+        itemPositions.put(ItemType.TREE_STUMP, new Pair<Integer, Integer>(1, 3));
         return itemPositions;
     }
 
@@ -66,7 +70,10 @@ public class ShopLoader {
         itemPrices.put(ItemType.SHIELD, 5);
         itemPrices.put(ItemType.HELMET, 5);
         itemPrices.put(ItemType.HEALTH_POTION, 5);
+        itemPrices.put(ItemType.DOGGIECOIN, DoggieCoin.currentValue);
         itemPrices.put(ItemType.THE_ONE_RING, 20);
+        itemPrices.put(ItemType.ANDURIL, 20);
+        itemPrices.put(ItemType.TREE_STUMP, 20);
         return itemPrices;
     }
 }

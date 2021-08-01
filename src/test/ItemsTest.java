@@ -1,6 +1,5 @@
 package test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,13 +10,15 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-
+import javafx.beans.property.SimpleIntegerProperty;
 
 import org.javatuples.Pair;
 import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
+import unsw.loopmania.Enemies.Slug;
 import unsw.loopmania.Items.Item;
-import unsw.loopmania.Items.*;
+import unsw.loopmania.Items.Staff;
+import unsw.loopmania.Items.TheOneRing;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Character;
 
@@ -499,5 +500,143 @@ public class ItemsTest {
         World.useHealthPotion();
         
         assertEquals(10,World.getCharacterCurrentHp(), "comparing two doubles");
+    }
+
+    // Test dying with the One Ring
+    @Test
+    public void TestTheOneRingEquipped() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
+
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        LoopManiaWorld world = new LoopManiaWorld(4, 5, orderedPath);
+
+        LoopManiaWorld.herosCastle = new unsw.loopmania.HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        character.setWorld(world);
+        Slug slug = new Slug(new PathPosition(1, orderedPath));
+
+        TheOneRing theOneRing = new TheOneRing(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1), null);
+
+        character.equip(theOneRing);
+
+        character.takeDamage(110, slug);
+
+        assertEquals(character.getCurrentHealth(), character.getMaxHealth());
+    }
+
+    // Test dying with the One Ring
+    @Test
+    public void TestTheOneRingUnequipped() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
+
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        LoopManiaWorld world = new LoopManiaWorld(4, 5, orderedPath);
+
+        LoopManiaWorld.herosCastle = new unsw.loopmania.HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        character.setWorld(world);
+        Slug slug = new Slug(new PathPosition(1, orderedPath));
+
+        world.addUnequippedTheOneRing();
+
+        character.takeDamage(110, slug);
+
+        assertEquals(character.getCurrentHealth(), character.getMaxHealth());
+    }
+
+    // Test offensive subtype behaviour
+    @Test
+    public void TestItemSubTypeEquipOffensive() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
+
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        LoopManiaWorld world = new LoopManiaWorld(4, 5, orderedPath);
+
+        LoopManiaWorld.herosCastle = new unsw.loopmania.HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        character.setWorld(world);
+
+        TheOneRing theOneRing = new TheOneRing(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1), ItemType.SWORD);
+
+        int attack = character.getAttack();        
+
+        character.equip(theOneRing);
+
+        assertEquals(character.getAttack(), attack + ItemType.SWORD.getAttack());
+
+        character.unequip(theOneRing);
+
+        assertEquals(character.getAttack(), attack);
+    }
+
+    // Test defensive subtype
+    @Test
+    public void TestItemSubTypeEquipDefensive() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
+
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        LoopManiaWorld world = new LoopManiaWorld(4, 5, orderedPath);
+
+        LoopManiaWorld.herosCastle = new unsw.loopmania.HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        character.setWorld(world);
+
+        TheOneRing theOneRing = new TheOneRing(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1), ItemType.SHIELD);
+
+        int defence = character.getDefense();
+
+        character.equip(theOneRing);
+
+        assertEquals(character.getDefense(), defence + ItemType.SHIELD.getDefense());
+
+        character.unequip(theOneRing);
+
+        assertEquals(character.getDefense(), defence);
+    }
+
+    // Test next attack trance
+    @Test
+    public void TestNextAttackTrance() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        Pair<Integer, Integer> pair2 = new Pair<Integer, Integer>(1,2);
+
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+        orderedPath.add(pair2);
+
+        LoopManiaWorld world = new LoopManiaWorld(4, 5, orderedPath);
+
+        LoopManiaWorld.herosCastle = new unsw.loopmania.HerosCastle(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        character.setWorld(world);
+
+        Staff staff = new Staff(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        character.equip(staff);
+
+        for (int i = 0; i < 100; i++) {
+            character.isNextAttackTrance();
+        }
     }
 }

@@ -8,7 +8,6 @@ import unsw.loopmania.Types.ItemType;
  */
 public class Staff extends OffensiveItems{
 
-    private final int attack = 1;
     public static final double tranceChance = 0.2;
     public static final int tranceTurn = 3;
 
@@ -18,10 +17,6 @@ public class Staff extends OffensiveItems{
 
     public ItemType getItemType(){
         return ItemType.STAFF;
-    }
-
-    public int getAttack() {
-        return this.attack;
     }
 
     public Item copyItem(int x, int y){

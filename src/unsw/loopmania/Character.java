@@ -192,15 +192,18 @@ public class Character extends MovingEntity implements Damageable{
      */
     @Override
     public void takeDamage(double damage, Damageable from) {
-        if(hasArmourEquipped()){
-            damage = damage/2;
-            damage = (damage - defense <= 0 ? 0 : damage - defense);
-        }else if(hasHelmetEquipped()){
-            damage = (damage - defense <= 0 ? 0 : damage - defense);
-        }else if(from.getDamageableType() == DamageableType.VAMPIRE
+        if(from.getDamageableType() == DamageableType.VAMPIRE
             && hasShieldEquipped() && damage > (double)EnemyType.VAMPIRE.getAttack()){
             damage = LoopManiaWorld.rand.nextDouble() < 0.6 ? EnemyType.VAMPIRE.getAttack() : damage;
+        }else if((from.getDamageableType() == DamageableType.DOGGIE 
+                || from.getDamageableType() == DamageableType.ELAN_MUSKE)
+                    && hasTreeStumpEquipped()){
+            damage = damage*0.7;
         }
+        if(hasArmourEquipped()){
+            damage = damage/2;
+        }
+        damage = (damage - defense <= 0 ? 0 : damage - defense);
         minusHealth(damage);
     }
 
@@ -212,6 +215,10 @@ public class Character extends MovingEntity implements Damageable{
         System.out.println("Current Attack: " + attack);
         if(damageable.getDamageableType() == DamageableType.VAMPIRE && hasStakeEquipped()){
             damageable.takeDamage(attack*2, this);
+        }else if((damageable.getDamageableType() == DamageableType.DOGGIE
+                || damageable.getDamageableType() == DamageableType.ELAN_MUSKE)
+                    && hasAndurilEquipped()){
+            damageable.takeDamage(attack*3, this);
         }else{
             damageable.takeDamage(attack, this);
         }
@@ -253,16 +260,25 @@ public class Character extends MovingEntity implements Damageable{
         return false;
     }
 
-    private boolean hasHelmetEquipped(){
+    private boolean hasShieldEquipped(){
         for(Item item : equippedItems){
-            if(item.getItemType() == ItemType.HELMET) return true;
+            if(item.getItemType() == ItemType.SHIELD) return true;
         }
         return false;
     }
 
-    private boolean hasShieldEquipped(){
+    private boolean hasAndurilEquipped(){
         for(Item item : equippedItems){
-            if(item.getItemType() == ItemType.SHIELD) return true;
+            if(item.getItemType() == ItemType.ANDURIL 
+                || item.getItemSubType() == ItemType.ANDURIL) return true;
+        }
+        return false;
+    }
+
+    private boolean hasTreeStumpEquipped(){
+        for(Item item : equippedItems){
+            if(item.getItemType() == ItemType.TREE_STUMP
+                || item.getItemSubType() == ItemType.TREE_STUMP) return true;
         }
         return false;
     }
@@ -286,17 +302,29 @@ public class Character extends MovingEntity implements Damageable{
      * @param health amount of health to be deacreased
      */
     public void minusHealth(double health){
+        if(currentHealth == 0) return;
         currentHealth = currentHealth - health;
         if(currentHealth <= 0){
             currentHealth = 0;
             /* Apply effect of the one ring */
             Item destroyedRareItem = null;
             for(Item i : world.getUnequippedInventoryItems()){
-                if(i.getItemType() == ItemType.THE_ONE_RING){
+                if(i.getItemType() == ItemType.THE_ONE_RING || i.getItemSubType() == ItemType.THE_ONE_RING){
                     currentHealth = maxHealth;
                     destroyedRareItem = i;
                     break;
                 }
+            }
+
+            if(destroyedRareItem == null){
+                for(Item i : equippedItems){
+                    if(i.getItemType() == ItemType.THE_ONE_RING || i.getItemSubType() == ItemType.THE_ONE_RING){
+                        currentHealth = maxHealth;
+                        destroyedRareItem = i;
+                        unequip(i);
+                        break;
+                    }
+                }  
             }
 
             if (observer != null) {
@@ -306,6 +334,7 @@ public class Character extends MovingEntity implements Damageable{
             if(destroyedRareItem != null){
                 world.removeUnequippedInventoryItem(destroyedRareItem);
             }else{
+                world.setHasLost(true);
                 observer.displayDefeatMessage();
             }
         }else{
@@ -333,6 +362,13 @@ public class Character extends MovingEntity implements Damageable{
         }else if(item.isDefensive()){
             setDefense(defense + ((DefensiveItems)item).getDefense());
         }
+        if(item.getItemSubType() != null){
+            if(item.getItemSubType().isOffensive()){
+                setAttack(attack + item.getItemSubType().getAttack());
+            }else if(item.getItemSubType().isDefensive()){
+                setDefense(defense + item.getItemSubType().getDefense());
+            } 
+        }
         equippedItems.add(item);
     }
 
@@ -345,6 +381,13 @@ public class Character extends MovingEntity implements Damageable{
             setAttack(attack - ((OffensiveItems)item).getAttack());
         }else if(item.isDefensive()){
             setDefense(defense - ((DefensiveItems)item).getDefense());
+        }
+        if(item.getItemSubType() != null){
+            if(item.getItemSubType().isOffensive()){
+                setAttack(attack - item.getItemSubType().getAttack());
+            }else if(item.getItemSubType().isDefensive()){
+                setDefense(defense - item.getItemSubType().getDefense());
+            } 
         }
         equippedItems.remove(item);
     }

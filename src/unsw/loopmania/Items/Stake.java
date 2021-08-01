@@ -8,18 +8,12 @@ import unsw.loopmania.Types.ItemType;
  */
 public class Stake extends OffensiveItems{
    
-    private final int attack = 3;
-
     public Stake(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
     }
 
     public ItemType getItemType(){
         return ItemType.STAKE;
-    }
-
-    public int getAttack() {
-        return this.attack;
     }
 
     public Item copyItem(int x, int y){

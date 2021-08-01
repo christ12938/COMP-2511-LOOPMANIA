@@ -69,6 +69,21 @@ Character: Health = 100, Attack = 5, Defense = 0
 Slug: Health = 10, Atack = 5, Crit chance = 10%, Crit multiplier = 150%, Battle Radius = 2, Support Radius = 2
 Zombie: Health = 10, Atack = 10, Crit chance = 10%, Crit multiplier = N/A, Battle Radius = 3, Support Radius = 3
 Vampire: Health = 20, Atack = 20, Crit chance = 20%, Crit multiplier = 100 - 200% (Uniformly random), Battle Radius = 3, Support Radius = 4
+Tree stump decreases bossses damage by 70%
+Elan Muske has a 20% chance of healing all battling enemies (including self) for 10 health
+Doggie has a 20% chance of stunning the character. (This effect will not accumulate)
+Experience rewards for each type of enemies:
+1. Slug = 10
+2. Zombie = 100
+3. Vampire = 500
+4. Doggie = 1000
+5. Elan Muske = 5000
+Assume Bosses only spawn once
+Assume in confusing mode, a rare item will never get its own additional behaviour.
+Assume in confusing mode, if there is only one rare item, there will be no additional behaviour.
+Assume in confusing mode, stats buffing additional behaviour will not accumulate. (i.e. 2 Aduril triple damage behaviour will not make it *9, that would be too broken).
+The value of doggieCoin fluctuates between 1 and 20 dollars randomly. When Elan Muske appears, the value of it will fluctuates between 40 and 50. This effect will revert when Elan Muske is killed.
+Elan Muske has a 0.85% chance of jumping over the character. (Around 0.5% exactly since Elan Muske has a battle radius of 2, so 0.85^4 ~ 0.5, assuming he did not move in those 4 steps)
 
 
 

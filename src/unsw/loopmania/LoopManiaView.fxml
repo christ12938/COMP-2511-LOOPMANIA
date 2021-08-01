@@ -219,7 +219,7 @@
                </VBox>
                <VBox alignment="CENTER" spacing="5">
                   <!-- clicking this button pops the help menu -->
-                  <Button text="Help"/>
+                  <Button text="Help" onAction="#openHelpMenu"/>
                   <!-- clicking this button returns the human player to the main menu -->
                   <Button text="Exit to Main Menu" onAction="#switchToMainMenu"/>
                </VBox>

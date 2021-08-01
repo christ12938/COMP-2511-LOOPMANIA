@@ -38,6 +38,7 @@ public class LoopManiaShop {
         itemSellPrices = ShopLoader.loadItemSellPrices();
         switch(parentController.getDifficulty()){
             case STANDARD:
+            case CONFUSING:
                 difficultyBehaviour = new StandardMode();
                 break;
             case SURVIVAL:

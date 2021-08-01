@@ -10,10 +10,12 @@ public class Slug extends Enemy{
     private final double maxHealth = EnemyType.SLUG.getMaxHealth();
     private double currentHealth;
     private final int attack = EnemyType.SLUG.getAttack();
+    private CritStrategy critStrategy;
 
     public Slug(PathPosition position){
         super(position);
         this.currentHealth = maxHealth;
+        this.critStrategy = new SlugCritStrategy();
     }
     
     public EnemyType getEnemyType(){
@@ -29,10 +31,15 @@ public class Slug extends Enemy{
     }
 
     public void setCurrentHealth(double currentHealth){
+        if(currentHealth > maxHealth) currentHealth = maxHealth;
         this.currentHealth = currentHealth;
     }
 
     public void dealDamage(Damageable damageable){
-        damageable.takeDamage(attack, this);
+        if(critStrategy.isNextAttackCritical()){
+            damageable.takeDamage(critStrategy.applyCritDamage(attack), this);
+        }else{
+            damageable.takeDamage(attack, this);
+        }
     }
 }

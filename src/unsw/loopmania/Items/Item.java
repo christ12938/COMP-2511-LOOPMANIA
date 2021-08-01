@@ -25,6 +25,10 @@ public abstract class Item extends StaticEntity{
         return getItemType().isDefensive();
     }
 
+    public ItemType getItemSubType(){
+        return null;
+    }
+    
     public abstract ItemType getItemType();
     public abstract Item copyItem(int x, int y);
     

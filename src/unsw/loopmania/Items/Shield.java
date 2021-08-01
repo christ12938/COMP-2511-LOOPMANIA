@@ -8,8 +8,6 @@ import unsw.loopmania.Types.ItemType;
  */
 public class Shield extends DefensiveItems{
 
-    private final int defense = 3;
-
     public Shield(SimpleIntegerProperty x, SimpleIntegerProperty y) {
         super(x, y);
     }
@@ -17,10 +15,6 @@ public class Shield extends DefensiveItems{
     public ItemType getItemType(){
         return ItemType.SHIELD;
     }
-
-    public int getDefense() {
-        return this.defense; 
-     }
 
     public Item copyItem(int x, int y) {
         return new Shield(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));

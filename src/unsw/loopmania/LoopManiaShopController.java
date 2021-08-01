@@ -20,8 +20,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import unsw.loopmania.Items.Item;
 import unsw.loopmania.Loaders.ItemLoader;
 import unsw.loopmania.Loaders.ShopLoader;
@@ -57,7 +60,10 @@ public class LoopManiaShopController {
     private Image shieldImage;
     private Image helmetImage;
     private Image healthPotionImage;
+    private Image doggieCoinImage;
     private Image theOneRingImage;
+    private Image andurilImage;
+    private Image treeStumpImage;
 
     private EnumMap<ItemType, Pair<Integer, Integer>> itemBuyPositions;
     private EnumMap<ItemType, Pair<Integer, Integer>> itemSellPositions;
@@ -70,6 +76,9 @@ public class LoopManiaShopController {
     private double yOffset;
 
     private LoopManiaShop shop;
+
+    private MediaPlayer sellItemAudioPlayer;
+    private MediaPlayer buyItemAudioPlayer;
 
     public LoopManiaShopController(LoopManiaWorldController parent, LoopManiaWorld world, Stage shopStage) {
 
@@ -85,10 +94,22 @@ public class LoopManiaShopController {
         shieldImage = new Image((new File("src/images/shield.png")).toURI().toString());
         helmetImage = new Image((new File("src/images/helmet.png")).toURI().toString());
         healthPotionImage = new Image((new File("src/images/brilliant_blue_new.png")).toURI().toString());
+        doggieCoinImage = new Image((new File("src/images/doggiecoin.png")).toURI().toString());
         theOneRingImage = new Image((new File("src/images/the_one_ring.png")).toURI().toString());
+        andurilImage = new Image((new File("src/images/anduril_flame_of_the_west.png")).toURI().toString());
+        treeStumpImage = new Image((new File("src/images/tree_stump.png")).toURI().toString());
 
         itemBuyPositions = ShopLoader.loadItemBuyPositions();
         itemSellPositions = ShopLoader.loadItemSellPositions();
+
+        String buyAudio = new File("src/Music/BuyItem.mp3").toURI().toString();
+        String sellAudio = new File("src/Music/SellItem.mp3").toURI().toString();
+
+        buyItemAudioPlayer = new MediaPlayer(new Media(buyAudio));
+        sellItemAudioPlayer = new MediaPlayer(new Media(sellAudio));
+
+        buyItemAudioPlayer.setVolume(0.1);
+        sellItemAudioPlayer.setVolume(0.03);
 
         this.parent = parent;
         this.world = world;
@@ -122,6 +143,8 @@ public class LoopManiaShopController {
             @Override
             public void handle(ActionEvent event) {
                 String returnedMessage = shop.buyItem(type);
+                buyItemAudioPlayer.play();
+                buyItemAudioPlayer.seek(Duration.ZERO);
                 Color color = null;
                 if(returnedMessage.equals(shop.getBuySuccessMessage())){
                     color = Color.GREEN;
@@ -144,6 +167,8 @@ public class LoopManiaShopController {
             @Override
             public void handle(ActionEvent event) {
                 String returnedMessage = shop.sellItem(type);
+                sellItemAudioPlayer.play();
+                sellItemAudioPlayer.seek(Duration.ZERO);
                 Color color = null;
                 if(returnedMessage.equals(shop.getSellSuccessMessage())){
                     color = Color.GREEN;
@@ -280,8 +305,17 @@ public class LoopManiaShopController {
             case HEALTH_POTION:
                 view = new ImageView(healthPotionImage);
                 break;
+            case DOGGIECOIN:
+                view = new ImageView(doggieCoinImage);
+                break;
             case THE_ONE_RING:
                 view = new ImageView(theOneRingImage);
+                break;
+            case ANDURIL:
+                view = new ImageView(andurilImage);
+                break;
+            case TREE_STUMP:
+                view = new ImageView(treeStumpImage);
                 break;
             default:
                 view = null; /* Should never happen */
