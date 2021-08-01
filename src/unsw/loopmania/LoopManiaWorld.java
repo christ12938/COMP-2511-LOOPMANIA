@@ -1,12 +1,17 @@
 package unsw.loopmania;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.javatuples.Pair;
+import org.junit.Test.None;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 import unsw.loopmania.Buildings.Building;
 import unsw.loopmania.Buildings.Spawner;
 import unsw.loopmania.Buildings.TowerBuilding;
@@ -99,7 +104,14 @@ public class LoopManiaWorld {
 
     public static Random rand = new Random();
 
-    private volatile int bossesDefeated = 0;
+    private MediaPlayer moneyPickupAudioPlayer;
+    private MediaPlayer activateTrapAudioPlayer;
+    
+    private int bossesDefeated;
+    
+
+    private MediaPlayer cursedMediaPlayer;
+    private MediaPlayer restoreHealthAudioPlayer;
 
     /**
      * create the world (constructor)
@@ -120,6 +132,24 @@ public class LoopManiaWorld {
         buildingEntities = new ArrayList<>();
         rareItemsAvailable = new ArrayList<>();
         spawnedItems = new ArrayList<>();
+        bossesDefeated = 0;
+
+        String cursedFile = "src/Music/evil_laugh.mp3";
+        String restoringHpAudio = new File("src/Music/RestoreHp.mp3").toURI().toString();
+        
+        Media cursedSound = new Media(new File(cursedFile).toURI().toString());
+        cursedMediaPlayer = new MediaPlayer(cursedSound);
+
+        restoreHealthAudioPlayer = new MediaPlayer(new Media(restoringHpAudio));
+        
+        String pickupMoney = new File("src/Music/money_pickup.mp3").toURI().toString();
+        String activateTrapAudio = new File("src/Music/TrapActivate.mp3").toURI().toString();
+
+        activateTrapAudioPlayer = new MediaPlayer(new Media(activateTrapAudio));
+        moneyPickupAudioPlayer = new MediaPlayer(new Media(pickupMoney));
+        moneyPickupAudioPlayer.setVolume(0.03);
+        restoreHealthAudioPlayer.setVolume(0.03);
+        activateTrapAudioPlayer.setVolume(0.03);
     }
 
     public void setController(LoopManiaWorldController controller){
@@ -307,6 +337,15 @@ public class LoopManiaWorld {
             Enemy enemy = new Zombie(new PathPosition(indexInPath, orderedPath));
             enemies.add(enemy);
             spawningEnemies.add(enemy);
+            //spawn additional zombie if cursed
+            Random random = new Random();
+            if(random.nextInt(9) == 1){
+                Enemy enemy2 = new Zombie(new PathPosition(indexInPath, orderedPath));
+                enemies.add(enemy2);
+                spawningEnemies.add(enemy2);
+                cursedMediaPlayer.play();
+                cursedMediaPlayer.seek(Duration.ZERO);
+            }
         }
 
         /* Get Vampire Spawn Position */
@@ -316,6 +355,15 @@ public class LoopManiaWorld {
             Enemy enemy = new Vampire(new PathPosition(indexInPath, orderedPath));
             enemies.add(enemy);
             spawningEnemies.add(enemy);
+            //spawn additional vampire if cursed
+            Random random = new Random();
+            if(random.nextInt(9) == 1){
+                Enemy enemy2 = new Vampire(new PathPosition(indexInPath, orderedPath));
+                enemies.add(enemy2);
+                spawningEnemies.add(enemy2);
+                cursedMediaPlayer.play();
+                cursedMediaPlayer.seek(Duration.ZERO);
+            }
         }
 
         /* Get Bosses Spawn Position */
@@ -401,7 +449,7 @@ public class LoopManiaWorld {
             Enemy attackedEnemy = battleEnemies.get(choice);
             System.out.println("Enemy fighting: " + attackedEnemy);
             /**
-             * Always starts with attacks from character side first, 
+             * Always starts with attacks from character side first,
              * character -> allied soldiers -> tower
              */
             /* Fight until character or enemy is dead */
@@ -461,7 +509,7 @@ public class LoopManiaWorld {
                     }
                 }
             }
-            
+
             List<AlliedSoldier> temp = new ArrayList<>();
             for(int i = 0; i < trancedSoldiers.size(); i++){
                 trancedSoldiers.get(i).nextTranceTurn();
@@ -488,7 +536,7 @@ public class LoopManiaWorld {
                 character.getAlliedSoldiers().remove(trancedSoldiers.get(i));
             }
         }
-        
+
         for (Enemy e: defeatedEnemies){
             // IMPORTANT = we kill enemies here, because killEnemy removes the enemy from the enemies list
             // if we killEnemy in prior loop, we get java.util.ConcurrentModificationException
@@ -829,7 +877,9 @@ public class LoopManiaWorld {
      */
     public void useHealthPotion() {
         for (Item item : this.unequippedInventoryItems) {
-            if (item.getItemType() == ItemType.HEALTH_POTION) {
+            if (item.getItemType() == ItemType.HEALTH_POTION && getCharacterCurrentHp() != 100) {
+                restoreHealthAudioPlayer.play();
+                restoreHealthAudioPlayer.seek(Duration.ZERO);
                 increaseCharacterHp(HealthPotion.healingHealth);
                 removeUnequippedInventoryItemByCoordinates(item.getX(), item.getY());
                 return;
@@ -1196,7 +1246,7 @@ public class LoopManiaWorld {
         }
         return spawnPosition;
     }
-    
+
     /**
      * Get all spawner possible spawning locations on that cycle
      * @param type Spawner type
@@ -1286,6 +1336,8 @@ public class LoopManiaWorld {
                 if(b.getBuildingType() == BuildingType.TRAP_BUILDING){
                     b.destroy();
                     enemy.takeDamage(TrapBuilding.attack, character);
+                    activateTrapAudioPlayer.play();
+                    activateTrapAudioPlayer.seek(Duration.ZERO);
                     buildingEntities.remove(b);
                     if(enemy.isDefeated()){
                         enemiesToBeRemoved.add(enemy);
@@ -1419,6 +1471,8 @@ public class LoopManiaWorld {
                     newItem = ItemLoader.loadSpawnableItems(item.getItemType(), unequippedInventoryItems.get(0).getX(), unequippedInventoryItems.get(0).getY());
                     if(item.getItemType() == ItemType.GOLD){
                         character.addGold(5);
+                        moneyPickupAudioPlayer.play();
+                        moneyPickupAudioPlayer.seek(Duration.ZERO);
                         newItem = null;
                         break;
                     }
@@ -1430,6 +1484,8 @@ public class LoopManiaWorld {
                     newItem = ItemLoader.loadSpawnableItems(item.getItemType(), firstAvailableSlot.getValue0(), firstAvailableSlot.getValue1());
                     if(item.getItemType() == ItemType.GOLD){
                         character.addGold(5);
+                        moneyPickupAudioPlayer.play();
+                        moneyPickupAudioPlayer.seek(Duration.ZERO);
                         newItem = null;
                         break;
                     }
