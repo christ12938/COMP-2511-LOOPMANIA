@@ -228,6 +228,11 @@ public class LoopManiaWorldController {
     private Image alliedSoldierImage;
 
     /**
+     * Image of cursed building overlay
+     */
+    private Image cursedOverlayImage;
+
+    /**
      * the image currently being dragged, if there is one, otherwise null.
      * Holding the ImageView being dragged allows us to spawn it again in the drop location if appropriate.
      */
@@ -363,6 +368,8 @@ public class LoopManiaWorldController {
 
         /* Initialize allied soldier image */
         alliedSoldierImage = new Image((new File("src/images/deep_elf_master_archer.png")).toURI().toString());
+
+        cursedOverlayImage = new Image((new File("src/images/cursedOverlay.png")).toURI().toString());
 
         currentlyDraggedImage = null;
         currentlyHighlightedImage = null;
@@ -892,11 +899,13 @@ public class LoopManiaWorldController {
                 loadVampireSAudioPlayer.play();
                 loadVampireSAudioPlayer.seek(Duration.ZERO);
                 view = new ImageView(vampireCastleBuildingImage);
+                addCurseBorderListener((Spawner)building);
                 break;
             case ZOMBIEPIT_BUILDING:
                 loadZombieSAudioPlayer.play();
                 loadZombieSAudioPlayer.seek(Duration.ZERO);
                 view = new ImageView(zombiePitBuildingImage);
+                addCurseBorderListener((Spawner)building);
                 break;
             case TOWER_BUILDING:
                 loadTowerAudioPlayer.play();
@@ -1269,7 +1278,6 @@ public class LoopManiaWorldController {
     }
 
     public void setMainMenuSwitcher(MenuSwitcher mainMenuSwitcher){
-        // TODO = possibly set other menu switchers
         this.mainMenuSwitcher = mainMenuSwitcher;
     }
 
@@ -1279,9 +1287,42 @@ public class LoopManiaWorldController {
      */
     @FXML
     private void switchToMainMenu() throws IOException {
-        // TODO = possibly set other menu switchers
         pause();
         mainMenuSwitcher.switchMenu();
+    }
+
+    private void addCurseBorderListener(Spawner spawner){
+
+        Node node = new ImageView(cursedOverlayImage);
+
+        ChangeListener<Boolean> cursedOverlayListener = new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable,
+                    Boolean oldValue, Boolean newValue) {
+                if(newValue.booleanValue()){
+                    squares.add(node, spawner.getX(), spawner.getY());
+                }else{
+                    squares.getChildren().remove(node);
+                }
+            }
+        };
+
+        ListenerHandle cursedOverlayHandle = ListenerHandles.createFor(spawner.getIsCursed(), node)
+                                               .onAttach((o, l) -> o.addListener(cursedOverlayListener))
+                                               .onDetach((o, l) -> {
+                                                    o.removeListener(cursedOverlayListener);
+                                                    squares.getChildren().remove(node);
+                                                })
+                                               .buildAttached();
+        
+        cursedOverlayHandle.attach();
+
+        spawner.shouldExist().addListener(new ChangeListener<Boolean>(){
+            @Override
+            public void changed(ObservableValue<? extends Boolean> obervable, Boolean oldValue, Boolean newValue) {
+                cursedOverlayHandle.detach();
+            }
+        });
     }
 
     /**
@@ -1300,7 +1341,7 @@ public class LoopManiaWorldController {
      * @param node
      */
     private void trackPosition(Entity entity, Node node) {
-        // TODO = tweak this slightly to remove items from the equipped inventory?
+
         GridPane.setColumnIndex(node, entity.getX());
         GridPane.setRowIndex(node, entity.getY());
 
@@ -1679,6 +1720,9 @@ public class LoopManiaWorldController {
             healthBar.setStyle("-fx-accent: green;");
         }
         healthBar.setProgress(currentHealth/maxHealth);
+        if(healthBar.getProgress() == 0 && currentHealth != 0){
+            healthBar.setProgress(0.1);
+        }
         primaryStage.sizeToScene();
     }
 

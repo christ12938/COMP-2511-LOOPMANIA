@@ -41,8 +41,7 @@ import unsw.loopmania.Types.OverlappableEntityType;
  * entity can occupy the same square.
  */
 public class LoopManiaWorld {
-    // TODO = add additional backend functionality
-
+    
     public static final int unequippedInventoryWidth = 4;
     public static final int unequippedInventoryHeight = 4;
     public static final int alliedSoldierNumber = 3;
@@ -932,8 +931,8 @@ public class LoopManiaWorld {
      * @param item item to be removed
      */
     public void removeUnequippedInventoryItem(Item item){
-        int x = item.getX();
-        int y = item.getY();
+        //nt x = item.getX();
+        //int y = item.getY();
         item.destroy();
         unequippedInventoryItems.remove(item);
         //shiftUnequippedInventoryItemsFromXYCoordinate(x, y);
@@ -1264,9 +1263,13 @@ public class LoopManiaWorld {
                         spawningTiles.remove(i);
                     }
                 }
-                if(spawningTiles.size() == 0) continue;
-                result.add(spawningTiles.get(rand.nextInt(spawningTiles.size())));
-                ((Spawner)b).setHasSpawned(true);
+                int repeat = 1;
+                if(((Spawner)b).getIsCursed().get()) repeat = 2;
+                for(int i = 0; i < repeat; i++){
+                    if(spawningTiles.size() == 0) continue;
+                    result.add(spawningTiles.get(rand.nextInt(spawningTiles.size())));
+                    ((Spawner)b).setHasSpawned(true);
+                }
             }
         }
         return result;
@@ -1363,8 +1366,11 @@ public class LoopManiaWorld {
         for(Building b : buildingEntities){
             if(b instanceof Spawner){
                 ((Spawner)b).setHasSpawned(false);
+                ((Spawner)b).setIsCursed(false);
             }
         }
+        /* Curse buildings in the current cycle */
+        curseSpawnableBuildings();
     }
 
     public int getCycle(){
@@ -1555,6 +1561,19 @@ public class LoopManiaWorld {
 
     public boolean hasHumanPlayerLost(){
         return humanPlayer.hasLost();
+    }
+
+    /**
+     * Curse spawnable buildings in building entities
+     */
+    private void curseSpawnableBuildings(){
+        for(Building b : buildingEntities){
+            if((b.getBuildingType() == BuildingType.VAMPIRECASTLE_BUILDING
+                || b.getBuildingType() == BuildingType.ZOMBIEPIT_BUILDING)
+                    && rand.nextDouble() < Spawner.cursedChance){
+                ((Spawner)b).setIsCursed(true);     
+            }
+        }
     }
 
 }
