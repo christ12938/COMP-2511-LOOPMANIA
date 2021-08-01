@@ -310,6 +310,10 @@ public class LoopManiaWorldController {
     private MediaPlayer spawnElanMuskAudioPlayer;
     private MediaPlayer elanDeathAudioPlayer;
     private MediaPlayer addAlliedSoliderAudioPlayer;
+    private MediaPlayer cursedMediaPlayer;
+    private MediaPlayer restoreHealthAudioPlayer;
+    private MediaPlayer moneyPickupAudioPlayer;
+    private MediaPlayer activateTrapAudioPlayer;
 
     /**
      * @param world world object loaded from file
@@ -402,6 +406,16 @@ public class LoopManiaWorldController {
         String elanMuskDeathAudio = new File("src/Music/MuskDeath.mp3").toURI().toString();
         String addAlliedSoldierAudio = new File("src/Music/AlliedSoldier.mp3").toURI().toString();
 
+        String cursedFile = new File("src/Music/evil_laugh.mp3").toURI().toString();
+        String pickupMoney = new File("src/Music/money_pickup.mp3").toURI().toString();
+        String activateTrapAudio = new File("src/Music/TrapActivate.mp3").toURI().toString();
+        String restoringHpAudio = new File("src/Music/RestoreHp.mp3").toURI().toString();
+        
+        cursedMediaPlayer = new MediaPlayer(new Media(cursedFile));
+        restoreHealthAudioPlayer = new MediaPlayer(new Media(restoringHpAudio));
+        moneyPickupAudioPlayer = new MediaPlayer(new Media(pickupMoney));
+        activateTrapAudioPlayer = new MediaPlayer(new Media(activateTrapAudio));
+
         shopAudioPlayer = new MediaPlayer(new Media(shopAudio));
         deathMediaPlayer = new MediaPlayer(new Media(deathSound));
         backgroundMusicPlayer = new MediaPlayer(new Media(backgroundMusic));
@@ -425,6 +439,10 @@ public class LoopManiaWorldController {
         elanDeathAudioPlayer = new MediaPlayer(new Media(elanMuskDeathAudio));
         addAlliedSoliderAudioPlayer = new MediaPlayer(new Media(addAlliedSoldierAudio));
 
+        cursedMediaPlayer.setVolume(0.03);
+        restoreHealthAudioPlayer.setVolume(0.03);
+        moneyPickupAudioPlayer.setVolume(0.03);
+        activateTrapAudioPlayer.setVolume(0.03);
 
         deathMediaPlayer.setVolume(0.03);
         backgroundMusicPlayer.setVolume(0.03);
@@ -539,6 +557,7 @@ public class LoopManiaWorldController {
 
             Item newItem = world.checkAndAddSpawnedItem();
             if(newItem != null) onLoadUnequippedItem(newItem);
+            
 
             List<Item> newSpawnedItems = world.possiblySpawnItems();
             for (Item item : newSpawnedItems){
@@ -548,6 +567,18 @@ public class LoopManiaWorldController {
             List<Enemy> newEnemies = world.possiblySpawnEnemies();
             for (Enemy newEnemy: newEnemies){
                 onLoad(newEnemy);
+            }
+
+            if (world.isVampireCursed()) {
+                cursedMediaPlayer.play();
+                cursedMediaPlayer.seek(Duration.ZERO);
+                world.resetVampireCurse();
+            }
+
+            if (world.isZombieCursed()) {
+                cursedMediaPlayer.play();
+                cursedMediaPlayer.seek(Duration.ZERO);
+                world.resetZombieCurse();
             }
 
             world.applyTrapsToEnemies();
@@ -567,6 +598,11 @@ public class LoopManiaWorldController {
                 }
                 for (Enemy e: defeatedEnemies){
                     reactToEnemyDefeat(e);
+                }
+                if (world.hasEnemyBeenKilledByTrap()) {
+                    activateTrapAudioPlayer.play();
+                    activateTrapAudioPlayer.seek(Duration.ZERO);
+                    world.resetEnemyKilledByTrap();
                 }
             }
 
@@ -617,6 +653,10 @@ public class LoopManiaWorldController {
     public void loadRandomItem(){
         // start by getting first available coordinates
         Item item = world.loadRandomUnenquippedInventoryItem();
+        if (item.getItemType() == ItemType.GOLD) {
+            moneyPickupAudioPlayer.play();
+            moneyPickupAudioPlayer.seek(Duration.ZERO);
+        }
         if(item != null) onLoadUnequippedItem(item);
     }
 
@@ -1260,7 +1300,15 @@ public class LoopManiaWorldController {
             }
             break;
         case H:
-            this.world.useHealthPotion();
+            if(world.getCharacterCurrentHp() != 100) {
+                for (Item item: world.getUnequippedInventoryItems()) {
+                    if (item.getItemType() == ItemType.HEALTH_POTION) {
+                        restoreHealthAudioPlayer.play();
+                        restoreHealthAudioPlayer.seek(Duration.ZERO);
+                    }
+                }
+            }
+            world.useHealthPotion();
             break;
 
         default:
