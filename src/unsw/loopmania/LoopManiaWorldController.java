@@ -576,17 +576,10 @@ public class LoopManiaWorldController {
                 onLoad(newEnemy);
             }
 
-            if (world.isVampireCursed()) {
+            if (world.areSpawnersCursed()) {
                 cursedMediaPlayer.play();
                 cursedMediaPlayer.seek(Duration.ZERO);
-                world.resetVampireCurse();
-            }
-
-            if (world.isZombieCursed()) {
-                cursedMediaPlayer.play();
-                cursedMediaPlayer.seek(Duration.ZERO);
-                world.resetZombieCurse();
-            }
+            } 
 
             world.applyTrapsToEnemies();
             world.applyStaticBuildingBuffsToCharacter();

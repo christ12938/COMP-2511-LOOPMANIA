@@ -106,8 +106,7 @@ public class LoopManiaWorld {
 
     
     private int bossesDefeated;
-    private boolean vampireCursed;
-    private boolean zombieCursed;
+    private boolean spawnerCursed;
     private boolean enemyKilledByTrap;
 
     /**
@@ -130,8 +129,7 @@ public class LoopManiaWorld {
         rareItemsAvailable = new ArrayList<>();
         spawnedItems = new ArrayList<>();
         bossesDefeated = 0;
-        vampireCursed = false;
-        zombieCursed = false;
+        spawnerCursed = false;
         enemyKilledByTrap = false;
     }
 
@@ -149,20 +147,8 @@ public class LoopManiaWorld {
         enemyKilledByTrap = false;
     }
 
-    public boolean isVampireCursed() {
-        return vampireCursed;
-    }
-
-    public boolean isZombieCursed() {
-        return zombieCursed;
-    }
-
-    public void resetZombieCurse() {
-        zombieCursed = false;
-    }
-
-    public void resetVampireCurse() {
-        vampireCursed = false;
+    public boolean areSpawnersCursed() {
+        return spawnerCursed;
     }
 
     public int getWidth() {
@@ -344,14 +330,6 @@ public class LoopManiaWorld {
             Enemy enemy = new Zombie(new PathPosition(indexInPath, orderedPath));
             enemies.add(enemy);
             spawningEnemies.add(enemy);
-            //spawn additional zombie if cursed
-            Random random = new Random();
-            if(random.nextInt(9) == 1){
-                zombieCursed = true;
-                Enemy enemy2 = new Zombie(new PathPosition(indexInPath, orderedPath));
-                enemies.add(enemy2);
-                spawningEnemies.add(enemy2);
-            }
         }
 
         /* Get Vampire Spawn Position */
@@ -361,14 +339,6 @@ public class LoopManiaWorld {
             Enemy enemy = new Vampire(new PathPosition(indexInPath, orderedPath));
             enemies.add(enemy);
             spawningEnemies.add(enemy);
-            //spawn additional vampire if cursed
-            Random random = new Random();
-            if(random.nextInt(9) == 1){
-                vampireCursed = true;
-                Enemy enemy2 = new Vampire(new PathPosition(indexInPath, orderedPath));
-                enemies.add(enemy2);
-                spawningEnemies.add(enemy2);
-            }
         }
 
         /* Get Bosses Spawn Position */
@@ -1369,6 +1339,7 @@ public class LoopManiaWorld {
             if(b instanceof Spawner){
                 ((Spawner)b).setHasSpawned(false);
                 ((Spawner)b).setIsCursed(false);
+                spawnerCursed = false;
             }
         }
         /* Curse buildings in the current cycle */
@@ -1569,7 +1540,8 @@ public class LoopManiaWorld {
             if((b.getBuildingType() == BuildingType.VAMPIRECASTLE_BUILDING
                 || b.getBuildingType() == BuildingType.ZOMBIEPIT_BUILDING)
                     && rand.nextDouble() < Spawner.cursedChance){
-                ((Spawner)b).setIsCursed(true);     
+                ((Spawner)b).setIsCursed(true);   
+                spawnerCursed = true;  
             }
         }
     }
