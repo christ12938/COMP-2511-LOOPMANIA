@@ -437,10 +437,10 @@ public class LoopManiaWorldController {
         loadTrapAudioPlayer.setVolume(0.03);
         loadVampireSAudioPlayer.setVolume(0.06);
         loadZombieSAudioPlayer.setVolume(0.03);
-        loadViliageAudioPlayer.setVolume(0.06);
+        loadViliageAudioPlayer.setVolume(0.2);
         loadBarracksAudioPlayer.setVolume(0.06);
-        loadTowerAudioPlayer.setVolume(0.06);
-        loadCampfireAudioPlayer.setVolume(0.06);
+        loadTowerAudioPlayer.setVolume(0.12);
+        loadCampfireAudioPlayer.setVolume(0.2);
         vampireDeathAudioPlayer.setVolume(0.03);
         spawnVampireAudioPlayer.setVolume(0.03);
         spawnDoggieAudioPlayer.setVolume(0.03);
