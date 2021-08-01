@@ -1,6 +1,7 @@
 package unsw.loopmania.Loaders;
 
 import java.util.EnumMap;
+import java.util.List;
 
 import org.javatuples.Pair;
 
@@ -27,7 +28,7 @@ public class ShopLoader {
      /**
      * Define a map of item positions on shop
      */
-    public static EnumMap<ItemType, Pair<Integer, Integer>> loadItemSellPositions(){
+    public static EnumMap<ItemType, Pair<Integer, Integer>> loadItemSellPositions(List<ItemType> rareItemsAvailable){
         EnumMap<ItemType, Pair<Integer, Integer>> itemPositions = new EnumMap<ItemType, Pair<Integer, Integer>>(ItemType.class);
         itemPositions.put(ItemType.SWORD, new Pair<Integer, Integer>(0, 0));
         itemPositions.put(ItemType.STAKE, new Pair<Integer, Integer>(1, 0));
@@ -37,9 +38,14 @@ public class ShopLoader {
         itemPositions.put(ItemType.HELMET, new Pair<Integer, Integer>(2, 1));
         itemPositions.put(ItemType.HEALTH_POTION, new Pair<Integer, Integer>(0, 2));
         itemPositions.put(ItemType.DOGGIECOIN, new Pair<Integer, Integer>(1, 2));
-        itemPositions.put(ItemType.THE_ONE_RING, new Pair<Integer, Integer>(2, 2));
-        itemPositions.put(ItemType.ANDURIL, new Pair<Integer, Integer>(0, 3));
-        itemPositions.put(ItemType.TREE_STUMP, new Pair<Integer, Integer>(1, 3));
+        
+        int xPos = 2;
+        int yPos = 2;
+        for(ItemType i : rareItemsAvailable){
+            itemPositions.put(i, new Pair<Integer, Integer>(xPos, yPos));
+            xPos = (xPos + 1) % 3;
+            if(xPos == 0) yPos++;
+        }
         return itemPositions;
     }
 
@@ -61,7 +67,7 @@ public class ShopLoader {
     /**
      * Set sell prices of items
      */
-    public static EnumMap<ItemType, Integer> loadItemSellPrices(){
+    public static EnumMap<ItemType, Integer> loadItemSellPrices(List<ItemType> rareItemsAvailable){
         EnumMap<ItemType, Integer> itemPrices = new EnumMap<ItemType, Integer>(ItemType.class);
         itemPrices.put(ItemType.SWORD, 5);
         itemPrices.put(ItemType.STAKE, 5);
@@ -71,9 +77,9 @@ public class ShopLoader {
         itemPrices.put(ItemType.HELMET, 5);
         itemPrices.put(ItemType.HEALTH_POTION, 5);
         itemPrices.put(ItemType.DOGGIECOIN, DoggieCoin.currentValue);
-        itemPrices.put(ItemType.THE_ONE_RING, 20);
-        itemPrices.put(ItemType.ANDURIL, 20);
-        itemPrices.put(ItemType.TREE_STUMP, 20);
+        for(ItemType i : rareItemsAvailable){
+            itemPrices.put(i, 20);
+        }
         return itemPrices;
     }
 }

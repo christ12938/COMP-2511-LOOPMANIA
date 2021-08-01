@@ -149,11 +149,17 @@ public class LoopManiaWorldController {
     @FXML
     private Label expValue;
 
+    @FXML
+    private ImageView discardItemSlot;
+
     /**
      * Gridpane for allied soldiers
      */
     @FXML
     private GridPane alliedSoldierSlot;
+
+    @FXML
+    private Label shopCycleValue;
 
     // all image views including tiles, character, enemies, cards... even though cards in separate gridpane...
     private List<ImageView> entityImages;
@@ -249,6 +255,11 @@ public class LoopManiaWorldController {
     private GridPane currentlyDraggedTargetGridPane;
 
     /**
+     * the souce grid pane of the image currently dragged
+     */
+    private GridPane currentlyDraggedSourceGridPane;
+
+    /**
      * null if nothing being dragged, or the type of item being dragged
      */
     private DRAGGABLE_TYPE currentlyDraggedType;
@@ -257,6 +268,19 @@ public class LoopManiaWorldController {
      * mapping from draggable type enum CARD/TYPE to the event handler triggered when the draggable type is dropped over its appropriate gridpane
      */
     private EnumMap<DRAGGABLE_TYPE, EventHandler<DragEvent>> gridPaneSetOnDragDropped;
+
+    /**
+     * event handler from the draggable type ITEM to the discard item slot
+     */
+    EventHandler<DragEvent> discardItemSlotSetOnDragDropped;
+    /**
+     * event handler from the draggable type ITEM entering the discard item slot
+     */
+    EventHandler<DragEvent> discardItemSlotSetOnDragEntered;
+    /**
+     * event handler from the draggable type ITEM exiting the discard item slot
+     */
+    EventHandler<DragEvent> discardItemSlotSetOnDragExited;
     /**
      * mapping from draggable type enum CARD/TYPE to the event handler triggered when the draggable type is dragged over the background
      */
@@ -290,7 +314,9 @@ public class LoopManiaWorldController {
     private volatile boolean isTimelineRunning = false;
 
     private MediaPlayer backgroundMusicPlayer;
+    private MediaPlayer finalBossBackgroundMusicPlayer;
     private MediaPlayer deathMediaPlayer;
+    private MediaPlayer victorySoundMediaPlayer;
     private MediaPlayer shopAudioPlayer;
     private MediaPlayer equippingSwordAudioPlayer;
     private MediaPlayer equippingArmourAudioPlayer;
@@ -304,6 +330,8 @@ public class LoopManiaWorldController {
     private MediaPlayer loadBarracksAudioPlayer;
     private MediaPlayer loadTowerAudioPlayer;
     private MediaPlayer loadCampfireAudioPlayer;
+    private MediaPlayer spawnSlugAudioPlayer;
+    private MediaPlayer slugDeathAudioPlayer;
     private MediaPlayer spawnVampireAudioPlayer;
     private MediaPlayer vampireDeathAudioPlayer;
     private MediaPlayer spawnDoggieAudioPlayer;
@@ -313,8 +341,11 @@ public class LoopManiaWorldController {
     private MediaPlayer addAlliedSoliderAudioPlayer;
     private MediaPlayer cursedMediaPlayer;
     private MediaPlayer restoreHealthAudioPlayer;
+    private MediaPlayer passThroughVillageAudioPlayer;
     private MediaPlayer moneyPickupAudioPlayer;
     private MediaPlayer activateTrapAudioPlayer;
+    private MediaPlayer mainMenuMusicPlayer;
+    private MediaPlayer discardSoundPlayer;
 
     /**
      * @param world world object loaded from file
@@ -375,16 +406,22 @@ public class LoopManiaWorldController {
         currentlyHighlightedImage = null;
         currentlyDraggedType = null;
         currentlyDraggedTargetGridPane = null;
+        currentlyDraggedSourceGridPane = null;
 
         // initialize them all...
         gridPaneSetOnDragDropped = new EnumMap<DRAGGABLE_TYPE, EventHandler<DragEvent>>(DRAGGABLE_TYPE.class);
+        discardItemSlotSetOnDragDropped= null;
+        discardItemSlotSetOnDragEntered = null;
+        discardItemSlotSetOnDragExited = null;
         anchorPaneRootSetOnDragOver = new EnumMap<DRAGGABLE_TYPE, EventHandler<DragEvent>>(DRAGGABLE_TYPE.class);
         anchorPaneRootSetOnDragDropped = new EnumMap<DRAGGABLE_TYPE, EventHandler<DragEvent>>(DRAGGABLE_TYPE.class);
         gridPaneNodeSetOnDragEntered = new EnumMap<DRAGGABLE_TYPE, EventHandler<DragEvent>>(DRAGGABLE_TYPE.class);
         gridPaneNodeSetOnDragExited = new EnumMap<DRAGGABLE_TYPE, EventHandler<DragEvent>>(DRAGGABLE_TYPE.class);
 
         String backgroundMusic = new File("src/Music/song1.mp3").toURI().toString();
+        String finalBossMusic = new File("src/Music/finalBoss.mp3").toURI().toString();
         String deathSound = new File("src/Music/death.mp3").toURI().toString();
+        String victorySound = new File("src/Music/victory.mp3").toURI().toString();
         String shopAudio = new File("src/Music/ShopBell.mp3").toURI().toString();
         String equippingSwordAudio = new File("src/Music/EquippingSword.mp3").toURI().toString();
         String equippingArmourAudio = new File("src/Music/EquippingArmour.mp3").toURI().toString();
@@ -400,6 +437,8 @@ public class LoopManiaWorldController {
         String loadTowerAudio = new File("src/Music/tower.mp3").toURI().toString();
 
 
+        String spawnSlugAudio = new File("src/Music/spawnSlug.mp3").toURI().toString();
+        String slugDeathAudio = new File("src/Music/slugDeath.mp3").toURI().toString();
         String spawnVampireAudio = new File("src/Music/VampireSpawn.mp3").toURI().toString();
         String vampireDeathAudio = new File("src/Music/VampireDeath.mp3").toURI().toString();
         String doggieDeathAudio = new File("src/Music/DoggieDeath.mp3").toURI().toString();
@@ -411,16 +450,25 @@ public class LoopManiaWorldController {
         String cursedFile = new File("src/Music/evil_laugh.mp3").toURI().toString();
         String pickupMoney = new File("src/Music/money_pickup.mp3").toURI().toString();
         String activateTrapAudio = new File("src/Music/TrapActivate.mp3").toURI().toString();
-        String restoringHpAudio = new File("src/Music/RestoreHp.mp3").toURI().toString();
+        String restoringHpAudio = new File("src/Music/potionDrinking.mp3").toURI().toString();
+        String passVillageAudio = new File("src/Music/RestoreHp.mp3").toURI().toString();
+        String discardSound = new File("src/Music/discardSound.mp3").toURI().toString();
+
+        String mainMenuMusic = new File("src/Music/mainMenu.mp3").toURI().toString();
+
         
         cursedMediaPlayer = new MediaPlayer(new Media(cursedFile));
         restoreHealthAudioPlayer = new MediaPlayer(new Media(restoringHpAudio));
+        passThroughVillageAudioPlayer = new MediaPlayer(new Media(passVillageAudio));
         moneyPickupAudioPlayer = new MediaPlayer(new Media(pickupMoney));
         activateTrapAudioPlayer = new MediaPlayer(new Media(activateTrapAudio));
+        discardSoundPlayer = new MediaPlayer(new Media(discardSound));
 
         shopAudioPlayer = new MediaPlayer(new Media(shopAudio));
         deathMediaPlayer = new MediaPlayer(new Media(deathSound));
+        victorySoundMediaPlayer = new MediaPlayer(new Media(victorySound));
         backgroundMusicPlayer = new MediaPlayer(new Media(backgroundMusic));
+        finalBossBackgroundMusicPlayer = new MediaPlayer(new Media(finalBossMusic));
         equippingSwordAudioPlayer = new MediaPlayer(new Media(equippingSwordAudio));
         equippingArmourAudioPlayer = new MediaPlayer(new Media(equippingArmourAudio));
         equippingShieldAudioPlayer = new MediaPlayer(new Media(equippingShieldAudio));
@@ -433,6 +481,8 @@ public class LoopManiaWorldController {
         loadBarracksAudioPlayer = new MediaPlayer(new Media(loadBarracksAudio));
         loadTowerAudioPlayer = new MediaPlayer(new Media(loadTowerAudio));
         loadCampfireAudioPlayer = new MediaPlayer(new Media(loadCampfireAudio));
+        spawnSlugAudioPlayer = new MediaPlayer(new Media(spawnSlugAudio));
+        slugDeathAudioPlayer = new MediaPlayer(new Media(slugDeathAudio));
         spawnVampireAudioPlayer = new MediaPlayer(new Media(spawnVampireAudio));
         vampireDeathAudioPlayer = new MediaPlayer(new Media(vampireDeathAudio));
         spawnDoggieAudioPlayer = new MediaPlayer(new Media(spawnDoggieAudio));
@@ -441,13 +491,24 @@ public class LoopManiaWorldController {
         elanDeathAudioPlayer = new MediaPlayer(new Media(elanMuskDeathAudio));
         addAlliedSoliderAudioPlayer = new MediaPlayer(new Media(addAlliedSoldierAudio));
 
+        mainMenuMusicPlayer = new MediaPlayer(new Media(mainMenuMusic));
+
+        mainMenuMusicPlayer.setVolume(0.05);
+        mainMenuMusicPlayer.setCycleCount(100);
+        mainMenuMusicPlayer.play();
+
+        discardSoundPlayer.setVolume(0.1);
         cursedMediaPlayer.setVolume(0.05);
-        restoreHealthAudioPlayer.setVolume(0.05);
+        restoreHealthAudioPlayer.setVolume(0.07);
+        passThroughVillageAudioPlayer.setVolume(0.05);
         moneyPickupAudioPlayer.setVolume(0.05);
         activateTrapAudioPlayer.setVolume(0.05);
 
         deathMediaPlayer.setVolume(0.05);
+        victorySoundMediaPlayer.setVolume(0.07);
+
         backgroundMusicPlayer.setVolume(0.03);
+        finalBossBackgroundMusicPlayer.setVolume(0.03);
         shopAudioPlayer.setVolume(0.05);
         equippingSwordAudioPlayer.setVolume(0.05);
         equippingArmourAudioPlayer.setVolume(0.4);
@@ -461,16 +522,15 @@ public class LoopManiaWorldController {
         loadBarracksAudioPlayer.setVolume(0.06);
         loadTowerAudioPlayer.setVolume(0.12);
         loadCampfireAudioPlayer.setVolume(0.2);
+        spawnSlugAudioPlayer.setVolume(0.05);
+        slugDeathAudioPlayer.setVolume(0.02);
         vampireDeathAudioPlayer.setVolume(0.03);
         spawnVampireAudioPlayer.setVolume(0.03);
         spawnDoggieAudioPlayer.setVolume(0.03);
         doggieDeathAudioPlayer.setVolume(0.03);
         spawnElanMuskAudioPlayer.setVolume(0.03);
-        elanDeathAudioPlayer.setVolume(0.03);
+        elanDeathAudioPlayer.setVolume(0.07);
         addAlliedSoliderAudioPlayer.setVolume(0.03);
-
-        backgroundMusicPlayer.play();
-        backgroundMusicPlayer.setCycleCount(100);
 
     }
 
@@ -529,6 +589,8 @@ public class LoopManiaWorldController {
                 anchorPaneRoot.requestFocus();
             }
         });
+
+        backgroundMusicPlayer.setCycleCount(100);
     }
 
     /**
@@ -538,9 +600,11 @@ public class LoopManiaWorldController {
         System.out.println("starting timer");
         isPaused = false;
         // trigger adding code to process main game logic to queue. JavaFX will target framerate of 0.3 seconds
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.3), event -> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), event -> {
 
             isTimelineRunning = true;
+            mainMenuMusicPlayer.pause();
+            backgroundMusicPlayer.play();
 
             /**
              * Progress: 1. Move character and enemies
@@ -580,10 +644,13 @@ public class LoopManiaWorldController {
             world.applyStaticBuildingBuffsToCharacter();
 
             if(world.characterIsOnHeroCastle()){
+                world.nextCycle();
                 if(!world.hasHumanPlayerWon()) {
-                    world.nextCycle();
-                    world.updateDoggieCoin();
-                    openShop();
+                    if(world.canShopBeOpened()){
+                        world.updateDoggieCoin();
+                        openShop();
+                        nextShopCycle();
+                    }
                     if (world.areSpawnersCursed()) {
                         cursedMediaPlayer.play();
                         cursedMediaPlayer.seek(Duration.ZERO);
@@ -593,6 +660,7 @@ public class LoopManiaWorldController {
                 List<Enemy> defeatedEnemies = world.runBattles();
                 if (world.getCharacterCurrentHp() <= 0) {
                     backgroundMusicPlayer.pause();
+                    finalBossBackgroundMusicPlayer.pause();
                     deathMediaPlayer.play();
                 }
                 for (Enemy e: defeatedEnemies){
@@ -672,6 +740,8 @@ public class LoopManiaWorldController {
 
         switch(enemy.getEnemyType()){
             case SLUG:
+                slugDeathAudioPlayer.play();
+                slugDeathAudioPlayer.seek(Duration.ZERO);
                 break;
             case ZOMBIE:
                 zombieDeathAudioPlayer.play();
@@ -682,12 +752,20 @@ public class LoopManiaWorldController {
                 vampireDeathAudioPlayer.seek(Duration.ZERO);
                 break;
             case DOGGIE:
+                world.bossDefeated();
                 doggieDeathAudioPlayer.play();
                 doggieDeathAudioPlayer.seek(Duration.ZERO);
                 break;
             case ELAN_MUSKE:
+                world.bossDefeated(); 
+                finalBossBackgroundMusicPlayer.pause();
+                finalBossBackgroundMusicPlayer.setMute(true);
                 elanDeathAudioPlayer.play();
                 elanDeathAudioPlayer.seek(Duration.ZERO);
+                if(!world.hasHumanPlayerWon()){
+                    backgroundMusicPlayer.play();
+                    backgroundMusicPlayer.setMute(false);
+                }
                 break;
             default:
                 return;
@@ -769,6 +847,7 @@ public class LoopManiaWorldController {
         ImageView view = null;
         DRAGGABLE_TYPE draggableType = DRAGGABLE_TYPE.ITEMS;
         ItemType subType = item.getItemSubType();
+        GridPane targetGridPane = equippedItems;
         switch(item.getItemType()){
             case SWORD:
                 view = new ImageView(swordImage);
@@ -790,15 +869,15 @@ public class LoopManiaWorldController {
                 break;
             case HEALTH_POTION:
                 view = new ImageView(healthPotionImage);
-                draggableType = null;
+                targetGridPane = null;
                 break;
             case DOGGIECOIN:
                 view = new ImageView(doggieCoinImage);
-                draggableType = null;
+                targetGridPane = null;
                 break;
             case THE_ONE_RING:
                 view = new ImageView(theOneRingImage);
-                if(subType == null) draggableType = null;
+                if(subType == null) targetGridPane = null;
                 break;
             case ANDURIL:
                 view = new ImageView(andurilImage);
@@ -809,9 +888,10 @@ public class LoopManiaWorldController {
             default:
                 return;
         }
-        if(!(draggableType == null)){
-            addDragEventHandlers(view, draggableType, unequippedInventory, equippedItems);
+        if(targetGridPane != null){
+
         }
+        addDragEventHandlers(view, draggableType, unequippedInventory, targetGridPane);
         addEntity(item, view);
         unequippedInventory.add(view, item.getX(), item.getY());
     }
@@ -886,6 +966,8 @@ public class LoopManiaWorldController {
         switch(enemy.getEnemyType()){
             case SLUG:
                 view = new ImageView(slugImage);
+                spawnSlugAudioPlayer.play();
+                spawnSlugAudioPlayer.seek(Duration.ZERO);
                 break;
             case ZOMBIE:
                 view = new ImageView(zombieImage);
@@ -906,6 +988,11 @@ public class LoopManiaWorldController {
                 view = new ImageView(elanMuskeImage);
                 spawnElanMuskAudioPlayer.play();
                 spawnElanMuskAudioPlayer.seek(Duration.ZERO);
+                finalBossBackgroundMusicPlayer.play();
+                finalBossBackgroundMusicPlayer.setMute(false);
+                finalBossBackgroundMusicPlayer.setCycleCount(100);
+                backgroundMusicPlayer.pause();
+                backgroundMusicPlayer.seek(Duration.ZERO);
                 break;
             default:
                 return;
@@ -986,62 +1073,95 @@ public class LoopManiaWorldController {
     private void buildNonEntityDragHandlers(DRAGGABLE_TYPE draggableType, GridPane sourceGridPane, GridPane targetGridPane){
         // for example, in the specification, villages can only be dropped on path, whilst vampire castles cannot go on the path
 
-        gridPaneSetOnDragDropped.put(draggableType, new EventHandler<DragEvent>() {
-            public void handle(DragEvent event) {
-                /*
-                 *you might want to design the application so dropping at an invalid location drops at the most recent valid location hovered over,
-                 * or simply allow the card/item to return to its slot (the latter is easier, as you won't have to store the last valid drop location!)
-                 */
-                if (currentlyDraggedType == draggableType){
-                    // problem = event is drop completed is false when should be true...
-                    // https://bugs.openjdk.java.net/browse/JDK-8117019
-                    // putting drop completed at start not making complete on VLAB...
+        if(targetGridPane != null){
+            gridPaneSetOnDragDropped.put(draggableType, new EventHandler<DragEvent>() {
+                public void handle(DragEvent event) {
+                    /*
+                    *you might want to design the application so dropping at an invalid location drops at the most recent valid location hovered over,
+                    * or simply allow the card/item to return to its slot (the latter is easier, as you won't have to store the last valid drop location!)
+                    */
+                    if (currentlyDraggedType == draggableType){
+                        // problem = event is drop completed is false when should be true...
+                        // https://bugs.openjdk.java.net/browse/JDK-8117019
+                        // putting drop completed at start not making complete on VLAB...
 
-                    //Data dropped
-                    //If there is an image on the dragboard, read it and use it
-                    Dragboard db = event.getDragboard();
-                    Node node = event.getPickResult().getIntersectedNode();
-                    if(node != targetGridPane && db.hasImage()){
-                        if(!isPlacable(currentlyDraggedType, GridPane.getColumnIndex(node), GridPane.getRowIndex(node), sourceGridPane)){
-                            currentlyDraggedImage.setVisible(true);
-                            printThreadingNotes("DRAG DROPPED ON GRIDPANE CANCELLED");
-                        }else{
-                            Integer cIndex = GridPane.getColumnIndex(node);
-                            Integer rIndex = GridPane.getRowIndex(node);
-                            int x = cIndex == null ? 0 : cIndex;
-                            int y = rIndex == null ? 0 : rIndex;
-                            //Places at 0,0 - will need to take coordinates once that is implemented
-                            //ImageView image = new ImageView(db.getImage());
+                        //Data dropped
+                        //If there is an image on the dragboard, read it and use it
+                        Dragboard db = event.getDragboard();
+                        Node node = event.getPickResult().getIntersectedNode();
+                        if(node != targetGridPane && db.hasImage()){
+                            if(!isPlacable(currentlyDraggedType, GridPane.getColumnIndex(node), GridPane.getRowIndex(node), sourceGridPane, targetGridPane)){
+                                currentlyDraggedImage.setVisible(true);
+                                printThreadingNotes("DRAG DROPPED ON GRIDPANE CANCELLED");
+                            }else{
+                                Integer cIndex = GridPane.getColumnIndex(node);
+                                Integer rIndex = GridPane.getRowIndex(node);
+                                int x = cIndex == null ? 0 : cIndex;
+                                int y = rIndex == null ? 0 : rIndex;
+                                //Places at 0,0 - will need to take coordinates once that is implemented
+                                //ImageView image = new ImageView(db.getImage());
 
-                            int nodeX = GridPane.getColumnIndex(currentlyDraggedImage);
-                            int nodeY = GridPane.getRowIndex(currentlyDraggedImage);
+                                int nodeX = GridPane.getColumnIndex(currentlyDraggedImage);
+                                int nodeY = GridPane.getRowIndex(currentlyDraggedImage);
 
-                            /**
-                             * At this point everything dropped is valid and should destroy
-                             * any overlapped entities
-                             * Single Threaded? if no add a pause
-                             */
-                            checkAndDestroyOverlappedEntity(x, y, targetGridPane);
+                                /**
+                                 * At this point everything dropped is valid and should destroy
+                                 * any overlapped entities
+                                 * Single Threaded? if no add a pause
+                                 */
+                                checkAndDestroyOverlappedEntity(x, y, targetGridPane);
 
-                            switch (draggableType){
-                                case CARDS:
-                                    Building newBuilding = convertCardToBuildingByCoordinates(nodeX, nodeY, x, y);
-                                    if(newBuilding.getBuildingType().isSpawnable()){
-                                        ((Spawner)newBuilding).addSpawningTile(getSpawnablePathTiles(x, y));
-                                    }
-                                    onLoad(newBuilding);
-                                    break;
-                                case ITEMS:
-                                    if(sourceGridPane == unequippedInventory){
-                                        onLoadEquippedItem(equip(nodeX, nodeY, x, y));
-                                    }else{
-                                        onLoadUnequippedItem(unequip(nodeX, nodeY, x, y));
-                                    }
-                                    break;
-                                default:
-                                    break;
+                                switch (draggableType){
+                                    case CARDS:
+                                        Building newBuilding = convertCardToBuildingByCoordinates(nodeX, nodeY, x, y);
+                                        if(newBuilding.getBuildingType().isSpawnable()){
+                                            ((Spawner)newBuilding).addSpawningTile(getSpawnablePathTiles(x, y));
+                                        }
+                                        onLoad(newBuilding);
+                                        break;
+                                    case ITEMS:
+                                        if(sourceGridPane == unequippedInventory){
+                                            onLoadEquippedItem(equip(nodeX, nodeY, x, y));
+                                            world.shiftUnequippedInventoryItemsFromXYCoordinate(nodeX, nodeY);
+                                        }else{
+                                            onLoadUnequippedItem(unequip(nodeX, nodeY, x, y));
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                printThreadingNotes("DRAG DROPPED ON GRIDPANE HANDLED");
                             }
-                            printThreadingNotes("DRAG DROPPED ON GRIDPANE HANDLED");
+                            draggedEntity.setVisible(false);
+                            draggedEntity.setMouseTransparent(false);
+                            // remove drag event handlers before setting currently dragged image to null
+                            removeDraggableDragEventHandlers(draggableType, targetGridPane);
+                            currentlyDraggedImage = null;
+                            currentlyDraggedType = null;
+                            currentlyDraggedTargetGridPane = null;
+                            currentlyDraggedSourceGridPane = null;
+                        }
+                    }
+                    event.setDropCompleted(true);
+                    // consuming prevents the propagation of the event to the anchorPaneRoot (as a sub-node of anchorPaneRoot, GridPane is prioritized)
+                    // https://openjfx.io/javadoc/11/javafx.base/javafx/event/Event.html#consume()
+                    // to understand this in full detail, ask your tutor or read https://docs.oracle.com/javase/8/javafx/events-tutorial/processing.htm
+                    event.consume();
+                }
+            });
+        }
+
+        if(draggableType == DRAGGABLE_TYPE.ITEMS){
+            discardItemSlotSetOnDragDropped = new EventHandler<DragEvent>() {
+                public void handle(DragEvent event) {
+                    if(currentlyDraggedType == draggableType){    
+                        int nodeX = GridPane.getColumnIndex(currentlyDraggedImage);
+                        int nodeY = GridPane.getRowIndex(currentlyDraggedImage);
+                        if(sourceGridPane == unequippedInventory){
+                            world.removeUnequippedInventoryItemByCoordinates(nodeX, nodeY);
+                            world.shiftUnequippedInventoryItemsFromXYCoordinate(nodeX, nodeY);
+                        }else{
+                            world.removeEquippedItemByCoordinates(nodeX, nodeY);
                         }
                         draggedEntity.setVisible(false);
                         draggedEntity.setMouseTransparent(false);
@@ -1049,16 +1169,16 @@ public class LoopManiaWorldController {
                         removeDraggableDragEventHandlers(draggableType, targetGridPane);
                         currentlyDraggedImage = null;
                         currentlyDraggedType = null;
-                        currentlyDraggedTargetGridPane = null;
+                        currentlyDraggedTargetGridPane = null; 
+                        currentlyDraggedSourceGridPane = null;
+                        discardSoundPlayer.play();
+                        discardSoundPlayer.seek(Duration.ZERO);       
                     }
+                    event.setDropCompleted(true);
+                    event.consume();
                 }
-                event.setDropCompleted(true);
-                // consuming prevents the propagation of the event to the anchorPaneRoot (as a sub-node of anchorPaneRoot, GridPane is prioritized)
-                // https://openjfx.io/javadoc/11/javafx.base/javafx/event/Event.html#consume()
-                // to understand this in full detail, ask your tutor or read https://docs.oracle.com/javase/8/javafx/events-tutorial/processing.htm
-                event.consume();
-            }
-        });
+            };
+        }
 
         // this doesn't fire when we drag over GridPane because in the event handler for dragging over GridPanes, we consume the event
         anchorPaneRootSetOnDragOver.put(draggableType, new EventHandler<DragEvent>(){
@@ -1096,6 +1216,7 @@ public class LoopManiaWorldController {
                         currentlyDraggedImage = null;
                         currentlyDraggedType = null;
                         currentlyDraggedTargetGridPane = null;
+                        currentlyDraggedSourceGridPane = null;
                     }
                 }
                 //let the source know whether the image was successfully transferred and used
@@ -1163,6 +1284,7 @@ public class LoopManiaWorldController {
                 currentlyDraggedImage = view; // set image currently being dragged, so squares setOnDragEntered can detect it...
                 currentlyDraggedType = draggableType;
                 currentlyDraggedTargetGridPane = targetGridPane;
+                currentlyDraggedSourceGridPane = sourceGridPane;
                 anchorPaneRoot.requestFocus();
                 //Drag was detected, start drap-and-drop gesture
                 //Allow any transfer node
@@ -1185,43 +1307,77 @@ public class LoopManiaWorldController {
                 // IMPORTANT!!!
                 // to be able to remove event handlers, need to use addEventHandler
                 // https://stackoverflow.com/a/67283792
-                targetGridPane.addEventHandler(DragEvent.DRAG_DROPPED, gridPaneSetOnDragDropped.get(draggableType));
+                if(targetGridPane != null){
+                    targetGridPane.addEventHandler(DragEvent.DRAG_DROPPED, gridPaneSetOnDragDropped.get(draggableType));
+                }
+                if(draggableType == DRAGGABLE_TYPE.ITEMS){
+                    discardItemSlot.addEventHandler(DragEvent.DRAG_DROPPED, discardItemSlotSetOnDragDropped);
+                }
                 anchorPaneRoot.addEventHandler(DragEvent.DRAG_OVER, anchorPaneRootSetOnDragOver.get(draggableType));
                 anchorPaneRoot.addEventHandler(DragEvent.DRAG_DROPPED, anchorPaneRootSetOnDragDropped.get(draggableType));
+                if(targetGridPane != null){
+                    for (Node n: targetGridPane.getChildren()){
+                        // events for entering and exiting are attached to squares children because that impacts opacity change
+                        // these do not affect visibility of original image...
+                        // https://stackoverflow.com/questions/41088095/javafx-drag-and-drop-to-gridpane
+                        gridPaneNodeSetOnDragEntered.put(draggableType, new EventHandler<DragEvent>() {
+                            public void handle(DragEvent event) {
+                                if (currentlyDraggedType == draggableType){
+                                //The drag-and-drop gesture entered the target
+                                //show the user that it is an actual gesture target
+                                    if(event.getGestureSource() != n && event.getDragboard().hasImage()
+                                        && isPlacable(currentlyDraggedType, GridPane.getColumnIndex(n), GridPane.getRowIndex(n), sourceGridPane, targetGridPane)){
+                                        n.setOpacity(0.7);
+                                        currentlyHighlightedImage = n;
+                                    }
+                                }
+                                event.consume();
+                            }
+                        });
+                        gridPaneNodeSetOnDragExited.put(draggableType, new EventHandler<DragEvent>() {
+                            public void handle(DragEvent event) {
+                                if (currentlyDraggedType == draggableType){
+                                    n.setOpacity(1);
+                                    currentlyHighlightedImage = null;
+                                }
 
-                for (Node n: targetGridPane.getChildren()){
-                    // events for entering and exiting are attached to squares children because that impacts opacity change
-                    // these do not affect visibility of original image...
-                    // https://stackoverflow.com/questions/41088095/javafx-drag-and-drop-to-gridpane
-                    gridPaneNodeSetOnDragEntered.put(draggableType, new EventHandler<DragEvent>() {
+                                event.consume();
+                            }
+                        });
+                        n.addEventHandler(DragEvent.DRAG_ENTERED, gridPaneNodeSetOnDragEntered.get(draggableType));
+                        n.addEventHandler(DragEvent.DRAG_EXITED, gridPaneNodeSetOnDragExited.get(draggableType));
+                    }
+                }
+
+                if(draggableType == DRAGGABLE_TYPE.ITEMS){
+
+                    Node n = discardItemSlot;
+
+                    discardItemSlotSetOnDragEntered = new EventHandler<DragEvent>() {
                         public void handle(DragEvent event) {
                             if (currentlyDraggedType == draggableType){
-                            //The drag-and-drop gesture entered the target
-                            //show the user that it is an actual gesture target
-                                if(event.getGestureSource() != n && event.getDragboard().hasImage()
-                                    && isPlacable(currentlyDraggedType, GridPane.getColumnIndex(n), GridPane.getRowIndex(n), sourceGridPane)){
+                                if(event.getDragboard().hasImage()){
                                     n.setOpacity(0.7);
                                     currentlyHighlightedImage = n;
                                 }
                             }
                             event.consume();
                         }
-                    });
-                    gridPaneNodeSetOnDragExited.put(draggableType, new EventHandler<DragEvent>() {
+                    };
+
+                    discardItemSlotSetOnDragExited = new EventHandler<DragEvent>() {
                         public void handle(DragEvent event) {
                             if (currentlyDraggedType == draggableType){
                                 n.setOpacity(1);
                                 currentlyHighlightedImage = null;
                             }
-
                             event.consume();
                         }
-                    });
-                    n.addEventHandler(DragEvent.DRAG_ENTERED, gridPaneNodeSetOnDragEntered.get(draggableType));
-                    n.addEventHandler(DragEvent.DRAG_EXITED, gridPaneNodeSetOnDragExited.get(draggableType));
-
-
+                    };
+                    n.addEventHandler(DragEvent.DRAG_ENTERED, discardItemSlotSetOnDragEntered);
+                    n.addEventHandler(DragEvent.DRAG_EXITED, discardItemSlotSetOnDragExited);
                 }
+
                 event.consume();
             }
 
@@ -1252,20 +1408,35 @@ public class LoopManiaWorldController {
      */
     private void removeDraggableDragEventHandlers(DRAGGABLE_TYPE draggableType, GridPane targetGridPane){
         // remove event handlers from nodes in children squares, from anchorPaneRoot, and squares
-        targetGridPane.removeEventHandler(DragEvent.DRAG_DROPPED, gridPaneSetOnDragDropped.get(draggableType));
-
+        if(discardItemSlotSetOnDragDropped != null){
+            discardItemSlot.removeEventHandler(DragEvent.DRAG_DROPPED, discardItemSlotSetOnDragDropped);
+        }
+        if(discardItemSlotSetOnDragEntered != null){
+            discardItemSlot.removeEventHandler(DragEvent.DRAG_ENTERED, discardItemSlotSetOnDragEntered);
+        }
+        if(discardItemSlotSetOnDragExited != null){
+            discardItemSlot.removeEventHandler(DragEvent.DRAG_EXITED, discardItemSlotSetOnDragExited);
+        }
+        if(currentlyHighlightedImage != null){
+            currentlyHighlightedImage.setOpacity(1);
+            currentlyHighlightedImage = null;
+        }
         anchorPaneRoot.removeEventHandler(DragEvent.DRAG_OVER, anchorPaneRootSetOnDragOver.get(draggableType));
         anchorPaneRoot.removeEventHandler(DragEvent.DRAG_DROPPED, anchorPaneRootSetOnDragDropped.get(draggableType));
 
-        for (Node n: targetGridPane.getChildren()){
-            if(n == currentlyHighlightedImage){
-                n.setOpacity(1);
-                currentlyHighlightedImage = null;
+        if(targetGridPane != null){
+            targetGridPane.removeEventHandler(DragEvent.DRAG_DROPPED, gridPaneSetOnDragDropped.get(draggableType));
+            for (Node n: targetGridPane.getChildren()){
+                n.removeEventHandler(DragEvent.DRAG_ENTERED, gridPaneNodeSetOnDragEntered.get(draggableType));
+                n.removeEventHandler(DragEvent.DRAG_EXITED, gridPaneNodeSetOnDragExited.get(draggableType));
             }
-            n.removeEventHandler(DragEvent.DRAG_ENTERED, gridPaneNodeSetOnDragEntered.get(draggableType));
-            n.removeEventHandler(DragEvent.DRAG_EXITED, gridPaneNodeSetOnDragExited.get(draggableType));
         }
+        
+
         gridPaneSetOnDragDropped.clear();
+        discardItemSlotSetOnDragDropped = null;
+        discardItemSlotSetOnDragEntered = null;
+        discardItemSlotSetOnDragExited = null;
         anchorPaneRootSetOnDragOver.clear();
         anchorPaneRootSetOnDragDropped.clear();
         gridPaneNodeSetOnDragEntered.clear();
@@ -1282,11 +1453,9 @@ public class LoopManiaWorldController {
         switch (event.getCode()) {
         case SPACE:
             if (isPaused){
-                backgroundMusicPlayer.play();
                 startTimer();
             }
             else{
-                backgroundMusicPlayer.pause();
                 pause();
             }
             break;
@@ -1301,7 +1470,15 @@ public class LoopManiaWorldController {
             }
             world.useHealthPotion();
             break;
-
+        case M:
+            if(backgroundMusicPlayer.isMute()){
+                backgroundMusicPlayer.setMute(false);
+                finalBossBackgroundMusicPlayer.setMute(false);
+            }else{
+                backgroundMusicPlayer.setMute(true);
+                finalBossBackgroundMusicPlayer.setMute(true);
+            }
+            break;
         default:
             break;
         }
@@ -1318,6 +1495,9 @@ public class LoopManiaWorldController {
     @FXML
     private void switchToMainMenu() throws IOException {
         pause();
+        backgroundMusicPlayer.pause();
+        finalBossBackgroundMusicPlayer.pause();
+        mainMenuMusicPlayer.play();
         mainMenuSwitcher.switchMenu();
     }
 
@@ -1484,7 +1664,8 @@ public class LoopManiaWorldController {
      * @param row row of the node
      * @return
      */
-    private boolean isPlacable(DRAGGABLE_TYPE draggableType, int column, int row, GridPane sourceGridPane){
+    private boolean isPlacable(DRAGGABLE_TYPE draggableType, int column, int row, GridPane sourceGridPane, GridPane targetGridPane){
+        if(sourceGridPane != currentlyDraggedSourceGridPane || targetGridPane != currentlyDraggedTargetGridPane) return false;
         switch(draggableType){
             case CARDS:
                 CardType cardType = world.getCardTypeByCoordinates(GridPane.getColumnIndex(currentlyDraggedImage), GridPane.getRowIndex(currentlyDraggedImage));
@@ -1750,7 +1931,7 @@ public class LoopManiaWorldController {
             healthBar.setStyle("-fx-accent: green;");
         }
         healthBar.setProgress(currentHealth/maxHealth);
-        if(healthBar.getProgress() == 0 && currentHealth != 0){
+        if(healthBar.getProgress() <= 0.1 && currentHealth != 0){
             healthBar.setProgress(0.1);
         }
         primaryStage.sizeToScene();
@@ -1842,6 +2023,9 @@ public class LoopManiaWorldController {
     public void displayVictoryMessage(){
         if(world.hasHumanPlayerLost()) return;
         if(!isPaused) pause();
+        backgroundMusicPlayer.pause();
+        finalBossBackgroundMusicPlayer.pause();
+        victorySoundMediaPlayer.play();
         PopUpMessageController popUpMessageController = openPopUpMessageWindow(primaryStage, "You Won!", Color.GREEN, "Quit Game");
         popUpMessageController.setQuitSwitcher(() ->{
             popUpMessageController.getStage().close();
@@ -1872,6 +2056,7 @@ public class LoopManiaWorldController {
             currentlyDraggedImage = null;
             currentlyDraggedType = null;
             currentlyDraggedTargetGridPane = null;
+            currentlyDraggedSourceGridPane = null;
         }
     }
 
@@ -1995,6 +2180,27 @@ public class LoopManiaWorldController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Play a sound when passing through village
+     */
+    public void passThroughVillage(){
+        passThroughVillageAudioPlayer.play();
+        passThroughVillageAudioPlayer.seek(Duration.ZERO);
+    }
+
+    /**
+     * Update the next shop cycle
+     */
+    private void nextShopCycle(){
+        int sum = 0;
+        for (int n = 1; sum <= world.getCycle(); n++)
+        {
+            sum = sum + n;
+        }
+        shopCycleValue.setText(Integer.toString(sum));
+        primaryStage.sizeToScene();
     }
 
 }
