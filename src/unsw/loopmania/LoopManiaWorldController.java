@@ -301,6 +301,10 @@ public class LoopManiaWorldController {
     private MediaPlayer loadVampireSAudioPlayer;
     private MediaPlayer loadZombieSAudioPlayer;
     private MediaPlayer loadViliageAudioPlayer;
+    private MediaPlayer loadBarracksAudioPlayer;
+    private MediaPlayer loadTowerAudioPlayer;
+    private MediaPlayer loadCampfireAudioPlayer;
+
 
 
     /**
@@ -381,7 +385,10 @@ public class LoopManiaWorldController {
         String loadTrapAudio = new File("src/Music/ArmingTrap.mp3").toURI().toString();
         String loadVampireS = new File("src/Music/place_vampS.mp3").toURI().toString();
         String loadZombieS = new File("src/Music/place_zombieS.mp3").toURI().toString();
-        String loadVilliageAudio = new File("src/Music/place_zombieS.mp3").toURI().toString();
+        String loadVilliageAudio = new File("src/Music/load_villiage.mp3").toURI().toString();
+        String loadBarracksAudio = new File("src/Music/barracks.mp3").toURI().toString();
+        String loadCampfireAudio = new File("src/Music/campfire.mp3").toURI().toString();
+        String loadTowerAudio = new File("src/Music/tower.mp3").toURI().toString();
 
 
         shopAudioPlayer = new MediaPlayer(new Media(shopAudio));
@@ -397,6 +404,9 @@ public class LoopManiaWorldController {
         loadVampireSAudioPlayer =  new MediaPlayer(new Media(loadVampireS));
         loadZombieSAudioPlayer =  new MediaPlayer(new Media(loadZombieS));
         loadViliageAudioPlayer =  new MediaPlayer(new Media(loadVilliageAudio));
+        loadBarracksAudioPlayer = new MediaPlayer(new Media(loadBarracksAudio));
+        loadTowerAudioPlayer = new MediaPlayer(new Media(loadTowerAudio));
+        loadCampfireAudioPlayer = new MediaPlayer(new Media(loadCampfireAudio));
 
         deathMediaPlayer.setVolume(0.03);
         backgroundMusicPlayer.setVolume(0.03);
@@ -410,7 +420,11 @@ public class LoopManiaWorldController {
         loadTrapAudioPlayer.setVolume(0.03);
         loadVampireSAudioPlayer.setVolume(0.06);
         loadZombieSAudioPlayer.setVolume(0.03);
-        loadViliageAudioPlayer.setVolume(0.03);
+        loadViliageAudioPlayer.setVolume(0.06);
+        loadBarracksAudioPlayer.setVolume(0.06);
+        loadTowerAudioPlayer.setVolume(0.06);
+        loadCampfireAudioPlayer.setVolume(0.06);
+
 
         backgroundMusicPlayer.play();
         backgroundMusicPlayer.setCycleCount(100);
@@ -837,6 +851,8 @@ public class LoopManiaWorldController {
                 view = new ImageView(zombiePitBuildingImage);
                 break;
             case TOWER_BUILDING:
+                loadTowerAudioPlayer.play();
+                loadTowerAudioPlayer.seek(Duration.ZERO);
                 view = new ImageView(towerBuildingImage);
                 break;
             case VILLAGE_BUILDING:
@@ -845,6 +861,8 @@ public class LoopManiaWorldController {
                 view = new ImageView(villageBuildingImage);
                 break;
             case BARRACKS_BUILDING:
+                loadBarracksAudioPlayer.play();
+                loadBarracksAudioPlayer.seek(Duration.ZERO);
                 view = new ImageView(barracksBuildingImage);
                 break;
             case TRAP_BUILDING:
@@ -853,6 +871,8 @@ public class LoopManiaWorldController {
                 view = new ImageView(trapBuildingImage);
                 break;
             case CAMPFIRE_BUILDING:
+                loadCampfireAudioPlayer.play();
+                loadCampfireAudioPlayer.seek(Duration.ZERO);
                 view = new ImageView(campfireBuildingImage);
                 break;
             default:
