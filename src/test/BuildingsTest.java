@@ -246,8 +246,7 @@ public class BuildingsTest{
         d.spawnBuilding(CardType.TRAP_CARD,1,4);
         d.spawnBuilding(CardType.TRAP_CARD,1,5);
 
-
-
+        
         d.runTickMoves();
         d.nextCycle();
         d.nextCycle();
@@ -255,9 +254,10 @@ public class BuildingsTest{
         d.nextCycle();
         d.nextCycle();
         d.possiblySpawnEnemies();
+        double health = d.getFirstEnemy().getCurrentHealth();
         d.runTickMoves();
         d.applyTrapsToEnemies();
-        assertTrue(d.getFirstEnemy().getCurrentHealth()== 10);
+        assertTrue(health > d.getFirstEnemy().getCurrentHealth());
     }
 
     // Tests the return of getBuildingType for ZombiePitBuilding is of correct type

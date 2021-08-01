@@ -17,6 +17,9 @@ import unsw.loopmania.HerosCastle;
 import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Enemies.CritStrategy;
+import unsw.loopmania.Enemies.Doggie;
+import unsw.loopmania.Enemies.ElanMuske;
+import unsw.loopmania.Enemies.ElanMuskeCritStrategy;
 import unsw.loopmania.Enemies.Slug;
 import unsw.loopmania.Enemies.SlugCritStrategy;
 import unsw.loopmania.Enemies.Vampire;
@@ -197,6 +200,7 @@ public class EnemyTest {
         assertFalse(character.getAlliedSoldiers().size() == 0);
     } */
 
+    // Tests if vampire strategy has correct behaviour
     @Test
     public void TestVampireStrategy() {
         Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
@@ -209,7 +213,53 @@ public class EnemyTest {
         Vampire vampire = new Vampire(new PathPosition(0, orderedPath));
 
         CritStrategy crit = new VampireCritStrategy();
+        crit.isNextAttackCritical();
         character.takeDamage(crit.applyCritDamage(10), vampire);
+        vampire.dealDamage(character);
+
+        assertTrue(health > character.getCurrentHealth());
+    }
+
+    // Tests if elan muske strategy has correct behaviour
+    @Test
+    public void TestElanMuskeCritStrategy() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        double health = character.getCurrentHealth();
+
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1), new SimpleIntegerProperty(1));
+
+        ElanMuske elanMuske = new ElanMuske(new PathPosition(0, orderedPath));
+
+        CritStrategy crit = new ElanMuskeCritStrategy();
+        crit.isNextAttackCritical();
+        character.takeDamage(crit.applyCritDamage(10), elanMuske);
+        elanMuske.dealDamage(character);
+
+        assertTrue(health > character.getCurrentHealth());
+    }
+
+    // Tests if doggie strategy has correct behaviour
+    @Test
+    public void TestDoggieCritStrategy() {
+        Pair<Integer, Integer> pair1 = new Pair<Integer, Integer>(1,1);
+        List<Pair<Integer, Integer>> orderedPath = new  ArrayList<Pair<Integer, Integer>>();
+        orderedPath.add(pair1);
+
+        Character character = new Character(new PathPosition(0, orderedPath));
+        double health = character.getCurrentHealth();
+
+        LoopManiaWorld.herosCastle = new HerosCastle(new SimpleIntegerProperty(1), new SimpleIntegerProperty(1));
+
+        Doggie elanMuske = new Doggie(new PathPosition(0, orderedPath));
+
+        CritStrategy crit = new ElanMuskeCritStrategy();
+        crit.isNextAttackCritical();
+        character.takeDamage(crit.applyCritDamage(10), elanMuske);
+        elanMuske.dealDamage(character);
 
         assertTrue(health > character.getCurrentHealth());
     }
