@@ -43,7 +43,6 @@ import unsw.loopmania.Items.Item;
 import unsw.loopmania.Types.OverlappableEntityType;
 import unsw.loopmania.Types.CardType;
 import unsw.loopmania.Types.DifficultyType;
-import unsw.loopmania.Types.EnemyType;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Buildings.*;
 import java.io.File;
@@ -53,7 +52,6 @@ import javafx.scene.media.MediaPlayer;
 
 import java.util.EnumMap;
 
-import java.io.File;
 import java.io.IOException;
 
 
@@ -250,8 +248,6 @@ public class LoopManiaWorldController {
      */
     private GridPane currentlyDraggedTargetGridPane;
 
-    private GridPane currentlyDraggedSourceGridPane;
-
     /**
      * null if nothing being dragged, or the type of item being dragged
      */
@@ -379,7 +375,6 @@ public class LoopManiaWorldController {
         currentlyHighlightedImage = null;
         currentlyDraggedType = null;
         currentlyDraggedTargetGridPane = null;
-        currentlyDraggedSourceGridPane = null;
 
         // initialize them all...
         gridPaneSetOnDragDropped = new EnumMap<DRAGGABLE_TYPE, EventHandler<DragEvent>>(DRAGGABLE_TYPE.class);
@@ -446,23 +441,23 @@ public class LoopManiaWorldController {
         elanDeathAudioPlayer = new MediaPlayer(new Media(elanMuskDeathAudio));
         addAlliedSoliderAudioPlayer = new MediaPlayer(new Media(addAlliedSoldierAudio));
 
-        cursedMediaPlayer.setVolume(0.03);
-        restoreHealthAudioPlayer.setVolume(0.03);
-        moneyPickupAudioPlayer.setVolume(0.03);
-        activateTrapAudioPlayer.setVolume(0.03);
+        cursedMediaPlayer.setVolume(0.05);
+        restoreHealthAudioPlayer.setVolume(0.05);
+        moneyPickupAudioPlayer.setVolume(0.05);
+        activateTrapAudioPlayer.setVolume(0.05);
 
-        deathMediaPlayer.setVolume(0.03);
+        deathMediaPlayer.setVolume(0.05);
         backgroundMusicPlayer.setVolume(0.03);
-        shopAudioPlayer.setVolume(0.03);
-        equippingSwordAudioPlayer.setVolume(0.03);
-        equippingArmourAudioPlayer.setVolume(0.2);
-        equippingShieldAudioPlayer.setVolume(0.03);
-        spawnZombieAudioPlayer.setVolume(0.03);
-        zombieDeathAudioPlayer.setVolume(0.03);
-        loadTrapAudioPlayer.setVolume(0.03);
-        loadVampireSAudioPlayer.setVolume(0.06);
-        loadZombieSAudioPlayer.setVolume(0.03);
-        loadViliageAudioPlayer.setVolume(0.2);
+        shopAudioPlayer.setVolume(0.05);
+        equippingSwordAudioPlayer.setVolume(0.05);
+        equippingArmourAudioPlayer.setVolume(0.4);
+        equippingShieldAudioPlayer.setVolume(0.05);
+        spawnZombieAudioPlayer.setVolume(0.05);
+        zombieDeathAudioPlayer.setVolume(0.05);
+        loadTrapAudioPlayer.setVolume(0.05);
+        loadVampireSAudioPlayer.setVolume(0.08);
+        loadZombieSAudioPlayer.setVolume(0.05);
+        loadViliageAudioPlayer.setVolume(0.3);
         loadBarracksAudioPlayer.setVolume(0.06);
         loadTowerAudioPlayer.setVolume(0.12);
         loadCampfireAudioPlayer.setVolume(0.2);
@@ -481,7 +476,6 @@ public class LoopManiaWorldController {
 
     @FXML
     public void initialize() {
-        // TODO = load more images/entities during initialization
 
         Image pathTilesImage = new Image((new File("src/images/32x32GrassAndDirtPath.png")).toURI().toString());
         Image inventorySlotImage = new Image((new File("src/images/empty_slot.png")).toURI().toString());
@@ -541,7 +535,6 @@ public class LoopManiaWorldController {
      * create and run the timer
      */
     public void startTimer(){
-        // TODO = handle more aspects of the behaviour required by the specification
         System.out.println("starting timer");
         isPaused = false;
         // trigger adding code to process main game logic to queue. JavaFX will target framerate of 0.3 seconds
@@ -563,7 +556,14 @@ public class LoopManiaWorldController {
             world.runTickMoves();
 
             Item newItem = world.checkAndAddSpawnedItem();
-            if(newItem != null) onLoadUnequippedItem(newItem);
+            if(newItem != null){
+                if(newItem.getItemType() == ItemType.GOLD){
+                    moneyPickupAudioPlayer.play();
+                    moneyPickupAudioPlayer.seek(Duration.ZERO);
+                }else{
+                    onLoadUnequippedItem(newItem);
+                }
+            };
             
 
             List<Item> newSpawnedItems = world.possiblySpawnItems();
@@ -576,11 +576,6 @@ public class LoopManiaWorldController {
                 onLoad(newEnemy);
             }
 
-            if (world.areSpawnersCursed()) {
-                cursedMediaPlayer.play();
-                cursedMediaPlayer.seek(Duration.ZERO);
-            } 
-
             world.applyTrapsToEnemies();
             world.applyStaticBuildingBuffsToCharacter();
 
@@ -589,6 +584,10 @@ public class LoopManiaWorldController {
                     world.nextCycle();
                     world.updateDoggieCoin();
                     openShop();
+                    if (world.areSpawnersCursed()) {
+                        cursedMediaPlayer.play();
+                        cursedMediaPlayer.seek(Duration.ZERO);
+                    }
                 }
             }else{
                 List<Enemy> defeatedEnemies = world.runBattles();
@@ -653,10 +652,6 @@ public class LoopManiaWorldController {
     public void loadRandomItem(){
         // start by getting first available coordinates
         Item item = world.loadRandomUnenquippedInventoryItem();
-        if (item.getItemType() == ItemType.GOLD) {
-            moneyPickupAudioPlayer.play();
-            moneyPickupAudioPlayer.seek(Duration.ZERO);
-        }
         if(item != null) onLoadUnequippedItem(item);
     }
 
@@ -674,7 +669,6 @@ public class LoopManiaWorldController {
     private void reactToEnemyDefeat(Enemy enemy){
         // react to character defeating an enemy
         // in starter code, spawning extra card/weapon...
-        // TODO = provide different benefits to defeating the enemy based on the type of enemy
 
         switch(enemy.getEnemyType()){
             case SLUG:
@@ -994,7 +988,6 @@ public class LoopManiaWorldController {
 
         gridPaneSetOnDragDropped.put(draggableType, new EventHandler<DragEvent>() {
             public void handle(DragEvent event) {
-                // TODO = for being more selective about where something can be dropped, consider applying additional if-statement logic
                 /*
                  *you might want to design the application so dropping at an invalid location drops at the most recent valid location hovered over,
                  * or simply allow the card/item to return to its slot (the latter is easier, as you won't have to store the last valid drop location!)
@@ -1057,7 +1050,6 @@ public class LoopManiaWorldController {
                         currentlyDraggedImage = null;
                         currentlyDraggedType = null;
                         currentlyDraggedTargetGridPane = null;
-                        currentlyDraggedSourceGridPane = null;
                     }
                 }
                 event.setDropCompleted(true);
@@ -1104,7 +1096,6 @@ public class LoopManiaWorldController {
                         currentlyDraggedImage = null;
                         currentlyDraggedType = null;
                         currentlyDraggedTargetGridPane = null;
-                        currentlyDraggedSourceGridPane = null;
                     }
                 }
                 //let the source know whether the image was successfully transferred and used
@@ -1203,7 +1194,6 @@ public class LoopManiaWorldController {
                     // these do not affect visibility of original image...
                     // https://stackoverflow.com/questions/41088095/javafx-drag-and-drop-to-gridpane
                     gridPaneNodeSetOnDragEntered.put(draggableType, new EventHandler<DragEvent>() {
-                        // TODO = be more selective about whether highlighting changes - if it cannot be dropped in the location, the location shouldn't be highlighted!
                         public void handle(DragEvent event) {
                             if (currentlyDraggedType == draggableType){
                             //The drag-and-drop gesture entered the target
@@ -1289,7 +1279,6 @@ public class LoopManiaWorldController {
      */
     @FXML
     public void handleKeyPress(KeyEvent event) {
-        // TODO = handle additional key presses, e.g. for consuming a health potion
         switch (event.getCode()) {
         case SPACE:
             if (isPaused){
@@ -1883,7 +1872,6 @@ public class LoopManiaWorldController {
             currentlyDraggedImage = null;
             currentlyDraggedType = null;
             currentlyDraggedTargetGridPane = null;
-            currentlyDraggedSourceGridPane = null;
         }
     }
 

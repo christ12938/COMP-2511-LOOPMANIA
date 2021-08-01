@@ -8,12 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.javatuples.Pair;
-import org.json.JSONObject;
 import org.junit.Test;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.Character;
-import unsw.loopmania.HumanPlayer;
 import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Enemies.Doggie;
@@ -22,10 +20,8 @@ import unsw.loopmania.Enemies.Slug;
 import unsw.loopmania.Enemies.Vampire;
 import unsw.loopmania.Items.Armour;
 import unsw.loopmania.Items.Shield;
-import unsw.loopmania.Items.TheOneRing;
 import unsw.loopmania.Items.TreeStump;
 import unsw.loopmania.Types.EnemyType;
-import unsw.loopmania.Types.ItemType;
 
 public class CharacterTest {
     // Tests taking damage from vampire with shield

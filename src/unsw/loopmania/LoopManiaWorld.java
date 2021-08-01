@@ -1,6 +1,5 @@
 package unsw.loopmania;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -8,9 +7,6 @@ import java.util.Random;
 import org.javatuples.Pair;
 
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
 import unsw.loopmania.Buildings.Building;
 import unsw.loopmania.Buildings.Spawner;
 import unsw.loopmania.Buildings.TowerBuilding;
@@ -1080,6 +1076,7 @@ public class LoopManiaWorld {
      * @param x
      * @param y
      */
+    /*
     private void shiftUnequippedInventoryItemsFromXYCoordinate(int x, int y){
         boolean flag = false;
         for(Item i : unequippedInventoryItems){
@@ -1092,7 +1089,7 @@ public class LoopManiaWorld {
             i.x().set(newX);
             i.y().set(newY);
         }
-    }
+    }*/
 
     /**
      * move all enemies
@@ -1229,12 +1226,16 @@ public class LoopManiaWorld {
         for(Building b : buildingEntities){
             if(cycle != 0 && b.getBuildingType() == type
                 && !((Spawner)b).getHasSpawned() && cycle%((Spawner)b).getSpawningCycle() == 0){
-                List<Pair<Integer, Integer>> spawningTiles = ((Spawner)b).getSpawningTiles();
+                List<Pair<Integer, Integer>> spawningTiles = new ArrayList<>(((Spawner)b).getSpawningTiles());
+                Pair<Integer, Integer> spawningTileToBeRemoved = null;
                 for(Pair<Integer, Integer> i : spawningTiles){
                     if(i.getValue0() == character.getX() && i.getValue1() == character.getY()){
-                        spawningTiles.remove(i);
+                        spawningTileToBeRemoved = i;
+                        break;
                     }
                 }
+                if(spawningTileToBeRemoved != null) spawningTiles.remove(spawningTileToBeRemoved);
+                
                 int repeat = 1;
                 if(((Spawner)b).getIsCursed().get()) repeat = 2;
                 for(int i = 0; i < repeat; i++){
@@ -1443,7 +1444,6 @@ public class LoopManiaWorld {
                     newItem = ItemLoader.loadSpawnableItems(item.getItemType(), unequippedInventoryItems.get(0).getX(), unequippedInventoryItems.get(0).getY());
                     if(item.getItemType() == ItemType.GOLD){
                         character.addGold(5);
-                        newItem = null;
                         break;
                     }
                     removeItemByPositionInUnequippedInventoryItems(0);
@@ -1454,7 +1454,6 @@ public class LoopManiaWorld {
                     newItem = ItemLoader.loadSpawnableItems(item.getItemType(), firstAvailableSlot.getValue0(), firstAvailableSlot.getValue1());
                     if(item.getItemType() == ItemType.GOLD){
                         character.addGold(5);
-                        newItem = null;
                         break;
                     }
                     addUnequippedItem(newItem);
