@@ -294,11 +294,17 @@ public class LoopManiaWorldController {
     private MediaPlayer equippingSwordAudioPlayer;
     private MediaPlayer equippingArmourAudioPlayer;
     private MediaPlayer equippingShieldAudioPlayer;
-    private MediaPlayer restoreHealthAudioPlayer;
     private MediaPlayer spawnZombieAudioPlayer;
     private MediaPlayer zombieDeathAudioPlayer;
     private MediaPlayer loadTrapAudioPlayer;
-    
+    private MediaPlayer spawnVampireAudioPlayer;
+    private MediaPlayer vampireDeathAudioPlayer;
+    private MediaPlayer spawnDoggieAudioPlayer;
+    private MediaPlayer doggieDeathAudioPlayer;
+    private MediaPlayer spawnElanMuskAudioPlayer;
+    private MediaPlayer elanDeathAudioPlayer;
+    private MediaPlayer addAlliedSoliderAudioPlayer;
+
 
     /**
      * @param world world object loaded from file
@@ -372,11 +378,16 @@ public class LoopManiaWorldController {
         String equippingSwordAudio = new File("src/Music/EquippingSword.mp3").toURI().toString();
         String equippingArmourAudio = new File("src/Music/EquippingArmour.mp3").toURI().toString();
         String equippingShieldAudio = new File("src/Music/EquippingShield.mp3").toURI().toString();
-        String restoringHpAudio = new File("src/Music/RestoreHp.mp3").toURI().toString();
         String spawningZombieAudio = new File("src/Music/ZombieSpawn.mp3").toURI().toString();
         String zombieDeathAudio = new File("src/Music/ZombieDeath.mp3").toURI().toString();
         String loadTrapAudio = new File("src/Music/ArmingTrap.mp3").toURI().toString();
-
+        String spawnVampireAudio = new File("src/Music/VampireSpawn.mp3").toURI().toString();
+        String vampireDeathAudio = new File("src/Music/VampireDeath.mp3").toURI().toString();
+        String doggieDeathAudio = new File("src/Music/DoggieDeath.mp3").toURI().toString();
+        String spawnDoggieAudio = new File("src/Music/DoggieSpawn.mp3").toURI().toString();
+        String spawnElanMuskAudio = new File("src/Music/MuskSpawn.mp3").toURI().toString();
+        String elanMuskDeathAudio = new File("src/Music/MuskDeath.mp3").toURI().toString();
+        String addAlliedSoldierAudio = new File("src/Music/AlliedSoldier.mp3").toURI().toString();
 
         shopAudioPlayer = new MediaPlayer(new Media(shopAudio));
         deathMediaPlayer = new MediaPlayer(new Media(deathSound));
@@ -384,10 +395,18 @@ public class LoopManiaWorldController {
         equippingSwordAudioPlayer = new MediaPlayer(new Media(equippingSwordAudio));
         equippingArmourAudioPlayer = new MediaPlayer(new Media(equippingArmourAudio));
         equippingShieldAudioPlayer = new MediaPlayer(new Media(equippingShieldAudio));
-        restoreHealthAudioPlayer = new MediaPlayer(new Media(restoringHpAudio));
         spawnZombieAudioPlayer = new MediaPlayer(new Media(spawningZombieAudio));
         zombieDeathAudioPlayer = new MediaPlayer(new Media(zombieDeathAudio));
         loadTrapAudioPlayer = new MediaPlayer(new Media(loadTrapAudio));
+        spawnVampireAudioPlayer = new MediaPlayer(new Media(spawnVampireAudio));
+        vampireDeathAudioPlayer = new MediaPlayer(new Media(vampireDeathAudio));
+        spawnDoggieAudioPlayer = new MediaPlayer(new Media(spawnDoggieAudio));
+        doggieDeathAudioPlayer = new MediaPlayer(new Media(doggieDeathAudio));
+        spawnElanMuskAudioPlayer = new MediaPlayer(new Media(spawnElanMuskAudio));
+        elanDeathAudioPlayer = new MediaPlayer(new Media(elanMuskDeathAudio));
+        addAlliedSoliderAudioPlayer = new MediaPlayer(new Media(addAlliedSoldierAudio));
+
+
 
         deathMediaPlayer.setVolume(0.03);
         backgroundMusicPlayer.setVolume(0.03);
@@ -395,10 +414,16 @@ public class LoopManiaWorldController {
         equippingSwordAudioPlayer.setVolume(0.03);
         equippingArmourAudioPlayer.setVolume(0.2);
         equippingShieldAudioPlayer.setVolume(0.03);
-        restoreHealthAudioPlayer.setVolume(0.03);
         spawnZombieAudioPlayer.setVolume(0.03);
         zombieDeathAudioPlayer.setVolume(0.03);
         loadTrapAudioPlayer.setVolume(0.03);
+        vampireDeathAudioPlayer.setVolume(0.03);
+        spawnVampireAudioPlayer.setVolume(0.03);
+        spawnDoggieAudioPlayer.setVolume(0.03);
+        doggieDeathAudioPlayer.setVolume(0.03);
+        spawnElanMuskAudioPlayer.setVolume(0.03);
+        elanDeathAudioPlayer.setVolume(0.03);
+        addAlliedSoliderAudioPlayer.setVolume(0.03);
 
         backgroundMusicPlayer.play();
         backgroundMusicPlayer.setCycleCount(100);
@@ -586,9 +611,28 @@ public class LoopManiaWorldController {
         // react to character defeating an enemy
         // in starter code, spawning extra card/weapon...
         // TODO = provide different benefits to defeating the enemy based on the type of enemy
-        if (enemy.getEnemyType() == EnemyType.ZOMBIE) {
-            zombieDeathAudioPlayer.play();
-            zombieDeathAudioPlayer.seek(Duration.ZERO);
+
+        switch(enemy.getEnemyType()){
+            case SLUG:
+                break;
+            case ZOMBIE:
+                zombieDeathAudioPlayer.play();
+                zombieDeathAudioPlayer.seek(Duration.ZERO);
+                break;
+            case VAMPIRE:
+                vampireDeathAudioPlayer.play();
+                vampireDeathAudioPlayer.seek(Duration.ZERO);
+                break;
+            case DOGGIE:
+                doggieDeathAudioPlayer.play();
+                doggieDeathAudioPlayer.seek(Duration.ZERO);
+                break;
+            case ELAN_MUSKE:
+                elanDeathAudioPlayer.play();
+                elanDeathAudioPlayer.seek(Duration.ZERO);
+                break;
+            default:
+                return;
         }
         loadRandomItem();
         loadRandomCard();
@@ -792,12 +836,18 @@ public class LoopManiaWorldController {
                 break;
             case VAMPIRE:
                 view = new ImageView(vampireImage);
+                spawnVampireAudioPlayer.play();
+                spawnVampireAudioPlayer.seek(Duration.ZERO);
                 break;
             case DOGGIE:
                 view = new ImageView(doggieImage);
+                spawnDoggieAudioPlayer.play();
+                spawnDoggieAudioPlayer.seek(Duration.ZERO);
                 break;
             case ELAN_MUSKE:
                 view = new ImageView(elanMuskeImage);
+                spawnElanMuskAudioPlayer.play();
+                spawnElanMuskAudioPlayer.seek(Duration.ZERO);
                 break;
             default:
                 return;
@@ -850,6 +900,8 @@ public class LoopManiaWorldController {
         trackAlliedSoldierSlotPosition(alliedSoldier, view);
         entityImages.add(view); //Redundant???
         alliedSoldierSlot.add(view, alliedSoldier.getSlotPosition().get(), 0);
+        addAlliedSoliderAudioPlayer.play();
+        addAlliedSoliderAudioPlayer.seek(Duration.ZERO);
     }
 
     /**
@@ -1173,8 +1225,6 @@ public class LoopManiaWorldController {
             break;
         case H:
             this.world.useHealthPotion();
-            restoreHealthAudioPlayer.play();
-            restoreHealthAudioPlayer.seek(Duration.ZERO);
             break;
             
         default:

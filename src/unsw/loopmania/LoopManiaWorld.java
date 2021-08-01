@@ -108,9 +108,11 @@ public class LoopManiaWorld {
     private MediaPlayer moneyPickupAudioPlayer;
     private MediaPlayer activateTrapAudioPlayer;
     
+    private int bossesDefeated;
     
 
-    MediaPlayer cursedMediaPlayer;
+    private MediaPlayer cursedMediaPlayer;
+    private MediaPlayer restoreHealthAudioPlayer;
 
     /**
      * create the world (constructor)
@@ -131,10 +133,15 @@ public class LoopManiaWorld {
         buildingEntities = new ArrayList<>();
         rareItemsAvailable = new ArrayList<>();
         spawnedItems = new ArrayList<>();
+        bossesDefeated = 0;
 
         String cursedFile = "src/Music/evil_laugh.mp3";
+        String restoringHpAudio = new File("src/Music/RestoreHp.mp3").toURI().toString();
+        
         Media cursedSound = new Media(new File(cursedFile).toURI().toString());
         cursedMediaPlayer = new MediaPlayer(cursedSound);
+
+        restoreHealthAudioPlayer = new MediaPlayer(new Media(restoringHpAudio));
         
         String pickupMoney = new File("src/Music/money_pickup.mp3").toURI().toString();
         String activateTrapAudio = new File("src/Music/TrapActivate.mp3").toURI().toString();
@@ -142,6 +149,7 @@ public class LoopManiaWorld {
         activateTrapAudioPlayer = new MediaPlayer(new Media(activateTrapAudio));
         moneyPickupAudioPlayer = new MediaPlayer(new Media(pickupMoney));
         moneyPickupAudioPlayer.setVolume(0.03);
+        restoreHealthAudioPlayer.setVolume(0.03);
         activateTrapAudioPlayer.setVolume(0.03);
     }
 
@@ -870,7 +878,9 @@ public class LoopManiaWorld {
      */
     public void useHealthPotion() {
         for (Item item : this.unequippedInventoryItems) {
-            if (item.getItemType() == ItemType.HEALTH_POTION) {
+            if (item.getItemType() == ItemType.HEALTH_POTION && getCharacterCurrentHp() != 100) {
+                restoreHealthAudioPlayer.play();
+                restoreHealthAudioPlayer.seek(Duration.ZERO);
                 increaseCharacterHp(HealthPotion.healingHealth);
                 removeUnequippedInventoryItemByCoordinates(item.getX(), item.getY());
                 return;

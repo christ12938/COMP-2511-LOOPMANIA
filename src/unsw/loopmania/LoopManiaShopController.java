@@ -108,7 +108,7 @@ public class LoopManiaShopController {
         buyItemAudioPlayer = new MediaPlayer(new Media(buyAudio));
         sellItemAudioPlayer = new MediaPlayer(new Media(sellAudio));
 
-        buyItemAudioPlayer.setVolume(0.1);
+        buyItemAudioPlayer.setVolume(0.15);
         sellItemAudioPlayer.setVolume(0.03);
 
         this.parent = parent;
@@ -143,11 +143,11 @@ public class LoopManiaShopController {
             @Override
             public void handle(ActionEvent event) {
                 String returnedMessage = shop.buyItem(type);
-                buyItemAudioPlayer.play();
-                buyItemAudioPlayer.seek(Duration.ZERO);
                 Color color = null;
                 if(returnedMessage.equals(shop.getBuySuccessMessage())){
                     color = Color.GREEN;
+                    buyItemAudioPlayer.play();
+                    buyItemAudioPlayer.seek(Duration.ZERO);
                 }else{
                     color = Color.RED;
                 }
@@ -167,10 +167,10 @@ public class LoopManiaShopController {
             @Override
             public void handle(ActionEvent event) {
                 String returnedMessage = shop.sellItem(type);
-                sellItemAudioPlayer.play();
-                sellItemAudioPlayer.seek(Duration.ZERO);
                 Color color = null;
                 if(returnedMessage.equals(shop.getSellSuccessMessage())){
+                    sellItemAudioPlayer.play();
+                    sellItemAudioPlayer.seek(Duration.ZERO);
                     color = Color.GREEN;
                 }else{
                     color = Color.RED;
