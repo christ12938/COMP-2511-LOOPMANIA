@@ -16,7 +16,6 @@ import org.javatuples.Pair;
 import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Enemies.Slug;
-import unsw.loopmania.Items.Item;
 import unsw.loopmania.Items.Staff;
 import unsw.loopmania.Items.TheOneRing;
 import unsw.loopmania.Types.ItemType;

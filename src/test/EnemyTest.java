@@ -3,8 +3,6 @@ package test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,16 +11,10 @@ import org.junit.Test;
 import javafx.beans.property.SimpleIntegerProperty;
 
 import org.javatuples.Pair;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
-import unsw.loopmania.AlliedSoldier;
 import unsw.loopmania.Character;
 import unsw.loopmania.HerosCastle;
-import unsw.loopmania.HumanPlayer;
 import unsw.loopmania.LoopManiaWorld;
-import unsw.loopmania.LoopManiaWorldController;
-import unsw.loopmania.LoopManiaWorldControllerLoader;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Enemies.CritStrategy;
 import unsw.loopmania.Enemies.Slug;
@@ -30,7 +22,6 @@ import unsw.loopmania.Enemies.SlugCritStrategy;
 import unsw.loopmania.Enemies.Vampire;
 import unsw.loopmania.Enemies.VampireCritStrategy;
 import unsw.loopmania.Enemies.Zombie;
-import unsw.loopmania.Enemies.ZombieCritStrategy;
 import unsw.loopmania.Types.EnemyType;
 
 

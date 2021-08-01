@@ -19,8 +19,6 @@ import org.junit.jupiter.api.Test;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import unsw.loopmania.LoopManiaWorld;
-import unsw.loopmania.LoopManiaWorldController;
-import unsw.loopmania.LoopManiaWorldControllerLoader;
 import unsw.loopmania.Character;
 import unsw.loopmania.HerosCastle;
 
