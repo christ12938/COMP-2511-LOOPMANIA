@@ -16,9 +16,19 @@ import org.javatuples.Pair;
 import unsw.loopmania.LoopManiaWorld;
 import unsw.loopmania.PathPosition;
 import unsw.loopmania.Enemies.Slug;
+import unsw.loopmania.Items.Anduril;
+import unsw.loopmania.Items.Armour;
+import unsw.loopmania.Items.DoggieCoin;
+import unsw.loopmania.Items.Gold;
+import unsw.loopmania.Items.HealthPotion;
+import unsw.loopmania.Items.Helmet;
 import unsw.loopmania.Items.Item;
+import unsw.loopmania.Items.Shield;
 import unsw.loopmania.Items.Staff;
+import unsw.loopmania.Items.Stake;
+import unsw.loopmania.Items.Sword;
 import unsw.loopmania.Items.TheOneRing;
+import unsw.loopmania.Items.TreeStump;
 import unsw.loopmania.Types.ItemType;
 import unsw.loopmania.Character;
 
@@ -460,5 +470,134 @@ public class ItemsTest {
         for (int i = 0; i < 100; i++) {
             character.isNextAttackTrance();
         }
+    }
+
+    // Test if isEquipable() returns the correct type
+    @Test
+    public void TestIsEquipable() {
+        Sword sword = new Sword(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+        HealthPotion healthPotion = new HealthPotion(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        assertTrue(sword.isEquipable() && !healthPotion.isEquipable());
+    }
+
+    // Test if copyItem() has correct functionality for armour
+    @Test
+    public void TestCopyItemArmour() {
+        Armour armour = new Armour(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Item copy = (Armour) armour.copyItem(1, 1);
+
+        assertTrue(armour.getClass() == copy.getClass());
+    }
+
+    // Test if copyItem() has correct functionality for Sword
+    @Test
+    public void TestCopyItemSword() {
+        Sword sword = new Sword(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Item copy = sword.copyItem(1, 1);
+
+        assertTrue(sword.getClass() == copy.getClass());
+    }
+
+    // Test if copyItem() has correct functionality for HealthPotion
+    @Test
+    public void TestCopyHealthPotion() {
+        HealthPotion healthPotion = new HealthPotion(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Item copy = healthPotion.copyItem(1, 1);
+
+        assertTrue(healthPotion.getClass() == copy.getClass());
+    }
+
+    // Test if copyItem() has correct functionality for Staff
+    @Test
+    public void TestCopyStaff() {
+        Staff staff = new Staff(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Item copy = staff.copyItem(1, 1);
+
+        assertTrue(staff.getClass() == copy.getClass());
+    }
+
+    // Test if copyItem() has correct functionality for Stake
+    @Test
+    public void TestCopyStake() {
+        Stake stake = new Stake(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Item copy = stake.copyItem(1, 1);
+
+        assertTrue(stake.getClass() == copy.getClass());
+    }
+
+    // Test if copyItem() has correct functionality for Helmet
+    @Test
+    public void TestCopyHelmet() {
+        Helmet helmet = new Helmet(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Item copy = helmet.copyItem(1, 1);
+
+        assertTrue(helmet.getClass() == copy.getClass());
+    }
+
+    // Test if copyItem() has correct functionality for Shield
+    @Test
+    public void TestCopyShield() {
+        Shield shield = new Shield(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Item copy = shield.copyItem(1, 1);
+
+        assertTrue(shield.getClass() == copy.getClass());
+    }
+
+    // Test if copyItem() has correct functionality for Anduril
+    @Test
+    public void TestCopyAnduril() {
+        Anduril anduril = new Anduril(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1), null);
+
+        Item copy = anduril.copyItem(1, 1);
+
+        assertTrue(anduril.getClass() == copy.getClass());
+    }
+
+    // Test if copyItem() has correct functionality for TreeStump
+    @Test
+    public void TestCopyTreeStump() {
+        TreeStump treeStump = new TreeStump(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1), null);
+
+        Item copy = treeStump.copyItem(1, 1);
+
+        assertTrue(treeStump.getClass() == copy.getClass());
+    }
+
+    // Test if copyItem() has correct functionality for TheOneRing
+    @Test
+    public void TestCopyOneRing() {
+        TheOneRing oneRing = new TheOneRing(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1), null);
+
+        Item copy = oneRing.copyItem(1, 1);
+
+        assertTrue(oneRing.getClass() == copy.getClass());
+    }
+
+    // Test if copyItem() has correct functionality for Gold
+    @Test
+    public void TestCopyGold() {
+        Gold gold = new Gold(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Item copy = gold.copyItem(1, 1);
+
+        assertTrue(gold.getClass() == copy.getClass());
+    }
+
+    // Test if copyItem() has correct functionality for DoggieCoin
+    @Test
+    public void TestCopyDoggieCoin() {
+        DoggieCoin doggieCoin = new DoggieCoin(new SimpleIntegerProperty(1),new SimpleIntegerProperty(1));
+
+        Item copy = doggieCoin.copyItem(1, 1);
+
+        assertTrue(doggieCoin.getClass() == copy.getClass());
     }
 }
