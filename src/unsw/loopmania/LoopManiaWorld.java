@@ -1321,6 +1321,9 @@ public class LoopManiaWorld {
             switch(b.getBuildingType()){
                 case VILLAGE_BUILDING:
                     character.addHealth(VillageBuilding.healValue);
+                    //Added for testing
+                    if(controller == null) break;
+                    
                     controller.passThroughVillage();
                     break;
                 case BARRACKS_BUILDING:
