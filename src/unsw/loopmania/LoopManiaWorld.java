@@ -103,6 +103,7 @@ public class LoopManiaWorld {
     private int bossesDefeated;
     private boolean spawnerCursed;
     private boolean enemyKilledByTrap;
+    private int characterStepsInCycle;
 
     /**
      * create the world (constructor)
@@ -126,6 +127,7 @@ public class LoopManiaWorld {
         bossesDefeated = 0;
         spawnerCursed = false;
         enemyKilledByTrap = false;
+        characterStepsInCycle = 0;
     }
 
     public void setController(LoopManiaWorldController controller){
@@ -850,6 +852,7 @@ public class LoopManiaWorld {
             if (item.getItemType() == ItemType.HEALTH_POTION && getCharacterCurrentHp() != 100) {
                 increaseCharacterHp(HealthPotion.healingHealth);
                 removeUnequippedInventoryItemByCoordinates(item.getX(), item.getY());
+                shiftUnequippedInventoryItemsFromXYCoordinate(item.getX(), item.getY());
                 return;
             }
         }
@@ -867,10 +870,21 @@ public class LoopManiaWorld {
     }
 
     /**
+     * remove an equipped item by x, y cooridantes
+     * @param x x coordinate
+     * @param y y corrdinate
+     */
+    public void removeEquippedItemByCoordinates(int x, int y){
+        Item item = getEquippedItemByCoordinates(x, y);
+        removeEquippedItem(item);
+    }
+
+    /**
      * run moves which occur with every tick without needing to spawn anything immediately
      */
     public void runTickMoves(){
         character.moveDownPath();
+        characterStepsInCycle++;
         moveEnemies();
     }
 
@@ -904,6 +918,15 @@ public class LoopManiaWorld {
         item.destroy();
         unequippedInventoryItems.remove(item);
         //shiftUnequippedInventoryItemsFromXYCoordinate(x, y);
+    }
+
+    /**
+     * Remove an equipped item
+     * @param item item to be removed
+     */
+    public void removeEquippedItem(Item item){
+        item.destroy();
+        character.unequip(item);
     }
 
     /**
@@ -1070,33 +1093,40 @@ public class LoopManiaWorld {
         }
     }
 
-    //TODO: DEBUG
     /**
      * shift inventory items down starting from x and y coordinates
      * @param x
      * @param y
      */
-    /*
-    private void shiftUnequippedInventoryItemsFromXYCoordinate(int x, int y){
-        boolean flag = false;
-        for(Item i : unequippedInventoryItems){
-            if(!flag && i.getY() >= y && i.getX() >= x){
-                flag = true;
+    
+    public void shiftUnequippedInventoryItemsFromXYCoordinate(int x, int y){
+
+        int newX = x;
+        int newY = y;
+
+        for(int times = 0; times < unequippedInventoryItems.size(); times++){
+            newX = (newX == unequippedInventoryWidth - 1) ? 0 : newX + 1;
+            newY = (newX == 0) ? newY + 1: newY;
+            for(Item i : unequippedInventoryItems){
+                if(i.getY() == newY && i.getX() == newX){
+                    int X = (i.getX() == 0) ? (unequippedInventoryWidth - 1) : i.getX() - 1;
+                    int Y = (i.getX() == 0) ? i.getY() - 1 : i.getY();
+                    i.x().set(X);
+                    i.y().set(Y);
+                }
             }
-            if(!flag) continue;
-            int newX = (i.getX() == 0) ? (unequippedInventoryWidth - 1) : i.getX() - 1;
-            int newY = (i.getX() == 0) ? i.getY() - 1 : i.getY();
-            i.x().set(newX);
-            i.y().set(newY);
         }
-    }*/
+    }
 
     /**
      * move all enemies
      */
     private void moveEnemies() {
-        // TODO = expand to more types of enemy
+        
         for (Enemy e: enemies){
+            if(e.getEnemyType() == EnemyType.ZOMBIE){
+                if(characterStepsInCycle == 0 || characterStepsInCycle % 2 != 0) continue;
+            }
             e.move();
         }
     }
@@ -1235,7 +1265,7 @@ public class LoopManiaWorld {
                     }
                 }
                 if(spawningTileToBeRemoved != null) spawningTiles.remove(spawningTileToBeRemoved);
-                
+
                 int repeat = 1;
                 if(((Spawner)b).getIsCursed().get()) repeat = 2;
                 for(int i = 0; i < repeat; i++){
@@ -1291,6 +1321,7 @@ public class LoopManiaWorld {
             switch(b.getBuildingType()){
                 case VILLAGE_BUILDING:
                     character.addHealth(VillageBuilding.healValue);
+                    controller.passThroughVillage();
                     break;
                 case BARRACKS_BUILDING:
                     character.addAlliedSoldier();
@@ -1344,6 +1375,7 @@ public class LoopManiaWorld {
         }
         /* Curse buildings in the current cycle */
         curseSpawnableBuildings();
+        characterStepsInCycle = 0;
     }
 
     public int getCycle(){
@@ -1542,6 +1574,30 @@ public class LoopManiaWorld {
                 spawnerCursed = true;  
             }
         }
+    }
+
+    /**
+     * Get a list of rare items specified in the json file
+     * @return
+     */
+    public List<ItemType> getRareItemsAvailable(){
+        return this.rareItemsAvailable;
+    }
+
+    /**
+     * Check if the shop can be opened on this cycle
+     */
+    public boolean canShopBeOpened(){
+
+        int sum = 0;
+        
+        for (int n = 1; sum <= cycle; n++)
+        {
+            sum = sum + n;
+            if (sum == cycle) return true;
+        }
+    
+        return false;
     }
 
 }

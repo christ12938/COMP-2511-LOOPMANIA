@@ -26,21 +26,37 @@
    <VBox>
       <HBox>
          <!-- VBox is used to stack items vertically top to bottom -->
-         <VBox alignment="CENTER">
+         <VBox alignment="CENTER" spacing="10.0">
             <HBox.margin>
             <Insets>
+                  <top>22</top> 
                   <right>5</right>
                   <bottom>5</bottom>
                   <left>5</left>
                </Insets>
             </HBox.margin>
             <children>
+               <HBox alignment="CENTER">
+                  <Region prefWidth="10.0" HBox.hgrow="ALWAYS" />
+                  <ImageView id="shopCycleIcon"  xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" GridPane.columnIndex="1" GridPane.rowIndex="1">    
+                     <image>
+                        <Image url="@../../images/shopCycle.png"/>
+                     </image>
+                  </ImageView>
+                  <Region prefWidth="10.0" HBox.hgrow="ALWAYS" />
+                  <Label fx:id="shopCycleValue" text="1">
+                     <font>
+                        <Font name="System Bold" size="25" />
+                     </font>
+                  </Label>
+                  <Region prefWidth="10.0" HBox.hgrow="ALWAYS" />
+               </HBox>
                <VBox alignment="CENTER" prefHeight="50.0">
-               <Label fx:id="difficultyText">
-                  <font>
-                     <Font name="System Bold" size="25" />
-                  </font>
-               </Label>
+                  <Label fx:id="difficultyText">
+                     <font>
+                        <Font name="System Bold" size="25" />
+                     </font>
+                  </Label>
                </VBox>
                <!-- squares contains the path, buildings, character, and enemies -->
                <GridPane fx:id="squares" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
@@ -197,6 +213,29 @@
                         </children>
                      </GridPane>
                   </children>
+               </VBox>
+               <VBox alignment="CENTER" spacing="3.0">
+                  <children>
+                        <!-- Label for Allied Soldiers -->
+                        <Text text="Discard Item"/>
+
+                        <!-- alliedSoldierSlot is for allied soldiers, which can be spawned to it -->
+                        <GridPane alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+                           <columnConstraints>
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fx:id="discardItemSlot" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" GridPane.columnIndex="0" GridPane.rowIndex="0">    
+                                 <image>
+                                    <Image url="@../../images/discardSlot.png"/>
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </GridPane>
+                     </children>
                </VBox>
                <VBox alignment="CENTER">
                   <children>

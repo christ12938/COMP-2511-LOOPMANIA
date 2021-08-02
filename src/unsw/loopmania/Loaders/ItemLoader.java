@@ -171,7 +171,7 @@ public class ItemLoader{
         return result;
     }
 
-    public static List<Item> loadShopSellItems(EnumMap<ItemType, Pair<Integer, Integer>> itemPositions){
+    public static List<Item> loadShopSellItems(EnumMap<ItemType, Pair<Integer, Integer>> itemPositions, List<ItemType> rareItemsAvailable){
         /**
          * Define shop items position manually ???
          */
@@ -180,18 +180,30 @@ public class ItemLoader{
         SimpleIntegerProperty doggieCoinPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.DOGGIECOIN).getValue0());
         SimpleIntegerProperty doggieCoinPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.DOGGIECOIN).getValue1());
         result.add(new DoggieCoin(doggieCoinPosX, doggieCoinPosY));
-        
-        SimpleIntegerProperty theOneRingPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.THE_ONE_RING).getValue0());
-        SimpleIntegerProperty theOneRingPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.THE_ONE_RING).getValue1());
-        result.add(new TheOneRing(theOneRingPosX, theOneRingPosY, null));
 
-        SimpleIntegerProperty andurilPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.ANDURIL).getValue0());
-        SimpleIntegerProperty andurilPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.ANDURIL).getValue1());
-        result.add(new Anduril(andurilPosX, andurilPosY, null));
+        for(ItemType i : rareItemsAvailable){
+            switch(i){
+                case THE_ONE_RING:
+                    SimpleIntegerProperty theOneRingPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.THE_ONE_RING).getValue0());
+                    SimpleIntegerProperty theOneRingPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.THE_ONE_RING).getValue1());
+                    result.add(new TheOneRing(theOneRingPosX, theOneRingPosY, null));
+                    break;
+                case ANDURIL:
+                    SimpleIntegerProperty andurilPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.ANDURIL).getValue0());
+                    SimpleIntegerProperty andurilPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.ANDURIL).getValue1());
+                    result.add(new Anduril(andurilPosX, andurilPosY, null));
+                    break;
+                case TREE_STUMP:
+                    SimpleIntegerProperty treeStumpPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.TREE_STUMP).getValue0());
+                    SimpleIntegerProperty treeStumpPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.TREE_STUMP).getValue1());
+                    result.add(new TreeStump(treeStumpPosX, treeStumpPosY, null));
+                    break;
+                default:
+                    break;
+                    
+            }
 
-        SimpleIntegerProperty treeStumpPosX = new SimpleIntegerProperty(itemPositions.get(ItemType.TREE_STUMP).getValue0());
-        SimpleIntegerProperty treeStumpPosY = new SimpleIntegerProperty(itemPositions.get(ItemType.TREE_STUMP).getValue1());
-        result.add(new TreeStump(treeStumpPosX, treeStumpPosY, null));
+        }
 
         return result;
     }

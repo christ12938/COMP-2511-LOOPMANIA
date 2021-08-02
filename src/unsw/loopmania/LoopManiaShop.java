@@ -35,7 +35,7 @@ public class LoopManiaShop {
         this.controller = controller;
         boughtItems = new ArrayList<>();
         itemBuyPrices = ShopLoader.loadItemBuyPrices();
-        itemSellPrices = ShopLoader.loadItemSellPrices();
+        itemSellPrices = ShopLoader.loadItemSellPrices(world.getRareItemsAvailable());
         switch(parentController.getDifficulty()){
             case STANDARD:
             case CONFUSING:

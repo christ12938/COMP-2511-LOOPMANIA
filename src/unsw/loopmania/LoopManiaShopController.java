@@ -100,7 +100,7 @@ public class LoopManiaShopController {
         treeStumpImage = new Image((new File("src/images/tree_stump.png")).toURI().toString());
 
         itemBuyPositions = ShopLoader.loadItemBuyPositions();
-        itemSellPositions = ShopLoader.loadItemSellPositions();
+        itemSellPositions = ShopLoader.loadItemSellPositions(world.getRareItemsAvailable());
 
         String buyAudio = new File("src/Music/BuyItem.mp3").toURI().toString();
         String sellAudio = new File("src/Music/SellItem.mp3").toURI().toString();
@@ -253,7 +253,7 @@ public class LoopManiaShopController {
     }
 
     private void onLoadShopSellItems(){
-        for(Item item : ItemLoader.loadShopSellItems(itemSellPositions)){
+        for(Item item : ItemLoader.loadShopSellItems(itemSellPositions, world.getRareItemsAvailable())){
             ImageView view = getImageViewByType(item);
             Button sellButton = new Button("Sell");
             VBox vbox = new VBox();
