@@ -4,11 +4,11 @@ package unsw.loopmania.Types;
  * Type of enemies
  */
 public enum EnemyType{
-    SLUG(2, 2, 10, 5, 0.1, 1.5, 10),
-    ZOMBIE(3, 3, 20, 10, 0.2, 0, 100),
-    VAMPIRE(3, 4, 30, 20, 0.2, 2, 500),
-    DOGGIE(2, 2, 50, 25, 0.1, 2, 1000),
-    ELAN_MUSKE(2, 2, 100, 30, 0.1, 2, 5000);
+    SLUG(2, 2, 15, 10, 0.1, 1.5, 10),
+    ZOMBIE(3, 3, 30, 20, 0.2, 0, 100),
+    VAMPIRE(3, 4, 60, 30, 0.2, 2, 500),
+    DOGGIE(2, 2, 120, 60, 0.1, 2, 1000),
+    ELAN_MUSKE(2, 2, 200, 100, 0.1, 2, 5000);
 
     private int battleRadius;
     private int supportRadius;

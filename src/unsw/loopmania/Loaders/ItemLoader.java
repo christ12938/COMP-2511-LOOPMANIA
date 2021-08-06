@@ -100,27 +100,6 @@ public class ItemLoader{
         }
     }
 
-/*    public static Equipable loadEquipableItem(ItemType type, int nodeX, int nodeY){
-        SimpleIntegerProperty x = new SimpleIntegerProperty(nodeX);
-        SimpleIntegerProperty y = new SimpleIntegerProperty(nodeY);
-        switch(type){
-            case SWORD:
-                return new Sword(x, y);
-            case STAKE:
-                return new Stake(x, y);
-            case STAFF:
-                return new Staff(x, y);
-            case SHIELD:
-                return new Shield(x, y);
-            case ARMOUR:
-                return new Armour(x, y);
-            case HELMET:
-                return new Helmet(x, y);
-            default:
-                return null;
-        }
-    }*/
-
     public static Item loadSpawnableItems(ItemType type, int nodeX, int nodeY){
         SimpleIntegerProperty x = new SimpleIntegerProperty(nodeX);
         SimpleIntegerProperty y = new SimpleIntegerProperty(nodeY);
