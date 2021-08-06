@@ -105,6 +105,9 @@ public class LoopManiaWorld {
     private boolean enemyKilledByTrap;
     private int characterStepsInCycle;
 
+    //private final int CHARACTER_TURN = 0;
+    //private static final int ENEMY_TURN = 1;
+
     /**
      * create the world (constructor)
      *
@@ -415,10 +418,11 @@ public class LoopManiaWorld {
         applyCampfireBuffToCharacter();
 
         /* Fight */
-        while (!battleEnemies.isEmpty()) {
+        while (!battleEnemies.isEmpty() && !character.isDefeated()) {
             /* Random Choice when selecting enemies */
             int choice = rand.nextInt(battleEnemies.size());
             Enemy attackedEnemy = battleEnemies.get(choice);
+            //int turn = rand.nextInt(2);
             System.out.println("Enemy fighting: " + attackedEnemy);
             /**
              * Always starts with attacks from character side first,
@@ -426,6 +430,7 @@ public class LoopManiaWorld {
              */
             /* Fight until character or enemy is dead */
             while(true){
+                
                 boolean isCharacterStunned = false;
                 /* Character's turn */
                 if(!isCharacterStunned){
@@ -1603,6 +1608,12 @@ public class LoopManiaWorld {
         return false;
     }
 
+    public boolean hasElanMuske(){
+        for(Enemy e : enemies){
+            if(e.getEnemyType() == EnemyType.ELAN_MUSKE) return true;
+        }
+        return false;
+    }
 }
 
 

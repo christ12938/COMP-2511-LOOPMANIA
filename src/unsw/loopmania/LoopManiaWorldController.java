@@ -530,7 +530,7 @@ public class LoopManiaWorldController {
         doggieDeathAudioPlayer.setVolume(0.03);
         spawnElanMuskAudioPlayer.setVolume(0.03);
         elanDeathAudioPlayer.setVolume(0.07);
-        addAlliedSoliderAudioPlayer.setVolume(0.03);
+        addAlliedSoliderAudioPlayer.setVolume(0.07);
 
     }
 
@@ -992,6 +992,7 @@ public class LoopManiaWorldController {
                 finalBossBackgroundMusicPlayer.setMute(false);
                 finalBossBackgroundMusicPlayer.setCycleCount(100);
                 backgroundMusicPlayer.pause();
+                backgroundMusicPlayer.setMute(true);
                 backgroundMusicPlayer.seek(Duration.ZERO);
                 break;
             default:
@@ -1471,12 +1472,18 @@ public class LoopManiaWorldController {
             world.useHealthPotion();
             break;
         case M:
-            if(backgroundMusicPlayer.isMute()){
-                backgroundMusicPlayer.setMute(false);
-                finalBossBackgroundMusicPlayer.setMute(false);
+            if(world.hasElanMuske()){
+                if(finalBossBackgroundMusicPlayer.isMute()){
+                    finalBossBackgroundMusicPlayer.setMute(false);
+                }else{
+                    finalBossBackgroundMusicPlayer.setMute(true);
+                }
             }else{
-                backgroundMusicPlayer.setMute(true);
-                finalBossBackgroundMusicPlayer.setMute(true);
+                if(backgroundMusicPlayer.isMute()){
+                    backgroundMusicPlayer.setMute(false);
+                }else{
+                    backgroundMusicPlayer.setMute(true);
+                }
             }
             break;
         default:
